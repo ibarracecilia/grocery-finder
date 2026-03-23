@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroceryFinder - Precios Smart Argentina</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            color: #999;
+            font-size: 14px;
+        }
+        .search-section {
+            margin-bottom: 30px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        .cards {
+            display: grid;
+            gap: 20px;
+        }
+        .card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .card:hover {
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+        .product-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .prices {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        .best-price {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+            font-weight: bold;
+        }
+        .price-value {
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛒 GroceryFinder</h1>
+            <p class="subtitle">Encontrá los mejores precios hoy</p>
+        </header>
+        <div class="search-section">
+            <input type="text" placeholder="¿Qué producto buscas? (ej: leche)">
+            <input type="text" placeholder="¿Tu zona? (ej: Belgrano)">
+            <button>BUSCAR</button>
+        </div>
+        <div class="cards">
+            <div class="card">
+                <div class="product-name">🥛 Leche Descremada 1L</div>
+                <div class="prices">
+                    <div class="price-item">
+                        <span>Coto</span>
+                        <span class="price-value">$180</span>
+                    </div>
+                    <div class="price-item best-price">
+                        <span>Jumbo ✓</span>
+                        <span class="price-value">$175</span>
+                    </div>
+                    <div class="price-item">
+                        <span>Disco</span>
+                        <span class="price-value">$190</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="product-name">🍊 Naranjas x 6u</div>
+                <div class="prices">
+                    <div class="price-item">
+                        <span>Coto</span>
+                        <span class="price-value">$250</span>
+                    </div>
+                    <div class="price-item">
+                        <span>Jumbo</span>
+                        <span class="price-value">$240</span>
+                    </div>
+                    <div class="price-item best-price">
+                        <span>Disco ✓</span>
+                        <span class="price-value">$220</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="product-name">🥚 Huevos x 12</div>
+                <div class="prices">
+                    <div class="price-item best-price">
+                        <span>Coto ✓</span>
+                        <span class="price-value">$160</span>
+                    </div>
+                    <div class="price-item">
+                        <span>Jumbo</span>
+                        <span class="price-value">$175</span>
+                    </div>
+                    <div class="price-item">
+                        <span>Disco</span>
+                        <span class="price-value">$170</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
