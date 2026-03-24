@@ -1,0 +1,35 @@
+{
+  "coto": {
+    "name": "Coto",
+    "products": {
+      "leche": 180,
+      "yogur": 150,
+      "naranjas": 250,
+      "huevos": 160,
+      "queso": 320,
+      "manteca": 280
+    }
+  },
+  "jumbo": {
+    "name": "Jumbo",
+    "products": {
+      "leche": 175,
+      "yogur": 140,
+      "naranjas": 240,
+      "huevos": 175,
+      "queso": 310,
+      "manteca": 270
+    }
+  },
+  "disco": {
+    "name": "Disco",
+    "products": {
+      "leche": 190,
+      "yogur": 155,
+      "naranjas": 220,
+      "huevos": 170,
+      "queso": 330,
+      "manteca": 290
+    }
+  }
+}

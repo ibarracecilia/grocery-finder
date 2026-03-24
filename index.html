@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroceryFinder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #faf7f2 0%, #f3ede4 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 50px; }
+        h1 { font-family: 'Playfair Display'; font-size: 48px; color: #2d5016; margin-bottom: 10px; }
+        .subtitle { font-size: 16px; color: #666; }
+        .search-box { background: white; border-radius: 20px; padding: 40px; margin-bottom: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        input { width: 100%; padding: 14px 16px; margin-bottom: 14px; border: 2px solid #e8e8e8; border-radius: 10px; font-family: 'Poppins'; }
+        input:focus { outline: none; border-color: #d4631e; }
+        button { width: 100%; padding: 14px; background: linear-gradient(135deg, #2d5016 0%, #3d6b1f 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        button:hover { transform: translateY(-2px); }
+        .card { background: white; border-radius: 14px; padding: 24px; margin-bottom: 18px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-left: 5px solid #d4631e; }
+        .card strong { font-size: 22px; color: #2d5016; display: block; margin-bottom: 14px; font-family: 'Playfair Display'; }
+        .price-list { display: flex; flex-direction: column; gap: 10px; }
+        .price-item { display: flex; justify-content: space-between; padding: 12px 14px; background: #f9f9f9; border-radius: 8px; }
+        .price-item.best-price { background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 2px solid #6ba642; font-weight: 600; color: #2e7d32; }
+        .price-value { font-weight: 700; color: #d4631e; font-size: 16px; }
+        .best-price .price-value { color: #6ba642; }
+        .no-results { text-align: center; padding: 40px; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🛒 GroceryFinder</h1>
+            <p class="subtitle">Encontrá los mejores precios en Buenos Aires</p>
+        </header>
+        <div class="search-box">
+            <input type="text" id="productInput" placeholder="Busca un producto (ej: leche)">
+            <button onclick="search()">BUSCAR</button>
+        </div>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let data = {};
+        fetch('data.json').then(r => r.json()).then(j => { data = j; document.getElementById("productInput").value = "leche"; search(); }).catch(e => console.error(e));
+        function search() {
+            const p = document.getElementById("productInput").value.toLowerCase().trim();
+            const r = document.getElementById("results");
+            if (!p) { r.innerHTML = '<div class="no-results">Ingresa un producto</div>'; return; }
+            let prices = [];
+            for (const [s, d] of Object.entries(data)) {
+                if (d.products[p] !== undefined) {
+                    prices.push({ name: d.name, price: d.products[p] });
+                }
+            }
+            if (prices.length > 0) {
+                prices.sort((a, b) => a.price - b.price);
+                const min = prices[0].price;
+                let h = '<div class="card"><strong>' + p.toUpperCase() + '</strong><div class="price-list">';
+                prices.forEach(x => {
+                    const b = x.price === min ? 'best-price' : '';
+                    h += '<div class="price-item ' + b + '"><span>🏪 ' + x.name + '</span><span class="price-value">$' + x.price + '</span></div>';
+                });
+                h += '</div></div>';
+                r.innerHTML = h;
+            } else {
+                r.innerHTML = '<div class="no-results">😕 No encontrado</div>';
+            }
+        }
+        document.getElementById("productInput").addEventListener("keypress", function(e) { if (e.key === "Enter") search(); });
+    </script>
+</body>
+</html>
