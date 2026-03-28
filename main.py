@@ -213,6 +213,24 @@ def index():
         .no-results { text-align: center; padding: 30px; color: #888; }
         .no-results .emoji-big { font-size: 48px; display: block; margin-bottom: 10px; }
         .scrape-date { text-align: center; font-size: 11px; color: #aaa; margin-top: 15px; }
+        .price-item { cursor: pointer; }
+        .price-item:hover { opacity: 0.85; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .modal { background: white; border-radius: 12px; padding: 25px; max-width: 420px; width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.3); position: relative; animation: modalIn 0.2s ease-out; }
+        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-close { position: absolute; top: 12px; right: 15px; background: none; border: none; font-size: 22px; cursor: pointer; color: #999; }
+        .modal-close:hover { color: #333; }
+        .modal h3 { font-size: 18px; color: #333; margin-bottom: 5px; }
+        .modal .modal-subtitle { font-size: 13px; color: #888; margin-bottom: 15px; }
+        .modal-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+        .modal-row:last-child { border-bottom: none; }
+        .modal-label { color: #666; }
+        .modal-value { color: #333; font-weight: 600; }
+        .modal-value.promo { color: #e53e3e; }
+        .modal-value.mejor { color: #28a745; }
+        .modal-source { margin-top: 15px; padding: 12px; background: #f8f9fa; border-radius: 8px; font-size: 12px; color: #666; }
+        .modal-source strong { color: #333; }
         @media (max-width: 500px) {
             .container { padding: 20px 15px; }
             .header h1 { font-size: 24px; }
@@ -251,6 +269,13 @@ def index():
 
         <div id="results" class="results"></div>
         <div class="scrape-date" id="scrape-date"></div>
+    </div>
+
+    <div class="modal-overlay" id="modal-overlay" onclick="cerrarModal(event)">
+        <div class="modal" id="modal">
+            <button class="modal-close" onclick="cerrarModal()">&times;</button>
+            <div id="modal-content"></div>
+        </div>
     </div>
 
     <script>
@@ -381,6 +406,17 @@ def index():
                     for (const precio of precios) {
                         const esMejor = precio.precio_final === mejorPrecio;
                         const clase = esMejor ? "cheapest" : "";
+                        const modalData = encodeURIComponent(JSON.stringify({
+                            producto: producto,
+                            cantidad: info.cantidad,
+                            supermarket: precio.supermarket,
+                            precio: precio.precio,
+                            precio_promo: precio.precio_promo,
+                            precio_final: precio.precio_final,
+                            promo_vence: precio.promo_vence,
+                            fecha_scraping: precio.fecha_scraping,
+                            esMejor: esMejor
+                        }));
                         
                         let precioHtml = "";
                         if (precio.precio_promo) {
@@ -396,7 +432,7 @@ def index():
                             precioHtml = `<span class="price">$${precio.precio}</span>`;
                         }
                         
-                        html += `<div class="price-item ${clase}">
+                        html += `<div class="price-item ${clase}" onclick="abrirModal('${modalData}')">
                             <span class="supermarket">🏪 ${precio.supermarket}</span>
                             <div class="price-info">
                                 ${precioHtml}
@@ -428,6 +464,67 @@ def index():
         
         searchInput.addEventListener("keypress", (e) => { if (e.key === "Enter") buscar(); });
         
+        function abrirModal(encodedData) {
+            const d = JSON.parse(decodeURIComponent(encodedData));
+            let html = `
+                <h3>🏪 ${d.supermarket}</h3>
+                <div class="modal-subtitle">${d.producto} — ${d.cantidad}</div>
+                <div class="modal-row">
+                    <span class="modal-label">Precio regular</span>
+                    <span class="modal-value">$${d.precio}</span>
+                </div>`;
+            
+            if (d.precio_promo) {
+                html += `
+                <div class="modal-row">
+                    <span class="modal-label">Precio promocional</span>
+                    <span class="modal-value promo">$${d.precio_promo}</span>
+                </div>
+                <div class="modal-row">
+                    <span class="modal-label">Ahorro</span>
+                    <span class="modal-value promo">-$${d.precio - d.precio_promo} (${Math.round((1 - d.precio_promo/d.precio) * 100)}%)</span>
+                </div>`;
+                if (d.promo_vence) {
+                    const hoy = new Date();
+                    const vence = new Date(d.promo_vence + 'T00:00:00');
+                    const diasRestantes = Math.ceil((vence - hoy) / (1000 * 60 * 60 * 24));
+                    html += `
+                    <div class="modal-row">
+                        <span class="modal-label">Promo vence</span>
+                        <span class="modal-value promo">${formatDate(d.promo_vence)} (${diasRestantes > 0 ? diasRestantes + ' días' : 'Vencida'})</span>
+                    </div>`;
+                }
+            }
+            
+            if (d.esMejor) {
+                html += `
+                <div class="modal-row">
+                    <span class="modal-label">Veredicto</span>
+                    <span class="modal-value mejor">✅ Mejor precio disponible</span>
+                </div>`;
+            }
+            
+            html += `
+                <div class="modal-source">
+                    <strong>📊 Datos del scraping</strong><br>
+                    Fuente: ${d.supermarket} Online<br>
+                    Fecha de extracción: ${d.fecha_scraping ? formatDate(d.fecha_scraping) : 'No disponible'}<br>
+                    Método: Scraping automático del sitio web<br>
+                    Producto: ${d.producto} (${d.cantidad})
+                </div>`;
+            
+            document.getElementById('modal-content').innerHTML = html;
+            document.getElementById('modal-overlay').classList.add('active');
+        }
+        
+        function cerrarModal(event) {
+            if (!event || event.target === document.getElementById('modal-overlay') || event.target.classList.contains('modal-close')) {
+                document.getElementById('modal-overlay').classList.remove('active');
+            }
+        }
+        
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarModal(); });
+
         // Cargar productos al inicio
         cargarProductos();
     </script>
