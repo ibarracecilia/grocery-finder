@@ -239,10 +239,31 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .msrc{margin-top:18px;padding:16px;background:var(--card2);border-radius:12px;font-size:12px;color:var(--text2);line-height:1.7;border:1px solid var(--border)}
 .msrc strong{color:var(--text);display:block;margin-bottom:4px;font-size:13px}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:12px;font-size:13px;font-weight:600;z-index:200;display:none;animation:fadeUp .3s ease-out}
+.add-btn{padding:6px 14px;border:1.5px solid var(--accent);border-radius:10px;background:var(--accent-bg);color:var(--accent);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px}
+.add-btn:hover{background:var(--accent);color:#fff}
+.add-btn.added{background:var(--green);color:#fff;border-color:var(--green)}
+.cart-bar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1.5px solid var(--border);padding:14px 20px;box-shadow:0 -4px 20px rgba(0,0,0,.1);z-index:50;transform:translateY(100%);transition:transform .35s ease-out;display:flex;flex-direction:column;align-items:center;gap:10px}
+.cart-bar.show{transform:translateY(0)}
+.cart-summary{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;width:100%;max-width:800px}
+.cart-store{flex:1;min-width:140px;padding:12px 16px;border-radius:14px;border:1.5px solid var(--border);background:var(--card2);text-align:center;transition:all .2s}
+.cart-store.best-store{border-color:var(--green);background:var(--green-bg)}
+.cart-store-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.cart-store-total{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--text)}
+.cart-store.best-store .cart-store-total{color:var(--green)}
+.cart-store-tag{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--green);margin-top:4px;letter-spacing:.5px}
+.cart-header{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:800px}
+.cart-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--text)}
+.cart-count{font-size:13px;color:var(--text3)}
+.cart-clear{padding:5px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card2);color:var(--red);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.cart-clear:hover{background:var(--red-bg);border-color:var(--red)}
+.cart-items{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%;max-width:800px}
+.cart-item-pill{padding:4px 10px;border-radius:8px;background:var(--card2);border:1px solid var(--border);font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px}
+.cart-item-pill .cart-x{cursor:pointer;color:var(--text3);font-weight:700;transition:color .15s}
+.cart-item-pill .cart-x:hover{color:var(--red)}
 @media(max-width:600px){
 nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
 .grid{grid-template-columns:repeat(3,1fr);gap:10px}.item{padding:14px 8px}.item .emo{font-size:32px}
-.coupon{min-width:200px;padding:16px}
+.coupon{min-width:200px;padding:16px}.cart-store{min-width:100px;padding:10px}.cart-store-total{font-size:18px}
 }
 </style>
 </head>
@@ -345,9 +366,17 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
 <div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
   <div class="modal"><button class="mx" onclick="closeModal()">&times;</button><div id="modal-c"></div></div>
 </div>
+<div class="cart-bar" id="cart-bar">
+  <div class="cart-header">
+    <div><span class="cart-title" id="cart-title"></span> <span class="cart-count" id="cart-count"></span></div>
+    <button class="cart-clear" onclick="clearCart()" id="cart-clear-btn"></button>
+  </div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-summary" id="cart-summary"></div>
+</div>
 <div class="toast" id="toast"></div>
 <script>
-let AP=[],lang='es',dark=false,selCur='';
+let AP=[],lang='es',dark=false,selCur='',cart=[];
 const XR={USD:{r:1200,s:'US$'},EUR:{r:1300,s:'€'},BRL:{r:230,s:'R$'},GBP:{r:1520,s:'£'},CLP:{r:1.28,s:'CL$'},UYU:{r:28,s:'UY$'},MXN:{r:70,s:'MX$'},JPY:{r:7.8,s:'¥'},CNY:{r:165,s:'¥'}};
 function cv(a){if(!selCur)return '';const c=XR[selCur];return `<span class="cur-eq">${c.s}${(a/c.r).toFixed(2)}</span>`}
 function cvi(a){if(!selCur)return '';const c=XR[selCur];return `<span class="cur-eq-i">(${c.s}${(a/c.r).toFixed(2)})</span>`}
@@ -371,7 +400,7 @@ function copyCoup(c){navigator.clipboard.writeText(c).then(()=>{const e=document
 function setLang(l){lang=l;document.getElementById('btn-es').classList.toggle('active',l==='es');document.getElementById('btn-en').classList.toggle('active',l==='en');document.querySelectorAll('.i18n').forEach(e=>{if(e.dataset[l])e.textContent=e.dataset[l]});document.querySelectorAll('.i18n-html').forEach(e=>{if(e.dataset[l])e.innerHTML=e.dataset[l]});document.getElementById('search').placeholder=t('ph');document.getElementById('coup-title').textContent=t('ct');document.getElementById('prod-title').textContent=t('pt');const cct=document.getElementById('cur-chip-text');if(cct)cct.textContent=cct.dataset[l];renderCoups();if(AP.length)showPop(AP)}
 async function loadProds(){try{const r=await fetch('/api/products');AP=await r.json();showPop(AP)}catch(e){console.error(e)}}
 const EM={'Leche Entera':'🥛','Yogur Natural':'🥛','Naranjas':'🍊','Huevos':'🥚','Queso Cremoso':'🧀','Manteca':'🧈','Pan Lactal':'🍞','Arroz':'🍚','Fideos Secos':'🍝','Aceite de Girasol':'🫒','Azúcar':'🍬','Harina':'🌾','Galletitas Dulces':'🍪','Gaseosa Cola':'🥤','Agua Mineral':'💧','Papel Higiénico':'🧻','Detergente':'🧴','Jabón en Polvo':'🧼','Pollo Entero':'🍗','Carne Picada':'🥩','Banana':'🍌','Tomate':'🍅','Papa':'🥔','Cebolla':'🧅'};
-function showPop(ps){document.getElementById('grid').innerHTML=ps.map((p,i)=>`<div class="item" onclick="pickProd('${p.nombre}')" style="animation-delay:${i*40}ms;animation:fadeUp .4s ease-out ${i*40}ms both"><span class="emo">${EM[p.nombre]||'🛒'}</span><span class="nm">${p.nombre}</span><span class="qt">${p.cantidad}</span><span class="pr">${t('desde')} $${p.precio_min}${cvi(p.precio_min)}</span></div>`).join('')}
+function showPop(ps){document.getElementById('grid').innerHTML=ps.map((p,i)=>{const inCart=cart.includes(p.nombre);return `<div class="item" style="animation-delay:${i*40}ms;animation:fadeUp .4s ease-out ${i*40}ms both"><span class="emo" onclick="pickProd('${p.nombre}')">${EM[p.nombre]||'🛒'}</span><span class="nm" onclick="pickProd('${p.nombre}')">${p.nombre}</span><span class="qt">${p.cantidad}</span><span class="pr">${t('desde')} $${p.precio_min}${cvi(p.precio_min)}</span><button class="add-btn ${inCart?'added':''}" id="add-${p.nombre.replace(/\\s/g,'_')}" onclick="event.stopPropagation();addToCart('${p.nombre}')">${inCart?'✓':'+'}</button></div>`}).join('')}
 function pickProd(n){document.getElementById('search').value=n;buscar()}
 function filtrarCat(c){document.querySelectorAll('.cat').forEach(b=>b.classList.remove('active'));event.target.closest('.cat').classList.add('active');const cs={'lácteos':['Leche Entera','Yogur Natural','Queso Cremoso','Manteca'],'frutas':['Naranjas','Banana','Tomate','Papa','Cebolla'],'carnes':['Pollo Entero','Carne Picada','Huevos'],'almacén':['Pan Lactal','Arroz','Fideos Secos','Aceite de Girasol','Azúcar','Harina','Galletitas Dulces'],'bebidas':['Gaseosa Cola','Agua Mineral'],'limpieza':['Papel Higiénico','Detergente','Jabón en Polvo']};showPop(c==='todos'?AP:AP.filter(p=>cs[c]?.includes(p.nombre)));document.getElementById('home').style.display='block';document.getElementById('results').innerHTML=''}
 const si=document.getElementById('search'),al=document.getElementById('autocomplete');
@@ -383,6 +412,12 @@ si.addEventListener('keypress',e=>{if(e.key==='Enter')buscar()});
 function openModal(ed){const d=JSON.parse(decodeURIComponent(ed));const pF=d.precio_promo||d.precio;let h=`<h3>🏪 ${d.supermarket}</h3><div class="msub">${d.producto} — ${d.cantidad}</div><div class="mrow"><span class="mlbl">${t('rp')}</span><span class="mval">$${d.precio}</span></div>`;if(d.precio_promo){h+=`<div class="mrow"><span class="mlbl">${t('pp')}</span><span class="mval promo">$${d.precio_promo}</span></div><div class="mrow"><span class="mlbl">${t('sav')}</span><span class="mval promo">-$${d.precio-d.precio_promo} (${Math.round((1-d.precio_promo/d.precio)*100)}%)</span></div>`;if(d.promo_vence){const dias=Math.ceil((new Date(d.promo_vence+'T00:00:00')-new Date())/864e5);h+=`<div class="mrow"><span class="mlbl">${t('pe')}</span><span class="mval promo">${fmtD(d.promo_vence)} (${dias>0?dias+' '+t('days'):t('exp')})</span></div>`}}if(d.esMejor)h+=`<div class="mrow"><span class="mlbl">${t('verd')}</span><span class="mval best">✅ ${t('bp')}</span></div>`;h+=`<div class="modal-cur"><div class="modal-cur-title">${lang==='es'?'Equivalencia en otra moneda':'Currency equivalent'}</div><div class="modal-cur-row"><select class="modal-cur-sel" onchange="selCur=this.value;document.getElementById('mcv').textContent=cvModal(${pF})"><option value="USD">USD $</option><option value="EUR">EUR €</option><option value="BRL">BRL R$</option><option value="GBP">GBP £</option><option value="CLP">CLP</option><option value="UYU">UYU</option><option value="MXN">MXN</option><option value="JPY">JPY ¥</option><option value="CNY">CNY ¥</option></select><span class="modal-cur-val" id="mcv">${cvModal(pF)}</span></div></div>`;h+=`<div class="msrc"><strong>📊 ${t('st')}</strong>${t('src')}: ${d.supermarket} ${t('onl')}<br>${t('ed')}: ${d.fecha_scraping?fmtD(d.fecha_scraping):t('nd')}<br>${t('meth')}: ${t('as')}<br>${t('prod')}: ${d.producto} (${d.cantidad})</div>`;document.getElementById('modal-c').innerHTML=h;document.getElementById('modal-bg').classList.add('on')}
 function closeModal(e){if(!e||e.target===document.getElementById('modal-bg')||e.target.classList.contains('mx'))document.getElementById('modal-bg').classList.remove('on')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+function addToCart(nombre){if(cart.includes(nombre))return;cart.push(nombre);updateCart();const btn=document.getElementById('add-'+nombre.replace(/\s/g,'_'));if(btn){btn.textContent='✓';btn.classList.add('added')}}
+function removeFromCart(nombre){cart=cart.filter(n=>n!==nombre);updateCart();const btn=document.getElementById('add-'+nombre.replace(/\s/g,'_'));if(btn){btn.textContent='+';btn.classList.remove('added')}}
+function clearCart(){cart=[];updateCart();document.querySelectorAll('.add-btn.added').forEach(b=>{b.textContent='+';b.classList.remove('added')})}
+function updateCart(){const bar=document.getElementById('cart-bar');if(!cart.length){bar.classList.remove('show');return}bar.classList.add('show');document.getElementById('cart-title').textContent=lang==='es'?'Tu lista':'Your list';document.getElementById('cart-count').textContent=`(${cart.length} ${lang==='es'?'productos':'items'})`;document.getElementById('cart-clear-btn').textContent=lang==='es'?'Vaciar':'Clear';document.getElementById('cart-items').innerHTML=cart.map(n=>`<div class="cart-item-pill">${n} <span class="cart-x" onclick="removeFromCart('${n}')">✕</span></div>`).join('');calcCartTotals()}
+function calcCartTotals(){const stores={Coto:0,Jumbo:0,Disco:0};cart.forEach(nombre=>{const p=AP.find(x=>x.nombre===nombre);if(!p)return;fetch(`/api/search?q=${encodeURIComponent(nombre)}`).then(r=>r.json()).then(data=>{for(const[prod,info]of Object.entries(data)){for(const pr of info.precios){const pf=pr.precio_promo||pr.precio;if(stores[pr.supermarket]!==undefined)stores[pr.supermarket]+=pf}}renderCartTotals(stores)})});if(!cart.length)renderCartTotals(stores)}
+function renderCartTotals(stores){const best=Math.min(...Object.values(stores).filter(v=>v>0));const sum=document.getElementById('cart-summary');sum.innerHTML=Object.entries(stores).map(([name,total])=>{const isBest=total===best&&total>0;return `<div class="cart-store ${isBest?'best-store':''}"><div class="cart-store-name">🏪 ${name}</div><div class="cart-store-total">$${total.toLocaleString('es-AR')}</div>${isBest?`<div class="cart-store-tag">${lang==='es'?'Mejor opción':'Best option'}</div>`:''}</div>`}).join('')}
 setLang('es');loadProds();renderCoups();
 
 const STORES=[
