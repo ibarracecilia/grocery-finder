@@ -94,8 +94,24 @@ def index():
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); min-height: 100vh; padding: 20px 16px; transition: background 0.4s, color 0.4s; color: var(--text); }
         .top-bar { max-width: 750px; margin: 0 auto 14px; display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
-        .top-bar .logo { font-size: 20px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; }
-        .top-bar .logo span { color: var(--text); }
+        .top-bar .logo { display: flex; align-items: center; gap: 0; }
+        .top-bar .logo svg { height: 36px; width: auto; }
+        @keyframes pulse-node { 0%,100%{opacity:0.2;r:2.5} 50%{opacity:0.7;r:3.5} }
+        @keyframes glow-core { 0%,100%{opacity:0.5} 50%{opacity:1} }
+        @keyframes pulse-pin { 0%,100%{opacity:0.4} 50%{opacity:0.8} }
+        .logo-node { animation: pulse-node 2.5s ease-in-out infinite; }
+        .logo-node:nth-child(2) { animation-delay: 0.4s; }
+        .logo-node:nth-child(3) { animation-delay: 0.8s; }
+        .logo-node:nth-child(4) { animation-delay: 1.2s; }
+        .logo-node:nth-child(5) { animation-delay: 1.6s; }
+        .logo-core { animation: glow-core 3s ease-in-out infinite; }
+        .logo-pin { animation: pulse-pin 2s ease-in-out infinite; }
+        .logo-pin:nth-child(odd) { animation-delay: 0.3s; }
+        .logo-svg:hover .logo-node { animation-duration: 1s; }
+        .logo-svg:hover .logo-core { animation-duration: 1s; opacity: 1; }
+        @media (prefers-reduced-motion: reduce) {
+            .logo-node, .logo-core, .logo-pin { animation: none; }
+        }
         .top-bar .right { display: flex; align-items: center; gap: 10px; }
         .top-bar .tagline { font-size: 11px; color: var(--text-muted); font-weight: 500; }
         .lang-toggle { display: flex; border: 1.5px solid var(--card-border); border-radius: 8px; overflow: hidden; }
@@ -200,7 +216,38 @@ def index():
 </head>
 <body>
     <div class="top-bar">
-        <div class="logo"><span>Grocery</span>Finder</div>
+        <div class="logo">
+            <svg class="logo-svg" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+                <line x1="8" y1="35" x2="30" y2="52" stroke="var(--accent)" stroke-width="1.5" opacity="0.3"/>
+                <line x1="4" y1="85" x2="26" y2="72" stroke="var(--accent)" stroke-width="1.5" opacity="0.25"/>
+                <line x1="12" y1="120" x2="32" y2="104" stroke="var(--accent)" stroke-width="1.5" opacity="0.3"/>
+                <line x1="112" y1="12" x2="92" y2="30" stroke="var(--accent)" stroke-width="1.5" opacity="0.2"/>
+                <line x1="120" y1="52" x2="108" y2="60" stroke="var(--accent)" stroke-width="1.5" opacity="0.25"/>
+                <circle class="logo-node" cx="8" cy="35" r="2.5" fill="var(--accent)"/>
+                <circle class="logo-node" cx="4" cy="85" r="2.5" fill="var(--accent)"/>
+                <circle class="logo-node" cx="12" cy="120" r="2.5" fill="var(--accent)"/>
+                <circle class="logo-node" cx="112" cy="12" r="2.5" fill="var(--accent)"/>
+                <circle class="logo-node" cx="120" cy="52" r="2.5" fill="var(--accent)"/>
+                <path d="M 70 10 A 60 60 0 1 0 70 130" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round"/>
+                <line x1="70" y1="70" x2="45" y2="70" stroke="var(--accent)" stroke-width="10" stroke-linecap="round"/>
+                <path d="M 68 68 L 112 68 L 105 110 L 54 110 Z" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linejoin="round"/>
+                <circle cx="67" cy="124" r="7" fill="none" stroke="var(--accent)" stroke-width="3"/>
+                <circle cx="97" cy="124" r="7" fill="none" stroke="var(--accent)" stroke-width="3"/>
+                <rect x="72" y="80" width="19" height="19" rx="3" fill="none" stroke="var(--accent)" stroke-width="1.8" opacity="0.8"/>
+                <line class="logo-pin" x1="78" y1="80" x2="78" y2="75" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
+                <line class="logo-pin" x1="86" y1="80" x2="86" y2="75" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
+                <line class="logo-pin" x1="72" y1="87" x2="67" y2="87" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
+                <line class="logo-pin" x1="72" y1="93" x2="67" y2="93" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
+                <line class="logo-pin" x1="91" y1="87" x2="96" y2="87" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
+                <line class="logo-pin" x1="91" y1="93" x2="96" y2="93" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
+                <line class="logo-pin" x1="78" y1="99" x2="78" y2="104" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
+                <line class="logo-pin" x1="86" y1="99" x2="86" y2="104" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
+                <circle class="logo-core" cx="81" cy="89" r="3.5" fill="var(--accent)" opacity="0.7"/>
+                <text x="138" y="68" style="font-family:'Inter',sans-serif;font-size:32px;font-weight:700;letter-spacing:-1px;" fill="var(--text)">Grocery</text>
+                <text x="138" y="68" style="font-family:'Inter',sans-serif;font-size:32px;font-weight:700;letter-spacing:-1px;" fill="var(--accent)" dx="116">Finder</text>
+                <text x="138" y="90" style="font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;" fill="var(--accent)" opacity="0.7">AI-POWERED PRICE COMPARISON</text>
+            </svg>
+        </div>
         <div class="right">
             <div class="tagline">Buenos Aires, Argentina</div>
             <div class="lang-toggle">
