@@ -70,27 +70,50 @@ def index():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GroceryFinder - Mejores precios en Buenos Aires</title>
+    <title>GroceryFinder</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #f0f4f8; --card: #ffffff; --card-border: #e2e8f0; --text: #1e293b;
+            --text-secondary: #64748b; --text-muted: #94a3b8; --accent: #0d9488;
+            --accent-hover: #0f766e; --accent-light: #f0fdfa; --accent-border: #ccfbf1;
+            --input-bg: #f8fafc; --input-border: #e2e8f0; --divider: #e2e8f0;
+            --item-bg: #f8fafc; --shadow: rgba(0,0,0,0.06); --shadow-lg: rgba(0,0,0,0.04);
+            --modal-bg: rgba(15,23,42,0.4); --toast-bg: #1e293b; --price-strike: #cbd5e1;
+            --red: #dc2626; --green: #059669;
+        }
+        [data-theme="dark"] {
+            --bg: #0f172a; --card: #1e293b; --card-border: #334155; --text: #f1f5f9;
+            --text-secondary: #94a3b8; --text-muted: #64748b; --accent: #2dd4bf;
+            --accent-hover: #14b8a6; --accent-light: #134e4a; --accent-border: #115e59;
+            --input-bg: #0f172a; --input-border: #334155; --divider: #334155;
+            --item-bg: #0f172a; --shadow: rgba(0,0,0,0.2); --shadow-lg: rgba(0,0,0,0.3);
+            --modal-bg: rgba(0,0,0,0.6); --toast-bg: #f1f5f9; --price-strike: #475569;
+            --red: #f87171; --green: #34d399;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f0f4f8; min-height: 100vh; padding: 20px 16px; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); min-height: 100vh; padding: 20px 16px; transition: background 0.4s, color 0.4s; color: var(--text); }
         .top-bar { max-width: 750px; margin: 0 auto 14px; display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
-        .top-bar .logo { font-size: 20px; font-weight: 700; color: #0d9488; letter-spacing: -0.5px; }
-        .top-bar .logo span { color: #334155; }
-        .top-bar .right { display: flex; align-items: center; gap: 12px; }
-        .top-bar .tagline { font-size: 11px; color: #94a3b8; font-weight: 500; }
-        .lang-toggle { display: flex; border: 1.5px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
-        .lang-btn { padding: 4px 10px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; background: white; color: #64748b; font-family: 'Inter', sans-serif; transition: all 0.2s; }
-        .lang-btn.active { background: #0d9488; color: white; }
-        .container { background: white; border-radius: 16px; padding: 28px; max-width: 750px; width: 100%; margin: 0 auto; box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 30px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; }
+        .top-bar .logo { font-size: 20px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; }
+        .top-bar .logo span { color: var(--text); }
+        .top-bar .right { display: flex; align-items: center; gap: 10px; }
+        .top-bar .tagline { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .lang-toggle { display: flex; border: 1.5px solid var(--card-border); border-radius: 8px; overflow: hidden; }
+        .lang-btn { padding: 4px 10px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; background: var(--card); color: var(--text-secondary); font-family: 'Inter', sans-serif; transition: all 0.2s; }
+        .lang-btn.active { background: var(--accent); color: white; }
+        /* Dark mode toggle */
+        .theme-toggle { width: 48px; height: 26px; border-radius: 13px; background: var(--card-border); border: none; cursor: pointer; position: relative; transition: background 0.3s; padding: 0; }
+        [data-theme="dark"] .theme-toggle { background: var(--accent); }
+        .theme-toggle .toggle-circle { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: white; transition: all 0.3s; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        [data-theme="dark"] .theme-toggle .toggle-circle { left: 25px; }
+        .container { background: var(--card); border-radius: 16px; padding: 28px; max-width: 750px; width: 100%; margin: 0 auto; box-shadow: 0 1px 3px var(--shadow), 0 8px 30px var(--shadow-lg); border: 1px solid var(--card-border); transition: all 0.4s; }
         .header { text-align: center; margin-bottom: 24px; }
-        .header h1 { color: #1e293b; font-size: 26px; margin-bottom: 4px; font-weight: 700; letter-spacing: -0.5px; }
-        .header p { color: #94a3b8; font-size: 14px; }
+        .header h1 { color: var(--text); font-size: 26px; margin-bottom: 4px; font-weight: 700; letter-spacing: -0.5px; }
+        .header p { color: var(--text-muted); font-size: 14px; }
         .coupons-section { margin-bottom: 22px; }
         .coupons-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin; }
         .coupons-scroll::-webkit-scrollbar { height: 4px; }
-        .coupons-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .coupons-scroll::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
         .coupon { min-width: 220px; border-radius: 12px; padding: 16px; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s; flex-shrink: 0; }
         .coupon:hover { transform: translateY(-2px); }
         .coupon-coto { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
@@ -103,66 +126,67 @@ def index():
         .coupon .store-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; opacity: 0.9; }
         .coupon-circle { position: absolute; right: -15px; top: -15px; width: 70px; height: 70px; border-radius: 50%; background: rgba(255,255,255,0.1); }
         .coupon-circle2 { position: absolute; right: 20px; bottom: -20px; width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.08); }
-        .coupon-copied { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 200; display: none; animation: fadeUp 0.3s ease-out; }
+        .coupon-copied { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--toast-bg); color: var(--bg); padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 200; display: none; animation: fadeUp 0.3s ease-out; }
         @keyframes fadeUp { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
         .search-box { position: relative; display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-box input { flex: 1; padding: 13px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 15px; outline: none; transition: all 0.2s; background: #f8fafc; font-family: 'Inter', sans-serif; }
-        .search-box input:focus { border-color: #0d9488; background: white; box-shadow: 0 0 0 3px rgba(13,148,136,0.1); }
-        .search-box button { padding: 13px 24px; background: #0d9488; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; font-family: 'Inter', sans-serif; }
-        .search-box button:hover { background: #0f766e; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13,148,136,0.25); }
-        .autocomplete-list { position: absolute; top: 100%; left: 0; right: 80px; background: white; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px; max-height: 200px; overflow-y: auto; z-index: 10; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
-        .autocomplete-item { padding: 10px 16px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f1f5f9; }
-        .autocomplete-item:hover { background: #f0fdfa; }
-        .autocomplete-item .cantidad { color: #94a3b8; font-size: 12px; margin-left: 5px; }
+        .search-box input { flex: 1; padding: 13px 16px; border: 1.5px solid var(--input-border); border-radius: 10px; font-size: 15px; outline: none; transition: all 0.2s; background: var(--input-bg); font-family: 'Inter', sans-serif; color: var(--text); }
+        .search-box input:focus { border-color: var(--accent); background: var(--card); box-shadow: 0 0 0 3px rgba(13,148,136,0.1); }
+        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box button { padding: 13px 24px; background: var(--accent); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .search-box button:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13,148,136,0.25); }
+        .autocomplete-list { position: absolute; top: 100%; left: 0; right: 80px; background: var(--card); border: 1px solid var(--card-border); border-top: none; border-radius: 0 0 10px 10px; max-height: 200px; overflow-y: auto; z-index: 10; display: none; box-shadow: 0 8px 20px var(--shadow); }
+        .autocomplete-item { padding: 10px 16px; cursor: pointer; font-size: 14px; border-bottom: 1px solid var(--divider); color: var(--text); }
+        .autocomplete-item:hover { background: var(--accent-light); }
+        .autocomplete-item .cantidad { color: var(--text-muted); font-size: 12px; margin-left: 5px; }
         .categories { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
-        .cat-btn { padding: 7px 16px; border: 1.5px solid #e2e8f0; border-radius: 25px; background: white; cursor: pointer; font-size: 13px; transition: all 0.2s; font-family: 'Inter', sans-serif; font-weight: 500; color: #64748b; }
-        .cat-btn:hover { border-color: #0d9488; color: #0d9488; background: #f0fdfa; }
-        .cat-btn.active { background: #0d9488; color: white; border-color: #0d9488; }
-        .section-title { font-size: 13px; color: #94a3b8; margin-bottom: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .cat-btn { padding: 7px 16px; border: 1.5px solid var(--card-border); border-radius: 25px; background: var(--card); cursor: pointer; font-size: 13px; transition: all 0.2s; font-family: 'Inter', sans-serif; font-weight: 500; color: var(--text-secondary); }
+        .cat-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+        .cat-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .section-title { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
         .results { margin-top: 10px; }
-        .product { margin-bottom: 16px; padding: 18px; border-left: 4px solid #0d9488; background: #f8fafc; border-radius: 0 12px 12px 0; }
-        .product h3 { color: #1e293b; margin-bottom: 3px; font-size: 17px; font-weight: 600; }
-        .product .cantidad-label { color: #94a3b8; font-size: 13px; margin-bottom: 10px; }
-        .price-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #e2e8f0; cursor: pointer; transition: all 0.15s; }
+        .product { margin-bottom: 16px; padding: 18px; border-left: 4px solid var(--accent); background: var(--item-bg); border-radius: 0 12px 12px 0; }
+        .product h3 { color: var(--text); margin-bottom: 3px; font-size: 17px; font-weight: 600; }
+        .product .cantidad-label { color: var(--text-muted); font-size: 13px; margin-bottom: 10px; }
+        .price-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--divider); cursor: pointer; transition: all 0.15s; }
         .price-item:last-child { border-bottom: none; }
         .price-item:hover { opacity: 0.8; }
-        .supermarket { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #475569; font-weight: 500; }
+        .supermarket { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text-secondary); font-weight: 500; }
         .price-info { text-align: right; }
-        .price { font-weight: 700; color: #0d9488; font-size: 16px; }
+        .price { font-weight: 700; color: var(--accent); font-size: 16px; }
         .price-promo { font-size: 13px; }
-        .price-original { text-decoration: line-through; color: #cbd5e1; margin-right: 8px; }
-        .price-oferta { color: #dc2626; font-weight: 700; }
-        .promo-vence { font-size: 11px; color: #dc2626; display: block; margin-top: 2px; }
-        .cheapest { background: #f0fdfa; padding: 10px; border-radius: 8px; border: 1px solid #ccfbf1; }
-        .cheapest .price { color: #059669; }
-        .badge { background: #059669; color: white; padding: 3px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
-        .badge-promo { background: #dc2626; color: white; padding: 3px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; font-weight: 600; text-transform: uppercase; }
+        .price-original { text-decoration: line-through; color: var(--price-strike); margin-right: 8px; }
+        .price-oferta { color: var(--red); font-weight: 700; }
+        .promo-vence { font-size: 11px; color: var(--red); display: block; margin-top: 2px; }
+        .cheapest { background: var(--accent-light); padding: 10px; border-radius: 8px; border: 1px solid var(--accent-border); }
+        .cheapest .price { color: var(--green); }
+        .badge { background: var(--green); color: white; padding: 3px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+        .badge-promo { background: var(--red); color: white; padding: 3px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; font-weight: 600; text-transform: uppercase; }
         .popular-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 20px; }
-        .popular-item { background: white; border-radius: 12px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.25s; border: 1.5px solid #e2e8f0; }
-        .popular-item:hover { border-color: #0d9488; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(13,148,136,0.1); }
+        .popular-item { background: var(--card); border-radius: 12px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.25s; border: 1.5px solid var(--card-border); }
+        .popular-item:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(13,148,136,0.1); }
         .popular-item .emoji { font-size: 32px; display: block; margin-bottom: 8px; }
-        .popular-item .name { font-size: 13px; color: #1e293b; font-weight: 600; display: block; }
-        .popular-item .qty { font-size: 11px; color: #94a3b8; display: block; margin-top: 2px; }
-        .popular-item .desde { font-size: 13px; color: #0d9488; font-weight: 700; margin-top: 6px; display: block; }
-        .no-results { text-align: center; padding: 40px; color: #94a3b8; }
+        .popular-item .name { font-size: 13px; color: var(--text); font-weight: 600; display: block; }
+        .popular-item .qty { font-size: 11px; color: var(--text-muted); display: block; margin-top: 2px; }
+        .popular-item .desde { font-size: 13px; color: var(--accent); font-weight: 700; margin-top: 6px; display: block; }
+        .no-results { text-align: center; padding: 40px; color: var(--text-muted); }
         .no-results .emoji-big { font-size: 48px; display: block; margin-bottom: 10px; }
-        .scrape-date { text-align: center; font-size: 11px; color: #94a3b8; margin-top: 15px; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15,23,42,0.4); backdrop-filter: blur(4px); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
+        .scrape-date { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 15px; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--modal-bg); backdrop-filter: blur(4px); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .modal { background: white; border-radius: 16px; padding: 28px; max-width: 420px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.12); position: relative; animation: modalIn 0.25s ease-out; }
+        .modal { background: var(--card); border-radius: 16px; padding: 28px; max-width: 420px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.12); position: relative; animation: modalIn 0.25s ease-out; border: 1px solid var(--card-border); }
         @keyframes modalIn { from { transform: scale(0.95) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-        .modal-close { position: absolute; top: 14px; right: 16px; background: #f1f5f9; border: none; font-size: 16px; cursor: pointer; color: #64748b; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-        .modal-close:hover { background: #e2e8f0; color: #1e293b; }
-        .modal h3 { font-size: 18px; color: #1e293b; margin-bottom: 5px; font-weight: 700; }
-        .modal .modal-subtitle { font-size: 13px; color: #94a3b8; margin-bottom: 18px; }
-        .modal-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        .modal-close { position: absolute; top: 14px; right: 16px; background: var(--item-bg); border: none; font-size: 16px; cursor: pointer; color: var(--text-secondary); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+        .modal-close:hover { background: var(--divider); color: var(--text); }
+        .modal h3 { font-size: 18px; color: var(--text); margin-bottom: 5px; font-weight: 700; }
+        .modal .modal-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
+        .modal-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--divider); font-size: 14px; }
         .modal-row:last-child { border-bottom: none; }
-        .modal-label { color: #64748b; }
-        .modal-value { color: #1e293b; font-weight: 600; }
-        .modal-value.promo { color: #dc2626; }
-        .modal-value.mejor { color: #059669; }
-        .modal-source { margin-top: 18px; padding: 14px; background: #f8fafc; border-radius: 10px; font-size: 12px; color: #64748b; border: 1px solid #e2e8f0; line-height: 1.6; }
-        .modal-source strong { color: #1e293b; display: block; margin-bottom: 4px; }
+        .modal-label { color: var(--text-secondary); }
+        .modal-value { color: var(--text); font-weight: 600; }
+        .modal-value.promo { color: var(--red); }
+        .modal-value.mejor { color: var(--green); }
+        .modal-source { margin-top: 18px; padding: 14px; background: var(--item-bg); border-radius: 10px; font-size: 12px; color: var(--text-secondary); border: 1px solid var(--card-border); line-height: 1.6; }
+        .modal-source strong { color: var(--text); display: block; margin-bottom: 4px; }
         @media (max-width: 500px) {
             .container { padding: 20px 15px; }
             .header h1 { font-size: 22px; }
@@ -170,6 +194,7 @@ def index():
             .popular-item { padding: 10px 6px; }
             .popular-item .emoji { font-size: 26px; }
             .coupon { min-width: 190px; }
+            .top-bar { flex-wrap: wrap; gap: 8px; }
         }
     </style>
 </head>
@@ -182,6 +207,9 @@ def index():
                 <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
                 <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
             </div>
+            <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
+                <div class="toggle-circle" id="toggle-icon">☀️</div>
+            </button>
         </div>
     </div>
     <div class="container">
@@ -189,20 +217,17 @@ def index():
             <h1 data-es="Compará precios al instante" data-en="Compare prices instantly" class="i18n"></h1>
             <p data-es="Encontrá el mejor precio entre Coto, Jumbo y Disco" data-en="Find the best price across Coto, Jumbo and Disco" class="i18n"></p>
         </div>
-
         <div class="coupons-section">
             <p class="section-title i18n" data-es="Cupones disponibles" data-en="Available coupons" id="coupons-title"></p>
             <div class="coupons-scroll" id="coupons-scroll"></div>
         </div>
-
         <div class="search-box">
-            <input type="text" id="search" data-es-placeholder="¿Qué producto buscás?" data-en-placeholder="What product are you looking for?" autocomplete="off" />
+            <input type="text" id="search" autocomplete="off" />
             <div class="autocomplete-list" id="autocomplete"></div>
-            <button onclick="buscar()" class="i18n-btn" data-es="Buscar" data-en="Search" id="search-btn"></button>
+            <button onclick="buscar()" id="search-btn"></button>
         </div>
-
         <div class="categories" id="categories">
-            <button class="cat-btn active" onclick="filtrarCategoria('todos')" data-es="Todos" data-en="All" class="i18n-cat"></button>
+            <button class="cat-btn active" onclick="filtrarCategoria('todos')" data-es="Todos" data-en="All" class="i18n"></button>
             <button class="cat-btn" onclick="filtrarCategoria('lácteos')">🥛 <span data-es="Lácteos" data-en="Dairy" class="i18n"></span></button>
             <button class="cat-btn" onclick="filtrarCategoria('frutas')">🍎 <span data-es="Frutas y Verduras" data-en="Fruits & Vegetables" class="i18n"></span></button>
             <button class="cat-btn" onclick="filtrarCategoria('carnes')">🥩 <span data-es="Carnes" data-en="Meats" class="i18n"></span></button>
@@ -210,7 +235,6 @@ def index():
             <button class="cat-btn" onclick="filtrarCategoria('bebidas')">🥤 <span data-es="Bebidas" data-en="Drinks" class="i18n"></span></button>
             <button class="cat-btn" onclick="filtrarCategoria('limpieza')">🧹 <span data-es="Limpieza" data-en="Cleaning" class="i18n"></span></button>
         </div>
-
         <div id="home-section">
             <p class="section-title i18n" data-es="Productos disponibles" data-en="Available products" id="products-title"></p>
             <div class="popular-grid" id="popular-grid"></div>
@@ -218,7 +242,6 @@ def index():
         <div id="results" class="results"></div>
         <div class="scrape-date" id="scrape-date"></div>
     </div>
-
     <div class="modal-overlay" id="modal-overlay" onclick="cerrarModal(event)">
         <div class="modal" id="modal">
             <button class="modal-close" onclick="cerrarModal()">&times;</button>
@@ -226,71 +249,40 @@ def index():
         </div>
     </div>
     <div class="coupon-copied" id="coupon-copied"></div>
-
     <script>
         let allProducts = [];
         let lang = 'es';
+        let darkMode = false;
 
         const T = {
-            es: {
-                desde: 'Desde', search_placeholder: '¿Qué producto buscás?', search_btn: 'Buscar',
-                no_results_1: 'No encontramos', no_results_2: 'Probá con otro término o elegí un producto de la lista',
-                no_autocomplete: 'No hay resultados para', updated: 'Precios actualizados',
-                regular_price: 'Precio regular', promo_price: 'Precio promocional', savings: 'Ahorro',
-                promo_expires: 'Promo vence', days: 'días', expired: 'Vencida', verdict: 'Veredicto',
-                best_price: 'Mejor precio disponible', scrape_title: 'Datos del scraping',
-                source: 'Fuente', extraction_date: 'Fecha de extracción', method: 'Método',
-                auto_scraping: 'Scraping automático del sitio web', product: 'Producto',
-                not_available: 'No disponible', cheapest: 'MÁS BARATO', offer: 'OFERTA',
-                expires: 'Vence', coupon_copied: 'Cupón copiado',
-                coupons_title: 'Cupones disponibles', products_title: 'Productos disponibles',
-                coupon_off: 'OFF', coupon_in: 'en', coupon_valid: 'Válido hasta',
-                coupon_min: 'Compra mínima', coupon_tap: 'Tocá para copiar el código',
-                online: 'Online',
-            },
-            en: {
-                desde: 'From', search_placeholder: 'What product are you looking for?', search_btn: 'Search',
-                no_results_1: 'We couldn\\'t find', no_results_2: 'Try another term or pick a product from the list',
-                no_autocomplete: 'No results for', updated: 'Prices updated',
-                regular_price: 'Regular price', promo_price: 'Promotional price', savings: 'Savings',
-                promo_expires: 'Promo expires', days: 'days', expired: 'Expired', verdict: 'Verdict',
-                best_price: 'Best price available', scrape_title: 'Scraping data',
-                source: 'Source', extraction_date: 'Extraction date', method: 'Method',
-                auto_scraping: 'Automatic website scraping', product: 'Product',
-                not_available: 'Not available', cheapest: 'CHEAPEST', offer: 'SALE',
-                expires: 'Expires', coupon_copied: 'Coupon copied',
-                coupons_title: 'Available coupons', products_title: 'Available products',
-                coupon_off: 'OFF', coupon_in: 'at', coupon_valid: 'Valid until',
-                coupon_min: 'Minimum purchase', coupon_tap: 'Tap to copy code',
-                online: 'Online',
-            }
+            es: { desde:'Desde', search_placeholder:'¿Qué producto buscás?', search_btn:'Buscar', no_results_1:'No encontramos', no_results_2:'Probá con otro término o elegí un producto de la lista', no_autocomplete:'No hay resultados para', updated:'Precios actualizados', regular_price:'Precio regular', promo_price:'Precio promocional', savings:'Ahorro', promo_expires:'Promo vence', days:'días', expired:'Vencida', verdict:'Veredicto', best_price:'Mejor precio disponible', scrape_title:'Datos del scraping', source:'Fuente', extraction_date:'Fecha de extracción', method:'Método', auto_scraping:'Scraping automático del sitio web', product:'Producto', not_available:'No disponible', cheapest:'MÁS BARATO', offer:'OFERTA', expires:'Vence', coupon_copied:'Cupón copiado', coupons_title:'Cupones disponibles', products_title:'Productos disponibles', coupon_off:'OFF', coupon_valid:'Válido hasta', coupon_min:'Compra mínima', online:'Online' },
+            en: { desde:'From', search_placeholder:'What product are you looking for?', search_btn:'Search', no_results_1:'We couldn\\'t find', no_results_2:'Try another term or pick a product from the list', no_autocomplete:'No results for', updated:'Prices updated', regular_price:'Regular price', promo_price:'Promotional price', savings:'Savings', promo_expires:'Promo expires', days:'days', expired:'Expired', verdict:'Verdict', best_price:'Best price available', scrape_title:'Scraping data', source:'Source', extraction_date:'Extraction date', method:'Method', auto_scraping:'Automatic website scraping', product:'Product', not_available:'Not available', cheapest:'CHEAPEST', offer:'SALE', expires:'Expires', coupon_copied:'Coupon copied', coupons_title:'Available coupons', products_title:'Available products', coupon_off:'OFF', coupon_valid:'Valid until', coupon_min:'Min. purchase', online:'Online' }
         };
         function t(key) { return T[lang][key] || key; }
 
+        function toggleTheme() {
+            darkMode = !darkMode;
+            document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : '');
+            document.getElementById('toggle-icon').textContent = darkMode ? '🌙' : '☀️';
+        }
+
         const coupons = [
-            { store: 'Coto', cls: 'coupon-coto', discount: '15%', desc_es: 'en Lácteos y Quesos', desc_en: 'on Dairy & Cheese', code: 'COTO15LACTEOS', min_es: '$5.000', min_en: '$5,000 ARS', exp: 7 },
-            { store: 'Jumbo', cls: 'coupon-jumbo', discount: '20%', desc_es: 'en Frutas y Verduras', desc_en: 'on Fruits & Vegetables', code: 'JUMBO20FRESH', min_es: '$3.000', min_en: '$3,000 ARS', exp: 5 },
-            { store: 'Disco', cls: 'coupon-disco', discount: '10%', desc_es: 'en toda tu compra', desc_en: 'on your entire purchase', code: 'DISCO10TODO', min_es: '$8.000', min_en: '$8,000 ARS', exp: 10 },
-            { store: 'Coto', cls: 'coupon-coto', discount: '25%', desc_es: 'en Bebidas', desc_en: 'on Beverages', code: 'COTO25BEBIDAS', min_es: '$2.000', min_en: '$2,000 ARS', exp: 3 },
-            { store: 'Jumbo', cls: 'coupon-jumbo', discount: '2x1', desc_es: 'en Limpieza', desc_en: 'on Cleaning products', code: 'JUMBO2X1CLEAN', min_es: '$4.000', min_en: '$4,000 ARS', exp: 12 },
+            { store:'Coto', cls:'coupon-coto', discount:'15%', desc_es:'en Lácteos y Quesos', desc_en:'on Dairy & Cheese', code:'COTO15LACTEOS', min_es:'$5.000', min_en:'$5,000 ARS', exp:7 },
+            { store:'Jumbo', cls:'coupon-jumbo', discount:'20%', desc_es:'en Frutas y Verduras', desc_en:'on Fruits & Vegetables', code:'JUMBO20FRESH', min_es:'$3.000', min_en:'$3,000 ARS', exp:5 },
+            { store:'Disco', cls:'coupon-disco', discount:'10%', desc_es:'en toda tu compra', desc_en:'on your entire purchase', code:'DISCO10TODO', min_es:'$8.000', min_en:'$8,000 ARS', exp:10 },
+            { store:'Coto', cls:'coupon-coto', discount:'25%', desc_es:'en Bebidas', desc_en:'on Beverages', code:'COTO25BEBIDAS', min_es:'$2.000', min_en:'$2,000 ARS', exp:3 },
+            { store:'Jumbo', cls:'coupon-jumbo', discount:'2x1', desc_es:'en Limpieza', desc_en:'on Cleaning products', code:'JUMBO2X1CLEAN', min_es:'$4.000', min_en:'$4,000 ARS', exp:12 },
         ];
 
         function renderCoupons() {
             const scroll = document.getElementById('coupons-scroll');
             const now = new Date();
             scroll.innerHTML = coupons.map(c => {
-                const exp = new Date(now.getTime() + c.exp * 24*60*60*1000);
-                const expStr = exp.toLocaleDateString(lang === 'es' ? 'es-AR' : 'en-US', {day:'numeric',month:'short'});
-                const desc = lang === 'es' ? c.desc_es : c.desc_en;
-                const min = lang === 'es' ? c.min_es : c.min_en;
-                return `<div class="coupon ${c.cls}" onclick="copyCoupon('${c.code}')">
-                    <div class="coupon-circle"></div><div class="coupon-circle2"></div>
-                    <div class="store-name">${c.store}</div>
-                    <div class="discount">${c.discount} ${t('coupon_off')}</div>
-                    <div class="coupon-desc">${desc}</div>
-                    <div class="coupon-code">${c.code}</div>
-                    <div class="coupon-exp">${t('coupon_valid')} ${expStr} · ${t('coupon_min')} ${min}</div>
-                </div>`;
+                const exp = new Date(now.getTime() + c.exp*24*60*60*1000);
+                const expStr = exp.toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'short'});
+                const desc = lang==='es' ? c.desc_es : c.desc_en;
+                const min = lang==='es' ? c.min_es : c.min_en;
+                return `<div class="coupon ${c.cls}" onclick="copyCoupon('${c.code}')"><div class="coupon-circle"></div><div class="coupon-circle2"></div><div class="store-name">${c.store}</div><div class="discount">${c.discount} ${t('coupon_off')}</div><div class="coupon-desc">${desc}</div><div class="coupon-code">${c.code}</div><div class="coupon-exp">${t('coupon_valid')} ${expStr} · ${t('coupon_min')} ${min}</div></div>`;
             }).join('');
         }
 
@@ -305,11 +297,9 @@ def index():
 
         function setLang(l) {
             lang = l;
-            document.getElementById('btn-es').classList.toggle('active', l === 'es');
-            document.getElementById('btn-en').classList.toggle('active', l === 'en');
-            document.querySelectorAll('.i18n').forEach(el => {
-                if (el.dataset[l]) el.textContent = el.dataset[l];
-            });
+            document.getElementById('btn-es').classList.toggle('active', l==='es');
+            document.getElementById('btn-en').classList.toggle('active', l==='en');
+            document.querySelectorAll('.i18n').forEach(el => { if (el.dataset[l]) el.textContent = el.dataset[l]; });
             document.getElementById('search').placeholder = t('search_placeholder');
             document.getElementById('search-btn').textContent = t('search_btn');
             document.getElementById('coupons-title').textContent = t('coupons_title');
@@ -319,22 +309,12 @@ def index():
         }
 
         async function cargarProductos() {
-            try {
-                const response = await fetch('/api/products');
-                allProducts = await response.json();
-                mostrarPopulares(allProducts);
-            } catch (error) { console.error('Error:', error); }
+            try { const r = await fetch('/api/products'); allProducts = await r.json(); mostrarPopulares(allProducts); } catch(e) { console.error(e); }
         }
 
         function mostrarPopulares(productos) {
             const emojis = {'Leche Entera':'🥛','Yogur Natural':'🥛','Naranjas':'🍊','Huevos':'🥚','Queso Cremoso':'🧀','Manteca':'🧈','Pan Lactal':'🍞','Arroz':'🍚','Fideos Secos':'🍝','Aceite de Girasol':'🫒','Azúcar':'🍬','Harina':'🌾','Galletitas Dulces':'🍪','Gaseosa Cola':'🥤','Agua Mineral':'💧','Papel Higiénico':'🧻','Detergente':'🧴','Jabón en Polvo':'🧼','Pollo Entero':'🍗','Carne Picada':'🥩','Banana':'🍌','Tomate':'🍅','Papa':'🥔','Cebolla':'🧅'};
-            document.getElementById('popular-grid').innerHTML = productos.map(p => `
-                <div class="popular-item" onclick="buscarProducto('${p.nombre}')">
-                    <span class="emoji">${emojis[p.nombre]||'🛒'}</span>
-                    <span class="name">${p.nombre}</span>
-                    <span class="qty">${p.cantidad}</span>
-                    <span class="desde">${t('desde')} $${p.precio_min}</span>
-                </div>`).join('');
+            document.getElementById('popular-grid').innerHTML = productos.map(p => `<div class="popular-item" onclick="buscarProducto('${p.nombre}')"><span class="emoji">${emojis[p.nombre]||'🛒'}</span><span class="name">${p.nombre}</span><span class="qty">${p.cantidad}</span><span class="desde">${t('desde')} $${p.precio_min}</span></div>`).join('');
         }
 
         function buscarProducto(nombre) { document.getElementById('search').value = nombre; buscar(); }
@@ -343,7 +323,7 @@ def index():
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             event.target.closest('.cat-btn').classList.add('active');
             const cats = {'lácteos':['Leche Entera','Yogur Natural','Queso Cremoso','Manteca'],'frutas':['Naranjas','Banana','Tomate','Papa','Cebolla'],'carnes':['Pollo Entero','Carne Picada','Huevos'],'almacén':['Pan Lactal','Arroz','Fideos Secos','Aceite de Girasol','Azúcar','Harina','Galletitas Dulces'],'bebidas':['Gaseosa Cola','Agua Mineral'],'limpieza':['Papel Higiénico','Detergente','Jabón en Polvo']};
-            mostrarPopulares(cat === 'todos' ? allProducts : allProducts.filter(p => cats[cat]?.includes(p.nombre)));
+            mostrarPopulares(cat==='todos' ? allProducts : allProducts.filter(p => cats[cat]?.includes(p.nombre)));
             document.getElementById('home-section').style.display = 'block';
             document.getElementById('results').innerHTML = '';
         }
@@ -354,7 +334,7 @@ def index():
             const q = this.value.toLowerCase().trim();
             if (q.length < 1) { autocompleteList.style.display = 'none'; return; }
             const matches = allProducts.filter(p => p.nombre.toLowerCase().includes(q));
-            if (matches.length === 0) { autocompleteList.innerHTML = '<div class="autocomplete-item" style="color:#94a3b8;">' + t('no_autocomplete') + ' "' + q + '"</div>'; autocompleteList.style.display = 'block'; return; }
+            if (matches.length === 0) { autocompleteList.innerHTML = '<div class="autocomplete-item" style="color:var(--text-muted);">' + t('no_autocomplete') + ' "' + q + '"</div>'; autocompleteList.style.display = 'block'; return; }
             autocompleteList.innerHTML = matches.map(p => `<div class="autocomplete-item" onclick="buscarProducto('${p.nombre}')">${p.nombre} <span class="cantidad">${p.cantidad}</span></div>`).join('');
             autocompleteList.style.display = 'block';
         });
@@ -366,8 +346,8 @@ def index():
             if (!q) return;
             document.getElementById('home-section').style.display = 'none';
             try {
-                const response = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-                const data = await response.json();
+                const r = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+                const data = await r.json();
                 let html = "", fechaScraping = "";
                 if (Object.keys(data).length === 0) {
                     html = `<div class="no-results"><span class="emoji-big">🔍</span><p>${t('no_results_1')} "<strong>${q}</strong>"</p><p style="margin-top:8px;font-size:13px;">${t('no_results_2')}</p></div>`;
@@ -393,29 +373,28 @@ def index():
                 }
                 document.getElementById("results").innerHTML = html;
                 if (fechaScraping) document.getElementById("scrape-date").innerHTML = `${t('updated')}: ${formatDate(fechaScraping)}`;
-            } catch (error) { document.getElementById("results").innerHTML = "<p>Error</p>"; }
+            } catch(e) { document.getElementById("results").innerHTML = "<p>Error</p>"; }
         }
 
-        function formatDate(dateStr) { const d = new Date(dateStr+'T00:00:00'); return d.toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'long',year:'numeric'}); }
-        searchInput.addEventListener("keypress", (e) => { if (e.key === "Enter") buscar(); });
+        function formatDate(ds) { return new Date(ds+'T00:00:00').toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'long',year:'numeric'}); }
+        searchInput.addEventListener("keypress", (e) => { if (e.key==="Enter") buscar(); });
 
-        function abrirModal(encodedData) {
-            const d = JSON.parse(decodeURIComponent(encodedData));
-            let html = `<h3>🏪 ${d.supermarket}</h3><div class="modal-subtitle">${d.producto} — ${d.cantidad}</div><div class="modal-row"><span class="modal-label">${t('regular_price')}</span><span class="modal-value">$${d.precio}</span></div>`;
+        function abrirModal(ed) {
+            const d = JSON.parse(decodeURIComponent(ed));
+            let h = `<h3>🏪 ${d.supermarket}</h3><div class="modal-subtitle">${d.producto} — ${d.cantidad}</div><div class="modal-row"><span class="modal-label">${t('regular_price')}</span><span class="modal-value">$${d.precio}</span></div>`;
             if (d.precio_promo) {
-                html += `<div class="modal-row"><span class="modal-label">${t('promo_price')}</span><span class="modal-value promo">$${d.precio_promo}</span></div><div class="modal-row"><span class="modal-label">${t('savings')}</span><span class="modal-value promo">-$${d.precio-d.precio_promo} (${Math.round((1-d.precio_promo/d.precio)*100)}%)</span></div>`;
-                if (d.promo_vence) { const dias = Math.ceil((new Date(d.promo_vence+'T00:00:00')-new Date())/(1000*60*60*24)); html += `<div class="modal-row"><span class="modal-label">${t('promo_expires')}</span><span class="modal-value promo">${formatDate(d.promo_vence)} (${dias>0?dias+' '+t('days'):t('expired')})</span></div>`; }
+                h += `<div class="modal-row"><span class="modal-label">${t('promo_price')}</span><span class="modal-value promo">$${d.precio_promo}</span></div><div class="modal-row"><span class="modal-label">${t('savings')}</span><span class="modal-value promo">-$${d.precio-d.precio_promo} (${Math.round((1-d.precio_promo/d.precio)*100)}%)</span></div>`;
+                if (d.promo_vence) { const dias = Math.ceil((new Date(d.promo_vence+'T00:00:00')-new Date())/(1000*60*60*24)); h += `<div class="modal-row"><span class="modal-label">${t('promo_expires')}</span><span class="modal-value promo">${formatDate(d.promo_vence)} (${dias>0?dias+' '+t('days'):t('expired')})</span></div>`; }
             }
-            if (d.esMejor) html += `<div class="modal-row"><span class="modal-label">${t('verdict')}</span><span class="modal-value mejor">✅ ${t('best_price')}</span></div>`;
-            html += `<div class="modal-source"><strong>📊 ${t('scrape_title')}</strong>${t('source')}: ${d.supermarket} ${t('online')}<br>${t('extraction_date')}: ${d.fecha_scraping?formatDate(d.fecha_scraping):t('not_available')}<br>${t('method')}: ${t('auto_scraping')}<br>${t('product')}: ${d.producto} (${d.cantidad})</div>`;
-            document.getElementById('modal-content').innerHTML = html;
+            if (d.esMejor) h += `<div class="modal-row"><span class="modal-label">${t('verdict')}</span><span class="modal-value mejor">✅ ${t('best_price')}</span></div>`;
+            h += `<div class="modal-source"><strong>📊 ${t('scrape_title')}</strong>${t('source')}: ${d.supermarket} ${t('online')}<br>${t('extraction_date')}: ${d.fecha_scraping?formatDate(d.fecha_scraping):t('not_available')}<br>${t('method')}: ${t('auto_scraping')}<br>${t('product')}: ${d.producto} (${d.cantidad})</div>`;
+            document.getElementById('modal-content').innerHTML = h;
             document.getElementById('modal-overlay').classList.add('active');
         }
 
-        function cerrarModal(event) { if (!event||event.target===document.getElementById('modal-overlay')||event.target.classList.contains('modal-close')) document.getElementById('modal-overlay').classList.remove('active'); }
+        function cerrarModal(e) { if (!e||e.target===document.getElementById('modal-overlay')||e.target.classList.contains('modal-close')) document.getElementById('modal-overlay').classList.remove('active'); }
         document.addEventListener('keydown', (e) => { if (e.key==='Escape') cerrarModal(); });
 
-        // Init
         setLang('es');
         cargarProductos();
         renderCoupons();
