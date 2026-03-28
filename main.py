@@ -72,6 +72,8 @@ HTML_PAGE = r'''<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 :root{
 --bg:#fafaf8;--card:#fff;--card2:#f5f3ef;--border:#e8e5df;--text:#1a1a18;--text2:#6b6960;--text3:#9e9a90;
@@ -268,6 +270,12 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .cart-store-total{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--text)}
 .cart-store.best-store .cart-store-total{color:var(--green)}
 .cart-saving{font-size:11px;font-weight:700;color:var(--green);margin-top:2px}
+/* Map */
+#loc-map{height:300px;border-radius:14px;margin-top:16px;display:none;border:1.5px solid var(--border);z-index:1}
+.loc-geo-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:12px;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .2s;margin-bottom:12px}
+.loc-geo-btn:hover{background:var(--accent2);transform:translateY(-2px)}
+.loc-geo-btn svg{width:16px;height:16px}
+.loc-geo-status{font-size:12px;color:var(--text3);margin-left:8px}
 /* About section - compact */
 .about-section{max-width:800px;margin:0 auto;padding:24px 20px 8px}
 .about-box{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
@@ -369,6 +377,8 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
       <input class="loc-input" type="text" id="loc-input" autocomplete="off"/>
       <div class="loc-suggestions" id="loc-sug"></div>
     </div>
+    <button class="loc-geo-btn" onclick="useMyLocation()" id="geo-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m10-10h-4M6 12H2"/></svg><span id="geo-btn-text" class="i18n" data-es="Usar mi ubicaci&oacute;n" data-en="Use my location"></span></button><span class="loc-geo-status" id="geo-status"></span>
+    <div id="loc-map"></div>
     <div class="loc-results" id="loc-results"></div>
   </div>
 </div>
@@ -922,58 +932,58 @@ loadProds();
 renderCoups();
 
 var STORES = [
-  {name:'Coto', cls:'coto', letter:'C', stores:[
-    {addr:'Av. Cabildo 2571, Belgrano', barrios:['Belgrano','N\u00fa\u00f1ez','Colegiales'], hours:'8:00 - 22:00'},
-    {addr:'Av. Rivadavia 5150, Caballito', barrios:['Caballito','Flores','Almagro'], hours:'8:00 - 22:00'},
-    {addr:'Av. Corrientes 3247, Abasto', barrios:['Balvanera','Abasto','Once','Almagro'], hours:'8:00 - 22:00'},
-    {addr:'Av. Directorio 2820, Parque Chacabuco', barrios:['Parque Chacabuco','Boedo','Caballito'], hours:'8:00 - 21:30'},
-    {addr:'Av. C\u00f3rdoba 5650, Palermo', barrios:['Palermo','Villa Crespo','Chacarita'], hours:'8:00 - 22:00'},
-    {addr:'Av. Juan B. Justo 3563, Villa Crespo', barrios:['Villa Crespo','Palermo','Chacarita'], hours:'8:00 - 22:00'},
-    {addr:'Ag\u00fcero 616, Abasto', barrios:['Abasto','Balvanera','Once'], hours:'8:00 - 22:00'},
-    {addr:'Av. Mart\u00edn Garc\u00eda 495, Barracas', barrios:['Barracas','La Boca','San Telmo'], hours:'8:00 - 21:30'},
-    {addr:'Av. Ricardo Balb\u00edn 2030, San Mart\u00edn', barrios:['San Mart\u00edn','Villa Ballester','Caseros'], hours:'8:00 - 22:00'},
-    {addr:'Comesa\u00f1a 4056, Ciudadela', barrios:['Ciudadela','Ramos Mej\u00eda','Liniers'], hours:'8:00 - 21:30'},
-    {addr:'Av. Rivadavia 14452, Ramos Mej\u00eda', barrios:['Ramos Mej\u00eda','Ciudadela','Haedo'], hours:'8:00 - 22:00'},
-    {addr:'Av. Hip\u00f3lito Yrigoyen 8627, Lomas de Zamora', barrios:['Lomas de Zamora','Banfield','Temperley'], hours:'8:00 - 22:00'},
-    {addr:'Av. Calchaqui 3101, Quilmes', barrios:['Quilmes','Quilmes Oeste','Bernal'], hours:'8:00 - 22:00'},
-    {addr:'Av. Mitre 2530, Avellaneda', barrios:['Avellaneda','Sarand\u00ed','Lan\u00fas'], hours:'8:00 - 21:30'},
-    {addr:'Autopista Panamericana Km 35, Tortugas', barrios:['Tortugas','Pacheco','Tigre'], hours:'8:00 - 22:00'},
-    {addr:'Av. Vergara 3560, Hurlingham', barrios:['Hurlingham','Mor\u00f3n','Ituzaing\u00f3'], hours:'8:00 - 21:30'}
+  {name:'Coto', cls:'coto', letter:'C', color:'#E31E24', stores:[
+    {addr:'Av. Cabildo 2571, Belgrano', barrios:['Belgrano','N\u00fa\u00f1ez','Colegiales'], hours:'8:00 - 22:00', lat:-34.5588, lng:-58.4611},
+    {addr:'Av. Rivadavia 5150, Caballito', barrios:['Caballito','Flores','Almagro'], hours:'8:00 - 22:00', lat:-34.6186, lng:-58.4377},
+    {addr:'Av. Corrientes 3247, Abasto', barrios:['Balvanera','Abasto','Once','Almagro'], hours:'8:00 - 22:00', lat:-34.6045, lng:-58.4115},
+    {addr:'Av. Directorio 2820, Parque Chacabuco', barrios:['Parque Chacabuco','Boedo','Caballito'], hours:'8:00 - 21:30', lat:-34.6372, lng:-58.4283},
+    {addr:'Av. C\u00f3rdoba 5650, Palermo', barrios:['Palermo','Villa Crespo','Chacarita'], hours:'8:00 - 22:00', lat:-34.5847, lng:-58.4397},
+    {addr:'Av. Juan B. Justo 3563, Villa Crespo', barrios:['Villa Crespo','Palermo','Chacarita'], hours:'8:00 - 22:00', lat:-34.5985, lng:-58.4405},
+    {addr:'Ag\u00fcero 616, Abasto', barrios:['Abasto','Balvanera','Once'], hours:'8:00 - 22:00', lat:-34.6038, lng:-58.4168},
+    {addr:'Av. Mart\u00edn Garc\u00eda 495, Barracas', barrios:['Barracas','La Boca','San Telmo'], hours:'8:00 - 21:30', lat:-34.6377, lng:-58.3810},
+    {addr:'Av. Ricardo Balb\u00edn 2030, San Mart\u00edn', barrios:['San Mart\u00edn','Villa Ballester','Caseros'], hours:'8:00 - 22:00', lat:-34.5780, lng:-58.5359},
+    {addr:'Comesa\u00f1a 4056, Ciudadela', barrios:['Ciudadela','Ramos Mej\u00eda','Liniers'], hours:'8:00 - 21:30', lat:-34.6365, lng:-58.5315},
+    {addr:'Av. Rivadavia 14452, Ramos Mej\u00eda', barrios:['Ramos Mej\u00eda','Ciudadela','Haedo'], hours:'8:00 - 22:00', lat:-34.6398, lng:-58.5640},
+    {addr:'Av. Hip\u00f3lito Yrigoyen 8627, Lomas de Zamora', barrios:['Lomas de Zamora','Banfield','Temperley'], hours:'8:00 - 22:00', lat:-34.7615, lng:-58.4005},
+    {addr:'Av. Calchaqui 3101, Quilmes', barrios:['Quilmes','Quilmes Oeste','Bernal'], hours:'8:00 - 22:00', lat:-34.7300, lng:-58.2800},
+    {addr:'Av. Mitre 2530, Avellaneda', barrios:['Avellaneda','Sarand\u00ed','Lan\u00fas'], hours:'8:00 - 21:30', lat:-34.6622, lng:-58.3655},
+    {addr:'Autopista Panamericana Km 35, Tortugas', barrios:['Tortugas','Pacheco','Tigre'], hours:'8:00 - 22:00', lat:-34.4540, lng:-58.7105},
+    {addr:'Av. Vergara 3560, Hurlingham', barrios:['Hurlingham','Mor\u00f3n','Ituzaing\u00f3'], hours:'8:00 - 21:30', lat:-34.5915, lng:-58.6365}
   ]},
-  {name:'Jumbo', cls:'jumbo', letter:'J', stores:[
-    {addr:'Av. Bullrich 345, Palermo', barrios:['Palermo','Recoleta','Belgrano'], hours:'9:00 - 21:30'},
-    {addr:'Av. Rivadavia 7550, Flores', barrios:['Flores','Floresta','Caballito'], hours:'9:00 - 21:00'},
-    {addr:'Av. Santa Fe 4950, Palermo', barrios:['Palermo','Recoleta','Barrio Norte','Belgrano'], hours:'9:00 - 21:30'},
-    {addr:'Av. Corrientes 5559, Villa Crespo', barrios:['Villa Crespo','Chacarita','Almagro'], hours:'9:00 - 21:00'},
-    {addr:'Lola Mora 450, Puerto Madero', barrios:['Puerto Madero','San Telmo','Retiro'], hours:'9:00 - 21:00'},
-    {addr:'Av. Juan B. Justo 4701, Palermo', barrios:['Palermo','Villa Crespo'], hours:'9:00 - 21:00'},
-    {addr:'Av. Calchaqui 3950, Quilmes Oeste', barrios:['Quilmes','Quilmes Oeste','Bernal','Ezpeleta'], hours:'8:30 - 21:30'},
-    {addr:'Av. Mitre 1075, Quilmes', barrios:['Quilmes','Bernal'], hours:'9:00 - 21:00'},
-    {addr:'Av. Ant\u00e1rtida Argentina 799, Lomas de Zamora', barrios:['Lomas de Zamora','Banfield','Temperley'], hours:'9:00 - 21:00'},
-    {addr:'Blvd. Juan Manuel de Rosas 658, Mor\u00f3n', barrios:['Mor\u00f3n','Haedo','Castelar'], hours:'9:00 - 21:00'},
-    {addr:'San Lorenzo 3773, San Mart\u00edn', barrios:['San Mart\u00edn','Villa Ballester','Caseros'], hours:'9:00 - 21:00'},
-    {addr:'Av. Paran\u00e1 3745, Mart\u00ednez', barrios:['Mart\u00ednez','San Isidro','Olivos','Vicente L\u00f3pez'], hours:'9:00 - 21:00'},
-    {addr:'Av. Libertador 2261, San Fernando', barrios:['San Fernando','Victoria','Tigre'], hours:'9:00 - 21:00'},
-    {addr:'Boulogne Sur Mer 1275, Pacheco', barrios:['Pacheco','Tigre','Tortugas'], hours:'8:00 - 21:00'},
-    {addr:'Las Magnolias 698, Pilar', barrios:['Pilar','Del Viso','Escobar'], hours:'8:00 - 21:00'}
+  {name:'Jumbo', cls:'jumbo', letter:'J', color:'#009B3A', stores:[
+    {addr:'Av. Bullrich 345, Palermo', barrios:['Palermo','Recoleta','Belgrano'], hours:'9:00 - 21:30', lat:-34.5775, lng:-58.4106},
+    {addr:'Av. Rivadavia 7550, Flores', barrios:['Flores','Floresta','Caballito'], hours:'9:00 - 21:00', lat:-34.6278, lng:-58.4677},
+    {addr:'Av. Santa Fe 4950, Palermo', barrios:['Palermo','Recoleta','Barrio Norte','Belgrano'], hours:'9:00 - 21:30', lat:-34.5729, lng:-58.4360},
+    {addr:'Av. Corrientes 5559, Villa Crespo', barrios:['Villa Crespo','Chacarita','Almagro'], hours:'9:00 - 21:00', lat:-34.5996, lng:-58.4380},
+    {addr:'Lola Mora 450, Puerto Madero', barrios:['Puerto Madero','San Telmo','Retiro'], hours:'9:00 - 21:00', lat:-34.6160, lng:-58.3625},
+    {addr:'Av. Juan B. Justo 4701, Palermo', barrios:['Palermo','Villa Crespo'], hours:'9:00 - 21:00', lat:-34.5903, lng:-58.4448},
+    {addr:'Av. Calchaqui 3950, Quilmes Oeste', barrios:['Quilmes','Quilmes Oeste','Bernal','Ezpeleta'], hours:'8:30 - 21:30', lat:-34.7350, lng:-58.2920},
+    {addr:'Av. Mitre 1075, Quilmes', barrios:['Quilmes','Bernal'], hours:'9:00 - 21:00', lat:-34.7230, lng:-58.2550},
+    {addr:'Av. Ant\u00e1rtida Argentina 799, Lomas de Zamora', barrios:['Lomas de Zamora','Banfield','Temperley'], hours:'9:00 - 21:00', lat:-34.7530, lng:-58.3960},
+    {addr:'Blvd. Juan Manuel de Rosas 658, Mor\u00f3n', barrios:['Mor\u00f3n','Haedo','Castelar'], hours:'9:00 - 21:00', lat:-34.6510, lng:-58.6190},
+    {addr:'San Lorenzo 3773, San Mart\u00edn', barrios:['San Mart\u00edn','Villa Ballester','Caseros'], hours:'9:00 - 21:00', lat:-34.5770, lng:-58.5480},
+    {addr:'Av. Paran\u00e1 3745, Mart\u00ednez', barrios:['Mart\u00ednez','San Isidro','Olivos','Vicente L\u00f3pez'], hours:'9:00 - 21:00', lat:-34.4968, lng:-58.5070},
+    {addr:'Av. Libertador 2261, San Fernando', barrios:['San Fernando','Victoria','Tigre'], hours:'9:00 - 21:00', lat:-34.4440, lng:-58.5570},
+    {addr:'Boulogne Sur Mer 1275, Pacheco', barrios:['Pacheco','Tigre','Tortugas'], hours:'8:00 - 21:00', lat:-34.4600, lng:-58.6370},
+    {addr:'Las Magnolias 698, Pilar', barrios:['Pilar','Del Viso','Escobar'], hours:'8:00 - 21:00', lat:-34.4620, lng:-58.9140}
   ]},
-  {name:'Disco', cls:'disco', letter:'D', stores:[
-    {addr:'Av. Libertador 2475, Recoleta', barrios:['Recoleta','Palermo','Retiro','Barrio Norte'], hours:'8:30 - 21:00'},
-    {addr:'Av. Cabildo 1550, Belgrano', barrios:['Belgrano','N\u00fa\u00f1ez','Colegiales'], hours:'8:30 - 21:00'},
-    {addr:'Av. Acoyte 440, Caballito', barrios:['Caballito','Almagro','Boedo'], hours:'8:30 - 21:00'},
-    {addr:'Av. Scalabrini Ortiz 3178, Palermo', barrios:['Palermo','Villa Crespo'], hours:'8:30 - 21:00'},
-    {addr:'Av. Entre R\u00edos 361, San Telmo', barrios:['San Telmo','Monserrat','Barracas'], hours:'8:30 - 21:00'},
-    {addr:'Av. Quintana 366, Recoleta', barrios:['Recoleta','Barrio Norte','Retiro'], hours:'8:30 - 21:00'},
-    {addr:'J.E. Uriburu 1230, Recoleta', barrios:['Recoleta','Barrio Norte','Balvanera'], hours:'8:30 - 21:00'},
-    {addr:'Gorostiaga 1632, Las Ca\u00f1itas', barrios:['Palermo','Belgrano','Colegiales'], hours:'8:30 - 21:00'},
-    {addr:'Av. Meeks 256, Lomas de Zamora', barrios:['Lomas de Zamora','Banfield','Temperley'], hours:'8:00 - 21:00'},
-    {addr:'Intendente Garc\u00eda Silva 855, Mor\u00f3n', barrios:['Mor\u00f3n','Haedo','Castelar'], hours:'8:00 - 20:00'},
-    {addr:'Av. Centenario 388, San Isidro', barrios:['San Isidro','Mart\u00ednez','Olivos'], hours:'8:30 - 21:00'},
-    {addr:'Av. Maipu 1819, Vicente L\u00f3pez', barrios:['Vicente L\u00f3pez','Olivos','Mart\u00ednez'], hours:'8:30 - 21:00'},
-    {addr:'Amenedo 302, Adrogu\u00e9', barrios:['Adrogu\u00e9','Lomas de Zamora','Temperley'], hours:'8:30 - 21:00'},
-    {addr:'Vieytes 1042, Banfield', barrios:['Banfield','Lomas de Zamora','Lan\u00fas'], hours:'8:30 - 21:00'},
-    {addr:'Blanco Encalada 2509, B\u00e9ccar', barrios:['B\u00e9ccar','San Isidro','Mart\u00ednez'], hours:'8:30 - 21:00'},
-    {addr:'Gdor. Inocencio Arias 3247, Castelar', barrios:['Castelar','Mor\u00f3n','Ituzaing\u00f3'], hours:'8:30 - 21:00'}
+  {name:'Disco', cls:'disco', letter:'D', color:'#6A1B9A', stores:[
+    {addr:'Av. Libertador 2475, Recoleta', barrios:['Recoleta','Palermo','Retiro','Barrio Norte'], hours:'8:30 - 21:00', lat:-34.5830, lng:-58.3990},
+    {addr:'Av. Cabildo 1550, Belgrano', barrios:['Belgrano','N\u00fa\u00f1ez','Colegiales'], hours:'8:30 - 21:00', lat:-34.5639, lng:-58.4540},
+    {addr:'Av. Acoyte 440, Caballito', barrios:['Caballito','Almagro','Boedo'], hours:'8:30 - 21:00', lat:-34.6175, lng:-58.4380},
+    {addr:'Av. Scalabrini Ortiz 3178, Palermo', barrios:['Palermo','Villa Crespo'], hours:'8:30 - 21:00', lat:-34.5870, lng:-58.4260},
+    {addr:'Av. Entre R\u00edos 361, San Telmo', barrios:['San Telmo','Monserrat','Barracas'], hours:'8:30 - 21:00', lat:-34.6210, lng:-58.3815},
+    {addr:'Av. Quintana 366, Recoleta', barrios:['Recoleta','Barrio Norte','Retiro'], hours:'8:30 - 21:00', lat:-34.5875, lng:-58.3920},
+    {addr:'J.E. Uriburu 1230, Recoleta', barrios:['Recoleta','Barrio Norte','Balvanera'], hours:'8:30 - 21:00', lat:-34.5970, lng:-58.3990},
+    {addr:'Gorostiaga 1632, Las Ca\u00f1itas', barrios:['Palermo','Belgrano','Colegiales'], hours:'8:30 - 21:00', lat:-34.5700, lng:-58.4360},
+    {addr:'Av. Meeks 256, Lomas de Zamora', barrios:['Lomas de Zamora','Banfield','Temperley'], hours:'8:00 - 21:00', lat:-34.7595, lng:-58.4025},
+    {addr:'Intendente Garc\u00eda Silva 855, Mor\u00f3n', barrios:['Mor\u00f3n','Haedo','Castelar'], hours:'8:00 - 20:00', lat:-34.6530, lng:-58.6200},
+    {addr:'Av. Centenario 388, San Isidro', barrios:['San Isidro','Mart\u00ednez','Olivos'], hours:'8:30 - 21:00', lat:-34.4720, lng:-58.5290},
+    {addr:'Av. Maipu 1819, Vicente L\u00f3pez', barrios:['Vicente L\u00f3pez','Olivos','Mart\u00ednez'], hours:'8:30 - 21:00', lat:-34.5230, lng:-58.4880},
+    {addr:'Amenedo 302, Adrogu\u00e9', barrios:['Adrogu\u00e9','Lomas de Zamora','Temperley'], hours:'8:30 - 21:00', lat:-34.7940, lng:-58.3930},
+    {addr:'Vieytes 1042, Banfield', barrios:['Banfield','Lomas de Zamora','Lan\u00fas'], hours:'8:30 - 21:00', lat:-34.7445, lng:-58.3965},
+    {addr:'Blanco Encalada 2509, B\u00e9ccar', barrios:['B\u00e9ccar','San Isidro','Mart\u00ednez'], hours:'8:30 - 21:00', lat:-34.4810, lng:-58.5210},
+    {addr:'Gdor. Inocencio Arias 3247, Castelar', barrios:['Castelar','Mor\u00f3n','Ituzaing\u00f3'], hours:'8:30 - 21:00', lat:-34.6510, lng:-58.6430}
   ]}
 ];
 
@@ -1034,6 +1044,110 @@ function selectBarrio(b) {
     html += '<div class="loc-card"><div class="loc-icon ' + r.cls + '">' + r.letter + '</div><div class="loc-info"><div class="loc-name">' + r.name + '</div><div class="loc-addr">' + r.addr + '</div><div class="loc-meta"><span class="loc-tag ' + (open ? 'open' : 'closed') + '">' + (open ? (lang === 'es' ? 'Abierto' : 'Open') : (lang === 'es' ? 'Cerrado' : 'Closed')) + '</span><span class="loc-tag hours">' + r.hours + '</span></div></div></div>';
   }
   lr.innerHTML = html;
+}
+
+// ========== MAP & GEOLOCATION ==========
+var locMap = null;
+
+function getDistance(lat1, lng1, lat2, lng2) {
+  var R = 6371;
+  var dLat = (lat2 - lat1) * Math.PI / 180;
+  var dLng = (lng2 - lng1) * Math.PI / 180;
+  var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng/2) * Math.sin(dLng/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function useMyLocation() {
+  var status = document.getElementById('geo-status');
+  status.textContent = lang === 'es' ? 'Buscando...' : 'Searching...';
+
+  if (!navigator.geolocation) {
+    status.textContent = lang === 'es' ? 'Tu navegador no soporta geolocalizaci\u00f3n' : 'Your browser does not support geolocation';
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    var lat = pos.coords.latitude;
+    var lng = pos.coords.longitude;
+    status.textContent = '';
+    showMap(lat, lng);
+  }, function(err) {
+    if (err.code === 1) {
+      status.textContent = lang === 'es' ? 'Permiso denegado' : 'Permission denied';
+    } else {
+      status.textContent = lang === 'es' ? 'No pudimos obtener tu ubicaci\u00f3n' : 'Could not get your location';
+    }
+  }, {enableHighAccuracy: true, timeout: 10000});
+}
+
+function showMap(userLat, userLng) {
+  var mapDiv = document.getElementById('loc-map');
+  mapDiv.style.display = 'block';
+
+  if (locMap) { locMap.remove(); }
+  locMap = L.map('loc-map').setView([userLat, userLng], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap',
+    maxZoom: 18
+  }).addTo(locMap);
+
+  // User marker
+  L.circleMarker([userLat, userLng], {
+    radius: 10, fillColor: '#0d9488', color: '#fff', weight: 3, fillOpacity: 1
+  }).addTo(locMap).bindPopup(lang === 'es' ? '<strong>Tu ubicaci\u00f3n</strong>' : '<strong>Your location</strong>');
+
+  // Find nearby stores (within 8km)
+  var nearby = [];
+  for (var i = 0; i < STORES.length; i++) {
+    var s = STORES[i];
+    for (var j = 0; j < s.stores.length; j++) {
+      var st = s.stores[j];
+      if (!st.lat || !st.lng) continue;
+      var dist = getDistance(userLat, userLng, st.lat, st.lng);
+      if (dist <= 8) {
+        nearby.push({name: s.name, cls: s.cls, letter: s.letter, color: s.color, addr: st.addr, hours: st.hours, lat: st.lat, lng: st.lng, dist: dist});
+      }
+    }
+  }
+  nearby.sort(function(a, b) { return a.dist - b.dist; });
+
+  // Add store markers
+  for (var i = 0; i < nearby.length; i++) {
+    var n = nearby[i];
+    var icon = L.divIcon({
+      className: '',
+      html: '<div style="background:' + n.color + ';color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;font-family:Space Grotesk,sans-serif;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)">' + n.letter + '</div>',
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
+    });
+    L.marker([n.lat, n.lng], {icon: icon}).addTo(locMap)
+      .bindPopup('<strong>' + n.name + '</strong><br>' + n.addr + '<br><span style="color:#888">' + n.hours + '</span><br><span style="color:#0d9488;font-weight:700">' + n.dist.toFixed(1) + ' km</span>');
+  }
+
+  // Show results list too
+  var now = new Date().getHours();
+  var lr = document.getElementById('loc-results');
+  if (!nearby.length) {
+    lr.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3)">' + (lang === 'es' ? 'No hay supermercados cerca (8 km)' : 'No supermarkets nearby (8 km)') + '</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < nearby.length; i++) {
+    var r = nearby[i];
+    var open = now >= 8 && now < 21;
+    html += '<div class="loc-card"><div class="loc-icon ' + r.cls + '">' + r.letter + '</div><div class="loc-info"><div class="loc-name">' + r.name + ' <span style="font-size:12px;color:var(--accent);font-weight:600">' + r.dist.toFixed(1) + ' km</span></div><div class="loc-addr">' + r.addr + '</div><div class="loc-meta"><span class="loc-tag ' + (open ? 'open' : 'closed') + '">' + (open ? (lang === 'es' ? 'Abierto' : 'Open') : (lang === 'es' ? 'Cerrado' : 'Closed')) + '</span><span class="loc-tag hours">' + r.hours + '</span></div></div></div>';
+  }
+  lr.innerHTML = html;
+
+  // Fit map to show all markers
+  if (nearby.length) {
+    var bounds = L.latLngBounds([[userLat, userLng]]);
+    for (var i = 0; i < Math.min(nearby.length, 10); i++) {
+      bounds.extend([nearby[i].lat, nearby[i].lng]);
+    }
+    locMap.fitBounds(bounds, {padding: [30, 30]});
+  }
 }
 </script>
 </body>
