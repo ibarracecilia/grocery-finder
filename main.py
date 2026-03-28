@@ -199,6 +199,41 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .no-results{text-align:center;padding:50px 20px;color:var(--text3)}
 .no-results .big{font-size:56px;display:block;margin-bottom:12px}
 .scrape-info{text-align:center;font-size:11px;color:var(--text3);margin-top:16px}
+.loc-section{margin-bottom:28px;animation:fadeUp .6s ease-out .18s both}
+.loc-chip{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:28px;cursor:pointer;transition:all .25s;box-shadow:var(--shadow-sm);width:fit-content;margin:0 auto 14px}
+.loc-chip:hover{border-color:var(--accent);box-shadow:var(--shadow-md)}
+.loc-chip.active{background:var(--accent-bg);border-color:var(--accent)}
+.loc-chip svg{width:18px;height:18px;color:var(--text3);transition:color .25s}
+.loc-chip.active svg{color:var(--accent)}
+.loc-chip span{font-size:13px;font-weight:600;color:var(--text2);transition:color .25s}
+.loc-chip.active span{color:var(--accent)}
+.loc-panel{display:none;animation:fadeUp .3s ease-out}
+.loc-panel.show{display:block}
+.loc-input-wrap{position:relative;margin-bottom:14px}
+.loc-input{width:100%;padding:12px 16px 12px 42px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:all .2s}
+.loc-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.loc-input::placeholder{color:var(--text3)}
+.loc-input-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text3)}
+.loc-suggestions{position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:0 0 12px 12px;max-height:180px;overflow-y:auto;z-index:10;display:none;box-shadow:var(--shadow-lg)}
+.loc-sug-item{padding:10px 16px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);color:var(--text);transition:background .15s}
+.loc-sug-item:hover{background:var(--accent-bg)}
+.loc-sug-item .loc-zone{color:var(--text3);font-size:11px;display:block}
+.loc-results{display:grid;gap:12px}
+.loc-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:18px;display:flex;gap:14px;align-items:flex-start;transition:all .25s;animation:scaleIn .3s ease-out}
+.loc-card:hover{border-color:var(--accent);box-shadow:var(--shadow-md)}
+.loc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;flex-shrink:0;font-family:'Space Grotesk',sans-serif}
+.loc-icon.coto{background:linear-gradient(135deg,#e8553a,#f97358)}
+.loc-icon.jumbo{background:linear-gradient(135deg,#059669,#34d399)}
+.loc-icon.disco{background:linear-gradient(135deg,#7c3aed,#a78bfa)}
+.loc-info{flex:1}
+.loc-name{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px}
+.loc-addr{font-size:13px;color:var(--text2);margin-bottom:6px}
+.loc-meta{display:flex;gap:12px;flex-wrap:wrap}
+.loc-tag{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600}
+.loc-tag.open{background:var(--green-bg);color:var(--green)}
+.loc-tag.closed{background:var(--red-bg);color:var(--red)}
+.loc-tag.dist{background:var(--card2);color:var(--text2)}
+.loc-tag.hours{background:var(--accent-bg);color:var(--accent)}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);z-index:100;justify-content:center;align-items:center;padding:20px}
 .modal-bg.on{display:flex}
 .modal{background:var(--card);border-radius:20px;padding:30px;max-width:440px;width:100%;box-shadow:var(--shadow-lg);position:relative;animation:scaleIn .25s ease-out;border:1px solid var(--border)}
@@ -287,6 +322,20 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
       <span class="cur-rate" id="cur-rate"></span>
     </div>
   </div>
+  <div class="loc-section">
+    <div class="loc-chip" id="loc-chip" onclick="toggleLoc()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      <span id="loc-chip-text" data-es="Supermercados cerca tuyo" data-en="Supermarkets near you"></span>
+    </div>
+    <div class="loc-panel" id="loc-panel">
+      <div class="loc-input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+        <input class="loc-input" type="text" id="loc-input" autocomplete="off"/>
+        <div class="loc-suggestions" id="loc-sug"></div>
+      </div>
+      <div class="loc-results" id="loc-results"></div>
+    </div>
+  </div>
   <div class="coupons">
     <div class="coupons-title i18n" data-es="Cupones disponibles" data-en="Available coupons" id="coup-title"></div>
     <div class="coupons-scroll" id="coup-scroll"></div>
@@ -334,7 +383,7 @@ const coups=[
 ];
 function renderCoups(){const s=document.getElementById('coup-scroll'),now=new Date();s.innerHTML=coups.map(c=>{const e=new Date(now.getTime()+c.exp*864e5).toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'short'});return `<div class="coupon ${c.cls}" onclick="copyCoup('${c.code}')"><div class="blob blob1"></div><div class="blob blob2"></div><div class="store">${c.store}</div><div class="disc">${c.disc} ${t('off')}</div><div class="cdesc">${lang==='es'?c.des:c.den}</div><div class="ccode">${c.code}</div><div class="cexp">${t('vu')} ${e} · ${t('cm')} ${c.min}</div></div>`}).join('')}
 function copyCoup(c){navigator.clipboard.writeText(c).then(()=>{const e=document.getElementById('toast');e.textContent='✅ '+t('cc')+': '+c;e.style.display='block';setTimeout(()=>e.style.display='none',2e3)})}
-function setLang(l){lang=l;document.getElementById('btn-es').classList.toggle('active',l==='es');document.getElementById('btn-en').classList.toggle('active',l==='en');document.querySelectorAll('.i18n').forEach(e=>{if(e.dataset[l])e.textContent=e.dataset[l]});document.querySelectorAll('.i18n-html').forEach(e=>{if(e.dataset[l])e.innerHTML=e.dataset[l]});document.getElementById('search').placeholder=t('ph');document.getElementById('coup-title').textContent=t('ct');document.getElementById('prod-title').textContent=t('pt');const cct=document.getElementById('cur-chip-text');if(cct)cct.textContent=cct.dataset[l];renderCoups();if(AP.length)showPop(AP)}
+function setLang(l){lang=l;document.getElementById('btn-es').classList.toggle('active',l==='es');document.getElementById('btn-en').classList.toggle('active',l==='en');document.querySelectorAll('.i18n').forEach(e=>{if(e.dataset[l])e.textContent=e.dataset[l]});document.querySelectorAll('.i18n-html').forEach(e=>{if(e.dataset[l])e.innerHTML=e.dataset[l]});document.getElementById('search').placeholder=t('ph');document.getElementById('coup-title').textContent=t('ct');document.getElementById('prod-title').textContent=t('pt');const cct=document.getElementById('cur-chip-text');if(cct)cct.textContent=cct.dataset[l];const lct=document.getElementById('loc-chip-text');if(lct)lct.textContent=lct.dataset[l];renderCoups();if(AP.length)showPop(AP)}
 async function loadProds(){try{const r=await fetch('/api/products');AP=await r.json();showPop(AP)}catch(e){console.error(e)}}
 const EM={'Leche Entera':'🥛','Yogur Natural':'🥛','Naranjas':'🍊','Huevos':'🥚','Queso Cremoso':'🧀','Manteca':'🧈','Pan Lactal':'🍞','Arroz':'🍚','Fideos Secos':'🍝','Aceite de Girasol':'🫒','Azúcar':'🍬','Harina':'🌾','Galletitas Dulces':'🍪','Gaseosa Cola':'🥤','Agua Mineral':'💧','Papel Higiénico':'🧻','Detergente':'🧴','Jabón en Polvo':'🧼','Pollo Entero':'🍗','Carne Picada':'🥩','Banana':'🍌','Tomate':'🍅','Papa':'🥔','Cebolla':'🧅'};
 function showPop(ps){document.getElementById('grid').innerHTML=ps.map((p,i)=>`<div class="item" onclick="pickProd('${p.nombre}')" style="animation-delay:${i*40}ms;animation:fadeUp .4s ease-out ${i*40}ms both"><span class="emo">${EM[p.nombre]||'🛒'}</span><span class="nm">${p.nombre}</span><span class="qt">${p.cantidad}</span><span class="pr">${t('desde')} $${p.precio_min} ${cvi(p.precio_min)}</span></div>`).join('')}
@@ -350,6 +399,39 @@ function openModal(ed){const d=JSON.parse(decodeURIComponent(ed));let h=`<h3>�
 function closeModal(e){if(!e||e.target===document.getElementById('modal-bg')||e.target.classList.contains('mx'))document.getElementById('modal-bg').classList.remove('on')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 setLang('es');loadProds();renderCoups();
+
+const STORES=[
+{name:'Coto',cls:'coto',letter:'C',stores:[
+{addr:'Av. Cabildo 2571, Belgrano',barrios:['Belgrano','Nuñez','Colegiales'],hours:'8:00 - 22:00',dist:'0.4 km'},
+{addr:'Av. Rivadavia 5150, Caballito',barrios:['Caballito','Flores','Almagro'],hours:'8:00 - 22:00',dist:'0.6 km'},
+{addr:'Av. Corrientes 3247, Abasto',barrios:['Balvanera','Abasto','Once','Almagro'],hours:'8:00 - 22:00',dist:'0.5 km'},
+{addr:'Av. Directorio 2820, Parque Chacabuco',barrios:['Parque Chacabuco','Boedo','Caballito'],hours:'8:00 - 21:30',dist:'0.7 km'},
+{addr:'Av. Córdoba 5650, Palermo',barrios:['Palermo','Villa Crespo','Chacarita'],hours:'8:00 - 22:00',dist:'0.3 km'},
+{addr:'Av. Juan B. Justo 3563, Villa Crespo',barrios:['Villa Crespo','Palermo','Chacarita'],hours:'8:00 - 22:00',dist:'0.5 km'},
+]},
+{name:'Jumbo',cls:'jumbo',letter:'J',stores:[
+{addr:'Av. Bullrich 345, Palermo',barrios:['Palermo','Recoleta','Belgrano'],hours:'9:00 - 21:30',dist:'0.8 km'},
+{addr:'Av. Rivadavia 7550, Flores',barrios:['Flores','Floresta','Caballito'],hours:'9:00 - 21:00',dist:'1.2 km'},
+{addr:'Av. Santa Fe 1860, Recoleta',barrios:['Recoleta','Barrio Norte','Retiro'],hours:'9:00 - 21:30',dist:'0.6 km'},
+{addr:'Av. Corrientes 5559, Villa Crespo',barrios:['Villa Crespo','Chacarita','Almagro'],hours:'9:00 - 21:00',dist:'0.9 km'},
+]},
+{name:'Disco',cls:'disco',letter:'D',stores:[
+{addr:'Av. Libertador 2475, Recoleta',barrios:['Recoleta','Palermo','Retiro','Barrio Norte'],hours:'8:30 - 21:00',dist:'0.5 km'},
+{addr:'Av. Cabildo 1550, Belgrano',barrios:['Belgrano','Nuñez','Colegiales'],hours:'8:30 - 21:00',dist:'0.7 km'},
+{addr:'Av. Acoyte 440, Caballito',barrios:['Caballito','Almagro','Boedo'],hours:'8:30 - 21:00',dist:'0.4 km'},
+{addr:'Av. Scalabrini Ortiz 3178, Palermo',barrios:['Palermo','Villa Crespo'],hours:'8:30 - 21:00',dist:'0.6 km'},
+]}
+];
+
+const BARRIOS=['Belgrano','Nuñez','Colegiales','Palermo','Recoleta','Barrio Norte','Retiro','Caballito','Flores','Floresta','Almagro','Balvanera','Abasto','Once','Boedo','Parque Chacabuco','Villa Crespo','Chacarita','San Telmo','La Boca','Monserrat','San Nicolás','Puerto Madero','Devoto','Villa Urquiza','Saavedra','Liniers','Mataderos','Villa Lugano','Pompeya'];
+
+function toggleLoc(){const chip=document.getElementById('loc-chip'),panel=document.getElementById('loc-panel');chip.classList.toggle('active');panel.classList.toggle('show');if(panel.classList.contains('show')){document.getElementById('loc-input').placeholder=lang==='es'?'Escribí tu barrio...':'Type your neighborhood...';document.getElementById('loc-input').focus()}}
+
+const locInput=document.getElementById('loc-input'),locSug=document.getElementById('loc-sug');
+locInput.addEventListener('input',function(){const q=this.value.toLowerCase().trim();if(q.length<2){locSug.style.display='none';return}const m=BARRIOS.filter(b=>b.toLowerCase().includes(q));if(!m.length){locSug.innerHTML=`<div class="loc-sug-item" style="color:var(--text3)">${lang==='es'?'No encontramos ese barrio':'Neighborhood not found'}</div>`;locSug.style.display='block';return}locSug.innerHTML=m.map(b=>`<div class="loc-sug-item" onclick="selectBarrio('${b}')">${b}<span class="loc-zone">Buenos Aires, CABA</span></div>`).join('');locSug.style.display='block'});
+document.addEventListener('click',e=>{if(!e.target.closest('.loc-input-wrap'))locSug.style.display='none'});
+
+function selectBarrio(b){locInput.value=b;locSug.style.display='none';const results=[];STORES.forEach(s=>{s.stores.forEach(st=>{if(st.barrios.some(br=>br.toLowerCase()===b.toLowerCase())){results.push({name:s.name,cls:s.cls,letter:s.letter,addr:st.addr,hours:st.hours,dist:st.dist})}})});results.sort((a,b)=>parseFloat(a.dist)-parseFloat(b.dist));const now=new Date().getHours();const lr=document.getElementById('loc-results');if(!results.length){lr.innerHTML=`<div style="text-align:center;padding:20px;color:var(--text3)">${lang==='es'?'No hay sucursales cercanas en '+b:'No nearby stores in '+b}</div>`;return}lr.innerHTML=results.map(r=>{const open=now>=8&&now<21;return `<div class="loc-card"><div class="loc-icon ${r.cls}">${r.letter}</div><div class="loc-info"><div class="loc-name">${r.name}</div><div class="loc-addr">${r.addr}</div><div class="loc-meta"><span class="loc-tag ${open?'open':'closed'}">${open?(lang==='es'?'Abierto':'Open'):(lang==='es'?'Cerrado':'Closed')}</span><span class="loc-tag hours">${r.hours}</span><span class="loc-tag dist">${r.dist}</span></div></div></div>`}).join('')}
 </script>
 </body>
 </html>'''
