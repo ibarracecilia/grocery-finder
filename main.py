@@ -689,6 +689,7 @@ async function buscar() {
   var q = si.value.trim();
   if (!q) return;
   document.getElementById('home').style.display = 'none';
+  history.pushState({view: 'search', q: q}, '', '#search=' + encodeURIComponent(q));
   try {
     var r = await fetch('/api/search?q=' + encodeURIComponent(q));
     var data = await r.json();
@@ -912,6 +913,7 @@ function shareCartWA() {
 si.addEventListener('keypress', function(e) { if (e.key === 'Enter') buscar(); });
 
 function openModal(ed) {
+  history.pushState({view: 'modal'}, '', '#detail');
   var d = JSON.parse(decodeURIComponent(ed));
   var pF = d.precio_promo || d.precio;
   var h = '<h3>\ud83c\udfea ' + d.supermarket + '</h3>';
@@ -943,6 +945,29 @@ function closeModal(e) {
 }
 
 document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+// ========== BROWSER BACK NAVIGATION ==========
+function goHome() {
+  document.getElementById('home').style.display = 'block';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('scrape-info').innerHTML = '';
+  si.value = '';
+  document.getElementById('modal-bg').classList.remove('on');
+  showPop(AP);
+}
+
+window.addEventListener('popstate', function(e) {
+  if (e.state && e.state.view === 'search') {
+    // Going back from modal to search results - do nothing special
+    document.getElementById('modal-bg').classList.remove('on');
+  } else {
+    // Going back to home
+    goHome();
+  }
+});
+
+// Set initial state
+history.replaceState({view: 'home'}, '', window.location.pathname);
 
 setLang('es');
 loadProds();
