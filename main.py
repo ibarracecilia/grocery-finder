@@ -238,18 +238,15 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .msrc{margin-top:18px;padding:16px;background:var(--card2);border-radius:12px;font-size:12px;color:var(--text2);line-height:1.7;border:1px solid var(--border)}
 .msrc strong{color:var(--text);display:block;margin-bottom:4px;font-size:13px}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:12px;font-size:13px;font-weight:600;z-index:200;display:none;animation:fadeUp .3s ease-out}
-/* About section */
-.about-section{max-width:800px;margin:0 auto;padding:40px 20px 20px}
-.about-box{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:32px;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:24px}
-.about-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700}
-.about-info{flex:1}
-.about-name{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--text);letter-spacing:-.3px}
-.about-role{font-size:13px;color:var(--accent);font-weight:600;margin-top:2px}
-.about-desc{font-size:14px;color:var(--text2);margin-top:8px;line-height:1.6}
-.about-links{display:flex;gap:10px;margin-top:12px}
-.about-link{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:12px;font-weight:600;color:var(--text2);text-decoration:none;transition:all .2s;font-family:'DM Sans',sans-serif}
-.about-link:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
-.about-link svg{width:14px;height:14px}
+/* About section - compact */
+.about-section{max-width:800px;margin:0 auto;padding:24px 20px 8px}
+.about-box{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.about-name{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text2)}
+.about-role{font-size:12px;color:var(--text3)}
+.about-sep{color:var(--border);font-size:12px}
+.about-link{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--text3);text-decoration:none;transition:color .2s}
+.about-link:hover{color:var(--accent)}
+.about-link svg{width:12px;height:12px}
 /* Footer */
 .site-footer{max-width:800px;margin:0 auto;padding:20px 20px 32px;text-align:center;border-top:1px solid var(--border)}
 .footer-brand{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.3px}
@@ -260,8 +257,6 @@ nav .controls{display:flex;align-items:center;gap:8px}
 nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
 .grid{grid-template-columns:repeat(3,1fr);gap:10px}.item{padding:14px 8px}.item .emo{font-size:32px}
 .coupon{min-width:200px;padding:16px}
-.about-box{flex-direction:column;text-align:center}
-.about-links{justify-content:center}
 }
 </style>
 </head>
@@ -372,18 +367,14 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
   <div id="results" class="results"></div>
   <div class="scrape-info" id="scrape-info"></div>
 </div>
-<!-- ABOUT SECTION -->
+<!-- ABOUT -->
 <div class="about-section">
   <div class="about-box">
-    <div class="about-avatar">CI</div>
-    <div class="about-info">
-      <div class="about-name">Cecilia Ibarra</div>
-      <div class="about-role">Tech Enthusiast &amp; Builder</div>
-      <div class="about-desc i18n" data-es="Construyendo herramientas &uacute;tiles con c&oacute;digo y curiosidad. GroceryFinder naci&oacute; para ayudar a comparar precios de supermercados en Buenos Aires." data-en="Building useful tools with code and curiosity. GroceryFinder was born to help compare supermarket prices in Buenos Aires."></div>
-      <div class="about-links">
-        <a class="about-link" href="https://github.com/ibarracecilia" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>GitHub</a>
-      </div>
-    </div>
+    <span class="about-name">Cecilia Ibarra</span>
+    <span class="about-sep">&middot;</span>
+    <span class="about-role">Tech Enthusiast &amp; Builder</span>
+    <span class="about-sep">&middot;</span>
+    <a class="about-link" href="https://github.com/ibarracecilia" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>GitHub</a>
   </div>
 </div>
 <!-- FOOTER -->
