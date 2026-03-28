@@ -141,9 +141,9 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .coupon{min-width:240px;border-radius:16px;padding:20px;position:relative;overflow:hidden;cursor:pointer;transition:transform .25s;flex-shrink:0;scroll-snap-align:start}
 .coupon:hover{transform:translateY(-4px) scale(1.01)}
 .coupon:active{transform:scale(.98)}
-.coupon-coto{background:linear-gradient(135deg,#e8553a,#f97358)}
-.coupon-jumbo{background:linear-gradient(135deg,#059669,#34d399)}
-.coupon-disco{background:linear-gradient(135deg,#7c3aed,#a78bfa)}
+.coupon-coto{background:linear-gradient(135deg,#E31E24,#f25058)}
+.coupon-jumbo{background:linear-gradient(135deg,#009B3A,#2ecc71)}
+.coupon-disco{background:linear-gradient(135deg,#6A1B9A,#9C27B0)}
 .coupon *{color:#fff}
 .coupon .store{font-size:13px;font-weight:600;opacity:.85;margin-bottom:6px}
 .coupon .disc{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;line-height:1}
@@ -216,9 +216,9 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .loc-card{background:var(--card2);border:1.5px solid var(--border);border-radius:14px;padding:16px;display:flex;gap:14px;align-items:flex-start;transition:all .25s;animation:scaleIn .3s ease-out;cursor:pointer}
 .loc-card:hover{border-color:var(--accent);background:var(--accent-bg);transform:translateX(4px)}
 .loc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0;font-family:'Space Grotesk',sans-serif}
-.loc-icon.coto{background:linear-gradient(135deg,#e8553a,#f97358)}
-.loc-icon.jumbo{background:linear-gradient(135deg,#059669,#34d399)}
-.loc-icon.disco{background:linear-gradient(135deg,#7c3aed,#a78bfa)}
+.loc-icon.coto{background:linear-gradient(135deg,#E31E24,#f25058)}
+.loc-icon.jumbo{background:linear-gradient(135deg,#009B3A,#2ecc71)}
+.loc-icon.disco{background:linear-gradient(135deg,#6A1B9A,#9C27B0)}
 .loc-info{flex:1}
 .loc-name{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px}
 .loc-addr{font-size:12px;color:var(--text2);margin-bottom:8px}
