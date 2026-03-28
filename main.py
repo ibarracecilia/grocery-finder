@@ -20,139 +20,50 @@ def init_db():
     c.execute("INSERT INTO supermarkets VALUES (3, 'Disco')")
     
     productos = [
-        (1, 'Leche Entera', '1L'),
-        (2, 'Yogur Natural', '200g'),
-        (3, 'Naranjas', '1kg'),
-        (4, 'Huevos', '12 unidades'),
-        (5, 'Queso Cremoso', '1kg'),
-        (6, 'Manteca', '200g'),
-        (7, 'Pan Lactal', '500g'),
-        (8, 'Arroz', '1kg'),
-        (9, 'Fideos Secos', '500g'),
-        (10, 'Aceite de Girasol', '1.5L'),
-        (11, 'Azúcar', '1kg'),
-        (12, 'Harina', '1kg'),
-        (13, 'Galletitas Dulces', '300g'),
-        (14, 'Gaseosa Cola', '2.25L'),
-        (15, 'Agua Mineral', '2L'),
-        (16, 'Papel Higiénico', '4 rollos'),
-        (17, 'Detergente', '750ml'),
-        (18, 'Jabón en Polvo', '800g'),
-        (19, 'Pollo Entero', '1kg'),
-        (20, 'Carne Picada', '1kg'),
-        (21, 'Banana', '1kg'),
-        (22, 'Tomate', '1kg'),
-        (23, 'Papa', '1kg'),
-        (24, 'Cebolla', '1kg'),
+        (1, 'Leche Entera', '1L'), (2, 'Yogur Natural', '200g'), (3, 'Naranjas', '1kg'),
+        (4, 'Huevos', '12 unidades'), (5, 'Queso Cremoso', '1kg'), (6, 'Manteca', '200g'),
+        (7, 'Pan Lactal', '500g'), (8, 'Arroz', '1kg'), (9, 'Fideos Secos', '500g'),
+        (10, 'Aceite de Girasol', '1.5L'), (11, 'Azúcar', '1kg'), (12, 'Harina', '1kg'),
+        (13, 'Galletitas Dulces', '300g'), (14, 'Gaseosa Cola', '2.25L'), (15, 'Agua Mineral', '2L'),
+        (16, 'Papel Higiénico', '4 rollos'), (17, 'Detergente', '750ml'), (18, 'Jabón en Polvo', '800g'),
+        (19, 'Pollo Entero', '1kg'), (20, 'Carne Picada', '1kg'), (21, 'Banana', '1kg'),
+        (22, 'Tomate', '1kg'), (23, 'Papa', '1kg'), (24, 'Cebolla', '1kg'),
     ]
     for p in productos:
         c.execute('INSERT INTO productos VALUES (?, ?, ?)', p)
     
     hoy = datetime.now().strftime('%Y-%m-%d')
-    promo_vence = (datetime.now() + timedelta(days=7)).strftime('%Y-%m-%d')
-    promo_vence2 = (datetime.now() + timedelta(days=14)).strftime('%Y-%m-%d')
+    pv1 = (datetime.now() + timedelta(days=7)).strftime('%Y-%m-%d')
+    pv2 = (datetime.now() + timedelta(days=14)).strftime('%Y-%m-%d')
     
     precios = [
-        # Leche Entera
-        (1, 1, 1, 1250, 1100, promo_vence, hoy),
-        (2, 2, 1, 1240, None, None, hoy),
-        (3, 3, 1, 1230, 1150, promo_vence2, hoy),
-        # Yogur Natural
-        (4, 1, 2, 890, None, None, hoy),
-        (5, 2, 2, 850, 790, promo_vence, hoy),
-        (6, 3, 2, 920, None, None, hoy),
-        # Naranjas
-        (7, 1, 3, 1500, 1350, promo_vence, hoy),
-        (8, 2, 3, 1420, None, None, hoy),
-        (9, 3, 3, 1380, None, None, hoy),
-        # Huevos
-        (10, 1, 4, 2300, None, None, hoy),
-        (11, 2, 4, 2190, 1990, promo_vence2, hoy),
-        (12, 3, 4, 2410, None, None, hoy),
-        # Queso Cremoso
-        (13, 1, 5, 4200, None, None, hoy),
-        (14, 2, 5, 4100, 3800, promo_vence, hoy),
-        (15, 3, 5, 4350, None, None, hoy),
-        # Manteca
-        (16, 1, 6, 1800, None, None, hoy),
-        (17, 2, 6, 1750, None, None, hoy),
-        (18, 3, 6, 1900, 1700, promo_vence, hoy),
-        # Pan Lactal
-        (19, 1, 7, 1600, 1400, promo_vence, hoy),
-        (20, 2, 7, 1550, None, None, hoy),
-        (21, 3, 7, 1580, None, None, hoy),
-        # Arroz
-        (22, 1, 8, 1100, None, None, hoy),
-        (23, 2, 8, 1050, 950, promo_vence2, hoy),
-        (24, 3, 8, 1150, None, None, hoy),
-        # Fideos Secos
-        (25, 1, 9, 750, None, None, hoy),
-        (26, 2, 9, 720, None, None, hoy),
-        (27, 3, 9, 780, 690, promo_vence, hoy),
-        # Aceite de Girasol
-        (28, 1, 10, 2200, 1990, promo_vence, hoy),
-        (29, 2, 10, 2150, None, None, hoy),
-        (30, 3, 10, 2300, None, None, hoy),
-        # Azúcar
-        (31, 1, 11, 950, None, None, hoy),
-        (32, 2, 11, 920, None, None, hoy),
-        (33, 3, 11, 980, 850, promo_vence2, hoy),
-        # Harina
-        (34, 1, 12, 650, None, None, hoy),
-        (35, 2, 12, 630, 550, promo_vence, hoy),
-        (36, 3, 12, 680, None, None, hoy),
-        # Galletitas Dulces
-        (37, 1, 13, 1200, None, None, hoy),
-        (38, 2, 13, 1150, None, None, hoy),
-        (39, 3, 13, 1250, 1100, promo_vence, hoy),
-        # Gaseosa Cola
-        (40, 1, 14, 1800, 1600, promo_vence2, hoy),
-        (41, 2, 14, 1750, None, None, hoy),
-        (42, 3, 14, 1850, None, None, hoy),
-        # Agua Mineral
-        (43, 1, 15, 800, None, None, hoy),
-        (44, 2, 15, 780, None, None, hoy),
-        (45, 3, 15, 820, 700, promo_vence, hoy),
-        # Papel Higiénico
-        (46, 1, 16, 1500, None, None, hoy),
-        (47, 2, 16, 1450, 1300, promo_vence, hoy),
-        (48, 3, 16, 1550, None, None, hoy),
-        # Detergente
-        (49, 1, 17, 950, None, None, hoy),
-        (50, 2, 17, 920, None, None, hoy),
-        (51, 3, 17, 980, 880, promo_vence2, hoy),
-        # Jabón en Polvo
-        (52, 1, 18, 2100, 1900, promo_vence, hoy),
-        (53, 2, 18, 2050, None, None, hoy),
-        (54, 3, 18, 2200, None, None, hoy),
-        # Pollo Entero
-        (55, 1, 19, 2800, None, None, hoy),
-        (56, 2, 19, 2700, 2500, promo_vence, hoy),
-        (57, 3, 19, 2900, None, None, hoy),
-        # Carne Picada
-        (58, 1, 20, 4500, None, None, hoy),
-        (59, 2, 20, 4400, None, None, hoy),
-        (60, 3, 20, 4600, 4200, promo_vence2, hoy),
-        # Banana
-        (61, 1, 21, 1200, 1050, promo_vence, hoy),
-        (62, 2, 21, 1150, None, None, hoy),
-        (63, 3, 21, 1250, None, None, hoy),
-        # Tomate
-        (64, 1, 22, 1800, None, None, hoy),
-        (65, 2, 22, 1750, 1600, promo_vence, hoy),
-        (66, 3, 22, 1850, None, None, hoy),
-        # Papa
-        (67, 1, 23, 900, None, None, hoy),
-        (68, 2, 23, 850, None, None, hoy),
-        (69, 3, 23, 950, 800, promo_vence, hoy),
-        # Cebolla
-        (70, 1, 24, 800, 700, promo_vence2, hoy),
-        (71, 2, 24, 780, None, None, hoy),
-        (72, 3, 24, 820, None, None, hoy),
+        (1,1,1,1250,1100,pv1,hoy),(2,2,1,1240,None,None,hoy),(3,3,1,1230,1150,pv2,hoy),
+        (4,1,2,890,None,None,hoy),(5,2,2,850,790,pv1,hoy),(6,3,2,920,None,None,hoy),
+        (7,1,3,1500,1350,pv1,hoy),(8,2,3,1420,None,None,hoy),(9,3,3,1380,None,None,hoy),
+        (10,1,4,2300,None,None,hoy),(11,2,4,2190,1990,pv2,hoy),(12,3,4,2410,None,None,hoy),
+        (13,1,5,4200,None,None,hoy),(14,2,5,4100,3800,pv1,hoy),(15,3,5,4350,None,None,hoy),
+        (16,1,6,1800,None,None,hoy),(17,2,6,1750,None,None,hoy),(18,3,6,1900,1700,pv1,hoy),
+        (19,1,7,1600,1400,pv1,hoy),(20,2,7,1550,None,None,hoy),(21,3,7,1580,None,None,hoy),
+        (22,1,8,1100,None,None,hoy),(23,2,8,1050,950,pv2,hoy),(24,3,8,1150,None,None,hoy),
+        (25,1,9,750,None,None,hoy),(26,2,9,720,None,None,hoy),(27,3,9,780,690,pv1,hoy),
+        (28,1,10,2200,1990,pv1,hoy),(29,2,10,2150,None,None,hoy),(30,3,10,2300,None,None,hoy),
+        (31,1,11,950,None,None,hoy),(32,2,11,920,None,None,hoy),(33,3,11,980,850,pv2,hoy),
+        (34,1,12,650,None,None,hoy),(35,2,12,630,550,pv1,hoy),(36,3,12,680,None,None,hoy),
+        (37,1,13,1200,None,None,hoy),(38,2,13,1150,None,None,hoy),(39,3,13,1250,1100,pv1,hoy),
+        (40,1,14,1800,1600,pv2,hoy),(41,2,14,1750,None,None,hoy),(42,3,14,1850,None,None,hoy),
+        (43,1,15,800,None,None,hoy),(44,2,15,780,None,None,hoy),(45,3,15,820,700,pv1,hoy),
+        (46,1,16,1500,None,None,hoy),(47,2,16,1450,1300,pv1,hoy),(48,3,16,1550,None,None,hoy),
+        (49,1,17,950,None,None,hoy),(50,2,17,920,None,None,hoy),(51,3,17,980,880,pv2,hoy),
+        (52,1,18,2100,1900,pv1,hoy),(53,2,18,2050,None,None,hoy),(54,3,18,2200,None,None,hoy),
+        (55,1,19,2800,None,None,hoy),(56,2,19,2700,2500,pv1,hoy),(57,3,19,2900,None,None,hoy),
+        (58,1,20,4500,None,None,hoy),(59,2,20,4400,None,None,hoy),(60,3,20,4600,4200,pv2,hoy),
+        (61,1,21,1200,1050,pv1,hoy),(62,2,21,1150,None,None,hoy),(63,3,21,1250,None,None,hoy),
+        (64,1,22,1800,None,None,hoy),(65,2,22,1750,1600,pv1,hoy),(66,3,22,1850,None,None,hoy),
+        (67,1,23,900,None,None,hoy),(68,2,23,850,None,None,hoy),(69,3,23,950,800,pv1,hoy),
+        (70,1,24,800,700,pv2,hoy),(71,2,24,780,None,None,hoy),(72,3,24,820,None,None,hoy),
     ]
     for p in precios:
         c.execute('INSERT INTO precios VALUES (?, ?, ?, ?, ?, ?, ?)', p)
-    
     conn.commit()
     conn.close()
 
@@ -164,94 +75,100 @@ def index():
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GroceryFinder - Mejores precios en Buenos Aires</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%); min-height: 100vh; padding: 20px; }
-        .container { background: white; border-radius: 15px; padding: 30px; max-width: 700px; width: 100%; margin: 0 auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
-        .header { text-align: center; margin-bottom: 25px; }
-        .header h1 { color: #333; font-size: 28px; margin-bottom: 5px; }
-        .header p { color: #666; font-size: 14px; }
+        body { font-family: 'Inter', sans-serif; background: #f0f4f8; min-height: 100vh; padding: 20px 16px; }
+        .top-bar { max-width: 750px; margin: 0 auto 14px; display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
+        .top-bar .logo { font-size: 20px; font-weight: 700; color: #0d9488; letter-spacing: -0.5px; }
+        .top-bar .logo span { color: #334155; }
+        .top-bar .tagline { font-size: 11px; color: #94a3b8; font-weight: 500; }
+        .container { background: white; border-radius: 16px; padding: 28px; max-width: 750px; width: 100%; margin: 0 auto; box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 30px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; }
+        .header { text-align: center; margin-bottom: 24px; }
+        .header h1 { color: #1e293b; font-size: 26px; margin-bottom: 4px; font-weight: 700; letter-spacing: -0.5px; }
+        .header p { color: #94a3b8; font-size: 14px; }
         .search-box { position: relative; display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-box input { flex: 1; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; transition: border 0.3s; }
-        .search-box input:focus { border-color: #56ab2f; }
-        .search-box button { padding: 12px 25px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: background 0.3s; }
-        .search-box button:hover { background: #45a049; }
-        .autocomplete-list { position: absolute; top: 100%; left: 0; right: 70px; background: white; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px; max-height: 200px; overflow-y: auto; z-index: 10; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .autocomplete-item { padding: 10px 15px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f0f0f0; }
-        .autocomplete-item:hover { background: #f0f9e8; }
-        .autocomplete-item .cantidad { color: #999; font-size: 12px; margin-left: 5px; }
-        .info-bar { background: #f0f9e8; border-radius: 8px; padding: 12px 15px; margin-bottom: 20px; font-size: 13px; color: #555; display: flex; justify-content: space-between; align-items: center; }
-        .info-bar .fecha { color: #56ab2f; font-weight: 600; }
-        .categories { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-        .cat-btn { padding: 6px 14px; border: 1px solid #ddd; border-radius: 20px; background: white; cursor: pointer; font-size: 13px; transition: all 0.3s; }
-        .cat-btn:hover, .cat-btn.active { background: #56ab2f; color: white; border-color: #56ab2f; }
-        .section-title { font-size: 16px; color: #333; margin-bottom: 12px; font-weight: 600; }
+        .search-box input { flex: 1; padding: 13px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 15px; outline: none; transition: all 0.2s; background: #f8fafc; font-family: 'Inter', sans-serif; }
+        .search-box input:focus { border-color: #0d9488; background: white; box-shadow: 0 0 0 3px rgba(13,148,136,0.1); }
+        .search-box button { padding: 13px 24px; background: #0d9488; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .search-box button:hover { background: #0f766e; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13,148,136,0.25); }
+        .autocomplete-list { position: absolute; top: 100%; left: 0; right: 80px; background: white; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px; max-height: 200px; overflow-y: auto; z-index: 10; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        .autocomplete-item { padding: 10px 16px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f1f5f9; }
+        .autocomplete-item:hover { background: #f0fdfa; }
+        .autocomplete-item .cantidad { color: #94a3b8; font-size: 12px; margin-left: 5px; }
+        .categories { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+        .cat-btn { padding: 7px 16px; border: 1.5px solid #e2e8f0; border-radius: 25px; background: white; cursor: pointer; font-size: 13px; transition: all 0.2s; font-family: 'Inter', sans-serif; font-weight: 500; color: #64748b; }
+        .cat-btn:hover { border-color: #0d9488; color: #0d9488; background: #f0fdfa; }
+        .cat-btn.active { background: #0d9488; color: white; border-color: #0d9488; }
+        .section-title { font-size: 13px; color: #94a3b8; margin-bottom: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
         .results { margin-top: 10px; }
-        .product { margin-bottom: 15px; padding: 15px; border-left: 4px solid #56ab2f; background: #f9f9f9; border-radius: 0 8px 8px 0; }
-        .product h3 { color: #333; margin-bottom: 3px; font-size: 17px; }
-        .product .cantidad-label { color: #888; font-size: 13px; margin-bottom: 10px; }
-        .price-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .product { margin-bottom: 16px; padding: 18px; border-left: 4px solid #0d9488; background: #f8fafc; border-radius: 0 12px 12px 0; }
+        .product h3 { color: #1e293b; margin-bottom: 3px; font-size: 17px; font-weight: 600; }
+        .product .cantidad-label { color: #94a3b8; font-size: 13px; margin-bottom: 10px; }
+        .price-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #e2e8f0; cursor: pointer; transition: all 0.15s; }
         .price-item:last-child { border-bottom: none; }
-        .supermarket { display: flex; align-items: center; gap: 5px; font-size: 14px; }
+        .price-item:hover { opacity: 0.8; }
+        .supermarket { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #475569; font-weight: 500; }
         .price-info { text-align: right; }
-        .price { font-weight: bold; color: #56ab2f; font-size: 15px; }
+        .price { font-weight: 700; color: #0d9488; font-size: 16px; }
         .price-promo { font-size: 13px; }
-        .price-original { text-decoration: line-through; color: #999; margin-right: 8px; }
-        .price-oferta { color: #e53e3e; font-weight: bold; }
-        .promo-vence { font-size: 11px; color: #e53e3e; display: block; margin-top: 2px; }
-        .cheapest { background: #d4edda; padding: 8px; border-radius: 4px; }
-        .cheapest .price { color: #28a745; }
-        .badge { background: #28a745; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; margin-left: 8px; }
-        .badge-promo { background: #e53e3e; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; margin-left: 8px; }
-        .popular-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .popular-item { background: #f9f9f9; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s; border: 1px solid #eee; }
-        .popular-item:hover { background: #f0f9e8; border-color: #56ab2f; transform: translateY(-2px); }
-        .popular-item .emoji { font-size: 28px; display: block; margin-bottom: 5px; }
-        .popular-item .name { font-size: 13px; color: #333; font-weight: 600; }
-        .popular-item .qty { font-size: 11px; color: #888; }
-        .popular-item .desde { font-size: 12px; color: #56ab2f; font-weight: 600; margin-top: 4px; }
-        .no-results { text-align: center; padding: 30px; color: #888; }
+        .price-original { text-decoration: line-through; color: #cbd5e1; margin-right: 8px; }
+        .price-oferta { color: #dc2626; font-weight: 700; }
+        .promo-vence { font-size: 11px; color: #dc2626; display: block; margin-top: 2px; }
+        .cheapest { background: #f0fdfa; padding: 10px; border-radius: 8px; border: 1px solid #ccfbf1; }
+        .cheapest .price { color: #059669; }
+        .badge { background: #059669; color: white; padding: 3px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+        .badge-promo { background: #dc2626; color: white; padding: 3px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; font-weight: 600; text-transform: uppercase; }
+        .popular-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .popular-item { background: white; border-radius: 12px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.25s; border: 1.5px solid #e2e8f0; }
+        .popular-item:hover { border-color: #0d9488; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(13,148,136,0.1); }
+        .popular-item .emoji { font-size: 32px; display: block; margin-bottom: 8px; }
+        .popular-item .name { font-size: 13px; color: #1e293b; font-weight: 600; display: block; }
+        .popular-item .qty { font-size: 11px; color: #94a3b8; display: block; margin-top: 2px; }
+        .popular-item .desde { font-size: 13px; color: #0d9488; font-weight: 700; margin-top: 6px; display: block; }
+        .no-results { text-align: center; padding: 40px; color: #94a3b8; }
         .no-results .emoji-big { font-size: 48px; display: block; margin-bottom: 10px; }
-        .scrape-date { text-align: center; font-size: 11px; color: #aaa; margin-top: 15px; }
-        .price-item { cursor: pointer; }
-        .price-item:hover { opacity: 0.85; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
+        .scrape-date { text-align: center; font-size: 11px; color: #94a3b8; margin-top: 15px; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15,23,42,0.4); backdrop-filter: blur(4px); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
-        .modal { background: white; border-radius: 12px; padding: 25px; max-width: 420px; width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.3); position: relative; animation: modalIn 0.2s ease-out; }
-        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-close { position: absolute; top: 12px; right: 15px; background: none; border: none; font-size: 22px; cursor: pointer; color: #999; }
-        .modal-close:hover { color: #333; }
-        .modal h3 { font-size: 18px; color: #333; margin-bottom: 5px; }
-        .modal .modal-subtitle { font-size: 13px; color: #888; margin-bottom: 15px; }
-        .modal-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
+        .modal { background: white; border-radius: 16px; padding: 28px; max-width: 420px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.12); position: relative; animation: modalIn 0.25s ease-out; }
+        @keyframes modalIn { from { transform: scale(0.95) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+        .modal-close { position: absolute; top: 14px; right: 16px; background: #f1f5f9; border: none; font-size: 16px; cursor: pointer; color: #64748b; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+        .modal-close:hover { background: #e2e8f0; color: #1e293b; }
+        .modal h3 { font-size: 18px; color: #1e293b; margin-bottom: 5px; font-weight: 700; }
+        .modal .modal-subtitle { font-size: 13px; color: #94a3b8; margin-bottom: 18px; }
+        .modal-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
         .modal-row:last-child { border-bottom: none; }
-        .modal-label { color: #666; }
-        .modal-value { color: #333; font-weight: 600; }
-        .modal-value.promo { color: #e53e3e; }
-        .modal-value.mejor { color: #28a745; }
-        .modal-source { margin-top: 15px; padding: 12px; background: #f8f9fa; border-radius: 8px; font-size: 12px; color: #666; }
-        .modal-source strong { color: #333; }
+        .modal-label { color: #64748b; }
+        .modal-value { color: #1e293b; font-weight: 600; }
+        .modal-value.promo { color: #dc2626; }
+        .modal-value.mejor { color: #059669; }
+        .modal-source { margin-top: 18px; padding: 14px; background: #f8fafc; border-radius: 10px; font-size: 12px; color: #64748b; border: 1px solid #e2e8f0; line-height: 1.6; }
+        .modal-source strong { color: #1e293b; display: block; margin-bottom: 4px; }
         @media (max-width: 500px) {
             .container { padding: 20px 15px; }
-            .header h1 { font-size: 24px; }
+            .header h1 { font-size: 22px; }
             .popular-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
             .popular-item { padding: 10px 6px; }
+            .popular-item .emoji { font-size: 26px; }
         }
     </style>
 </head>
 <body>
+    <div class="top-bar">
+        <div class="logo"><span>Grocery</span>Finder</div>
+        <div class="tagline">Buenos Aires, Argentina</div>
+    </div>
     <div class="container">
         <div class="header">
-            <h1>🛒 GroceryFinder</h1>
-            <p>Compará precios en supermercados de Buenos Aires</p>
+            <h1>Compará precios al instante</h1>
+            <p>Encontrá el mejor precio entre Coto, Jumbo y Disco</p>
         </div>
-        
         <div class="search-box">
             <input type="text" id="search" placeholder="¿Qué producto buscás?" autocomplete="off" />
             <div class="autocomplete-list" id="autocomplete"></div>
-            <button onclick="buscar()">BUSCAR</button>
+            <button onclick="buscar()">Buscar</button>
         </div>
-
         <div class="categories" id="categories">
             <button class="cat-btn active" onclick="filtrarCategoria('todos')">Todos</button>
             <button class="cat-btn" onclick="filtrarCategoria('lácteos')">🥛 Lácteos</button>
@@ -261,271 +178,109 @@ def index():
             <button class="cat-btn" onclick="filtrarCategoria('bebidas')">🥤 Bebidas</button>
             <button class="cat-btn" onclick="filtrarCategoria('limpieza')">🧹 Limpieza</button>
         </div>
-
         <div id="home-section">
-            <p class="section-title">🔥 Productos populares</p>
+            <p class="section-title">Productos disponibles</p>
             <div class="popular-grid" id="popular-grid"></div>
         </div>
-
         <div id="results" class="results"></div>
         <div class="scrape-date" id="scrape-date"></div>
     </div>
-
     <div class="modal-overlay" id="modal-overlay" onclick="cerrarModal(event)">
         <div class="modal" id="modal">
             <button class="modal-close" onclick="cerrarModal()">&times;</button>
             <div id="modal-content"></div>
         </div>
     </div>
-
     <script>
         let allProducts = [];
-        
         async function cargarProductos() {
             try {
                 const response = await fetch('/api/products');
                 allProducts = await response.json();
                 mostrarPopulares(allProducts);
-            } catch (error) {
-                console.error('Error cargando productos:', error);
-            }
+            } catch (error) { console.error('Error:', error); }
         }
-        
         function mostrarPopulares(productos) {
-            const emojis = {
-                'Leche Entera': '🥛', 'Yogur Natural': '🥛', 'Naranjas': '🍊',
-                'Huevos': '🥚', 'Queso Cremoso': '🧀', 'Manteca': '🧈',
-                'Pan Lactal': '🍞', 'Arroz': '🍚', 'Fideos Secos': '🍝',
-                'Aceite de Girasol': '🫒', 'Azúcar': '🍬', 'Harina': '🌾',
-                'Galletitas Dulces': '🍪', 'Gaseosa Cola': '🥤', 'Agua Mineral': '💧',
-                'Papel Higiénico': '🧻', 'Detergente': '🧴', 'Jabón en Polvo': '🧼',
-                'Pollo Entero': '🍗', 'Carne Picada': '🥩', 'Banana': '🍌',
-                'Tomate': '🍅', 'Papa': '🥔', 'Cebolla': '🧅'
-            };
-            const grid = document.getElementById('popular-grid');
-            grid.innerHTML = productos.map(p => `
+            const emojis = {'Leche Entera':'🥛','Yogur Natural':'🥛','Naranjas':'🍊','Huevos':'🥚','Queso Cremoso':'🧀','Manteca':'🧈','Pan Lactal':'🍞','Arroz':'🍚','Fideos Secos':'🍝','Aceite de Girasol':'🫒','Azúcar':'🍬','Harina':'🌾','Galletitas Dulces':'🍪','Gaseosa Cola':'🥤','Agua Mineral':'💧','Papel Higiénico':'🧻','Detergente':'🧴','Jabón en Polvo':'🧼','Pollo Entero':'🍗','Carne Picada':'🥩','Banana':'🍌','Tomate':'🍅','Papa':'🥔','Cebolla':'🧅'};
+            document.getElementById('popular-grid').innerHTML = productos.map(p => `
                 <div class="popular-item" onclick="buscarProducto('${p.nombre}')">
-                    <span class="emoji">${emojis[p.nombre] || '🛒'}</span>
+                    <span class="emoji">${emojis[p.nombre]||'🛒'}</span>
                     <span class="name">${p.nombre}</span>
                     <span class="qty">${p.cantidad}</span>
                     <span class="desde">Desde $${p.precio_min}</span>
-                </div>
-            `).join('');
+                </div>`).join('');
         }
-        
-        function buscarProducto(nombre) {
-            document.getElementById('search').value = nombre;
-            buscar();
-        }
-        
+        function buscarProducto(nombre) { document.getElementById('search').value = nombre; buscar(); }
         function filtrarCategoria(cat) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
-            
-            const categorias = {
-                'lácteos': ['Leche Entera', 'Yogur Natural', 'Queso Cremoso', 'Manteca'],
-                'frutas': ['Naranjas', 'Banana', 'Tomate', 'Papa', 'Cebolla'],
-                'carnes': ['Pollo Entero', 'Carne Picada', 'Huevos'],
-                'almacén': ['Pan Lactal', 'Arroz', 'Fideos Secos', 'Aceite de Girasol', 'Azúcar', 'Harina', 'Galletitas Dulces'],
-                'bebidas': ['Gaseosa Cola', 'Agua Mineral'],
-                'limpieza': ['Papel Higiénico', 'Detergente', 'Jabón en Polvo']
-            };
-            
-            if (cat === 'todos') {
-                mostrarPopulares(allProducts);
-            } else {
-                const filtrados = allProducts.filter(p => categorias[cat]?.includes(p.nombre));
-                mostrarPopulares(filtrados);
-            }
-            
+            const cats = {'lácteos':['Leche Entera','Yogur Natural','Queso Cremoso','Manteca'],'frutas':['Naranjas','Banana','Tomate','Papa','Cebolla'],'carnes':['Pollo Entero','Carne Picada','Huevos'],'almacén':['Pan Lactal','Arroz','Fideos Secos','Aceite de Girasol','Azúcar','Harina','Galletitas Dulces'],'bebidas':['Gaseosa Cola','Agua Mineral'],'limpieza':['Papel Higiénico','Detergente','Jabón en Polvo']};
+            mostrarPopulares(cat === 'todos' ? allProducts : allProducts.filter(p => cats[cat]?.includes(p.nombre)));
             document.getElementById('home-section').style.display = 'block';
             document.getElementById('results').innerHTML = '';
         }
-
-        // Autocompletado
         const searchInput = document.getElementById('search');
         const autocompleteList = document.getElementById('autocomplete');
-        
         searchInput.addEventListener('input', function() {
             const q = this.value.toLowerCase().trim();
-            if (q.length < 1) {
-                autocompleteList.style.display = 'none';
-                return;
-            }
-            const matches = allProducts.filter(p => 
-                p.nombre.toLowerCase().includes(q)
-            );
-            if (matches.length === 0) {
-                autocompleteList.innerHTML = '<div class="autocomplete-item" style="color:#999;">No hay resultados para "' + q + '"</div>';
-                autocompleteList.style.display = 'block';
-                return;
-            }
-            autocompleteList.innerHTML = matches.map(p => 
-                `<div class="autocomplete-item" onclick="buscarProducto('${p.nombre}')">
-                    ${p.nombre} <span class="cantidad">${p.cantidad}</span>
-                </div>`
-            ).join('');
+            if (q.length < 1) { autocompleteList.style.display = 'none'; return; }
+            const matches = allProducts.filter(p => p.nombre.toLowerCase().includes(q));
+            if (matches.length === 0) { autocompleteList.innerHTML = '<div class="autocomplete-item" style="color:#94a3b8;">No hay resultados para "' + q + '"</div>'; autocompleteList.style.display = 'block'; return; }
+            autocompleteList.innerHTML = matches.map(p => `<div class="autocomplete-item" onclick="buscarProducto('${p.nombre}')">${p.nombre} <span class="cantidad">${p.cantidad}</span></div>`).join('');
             autocompleteList.style.display = 'block';
         });
-        
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.search-box')) {
-                autocompleteList.style.display = 'none';
-            }
-        });
-
+        document.addEventListener('click', function(e) { if (!e.target.closest('.search-box')) autocompleteList.style.display = 'none'; });
         async function buscar() {
             autocompleteList.style.display = 'none';
             const q = document.getElementById("search").value.trim();
             if (!q) return;
-            
             document.getElementById('home-section').style.display = 'none';
-            
             try {
                 const response = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
                 const data = await response.json();
-                let html = "";
-                let fechaScraping = "";
-                
+                let html = "", fechaScraping = "";
                 if (Object.keys(data).length === 0) {
-                    html = `<div class="no-results">
-                        <span class="emoji-big">🔍</span>
-                        <p>No encontramos "<strong>${q}</strong>"</p>
-                        <p style="margin-top:8px; font-size:13px;">Probá con otro término o elegí un producto de la lista</p>
-                    </div>`;
+                    html = `<div class="no-results"><span class="emoji-big">🔍</span><p>No encontramos "<strong>${q}</strong>"</p><p style="margin-top:8px;font-size:13px;">Probá con otro término o elegí un producto de la lista</p></div>`;
                     document.getElementById('home-section').style.display = 'block';
                 }
-                
                 for (const [producto, info] of Object.entries(data)) {
                     const precios = info.precios;
                     const mejorPrecio = Math.min(...precios.map(p => p.precio_final));
-                    
-                    html += `<div class="product"><h3>${producto}</h3>`;
-                    html += `<div class="cantidad-label">${info.cantidad}</div>`;
-                    
+                    html += `<div class="product"><h3>${producto}</h3><div class="cantidad-label">${info.cantidad}</div>`;
                     for (const precio of precios) {
                         const esMejor = precio.precio_final === mejorPrecio;
                         const clase = esMejor ? "cheapest" : "";
-                        const modalData = encodeURIComponent(JSON.stringify({
-                            producto: producto,
-                            cantidad: info.cantidad,
-                            supermarket: precio.supermarket,
-                            precio: precio.precio,
-                            precio_promo: precio.precio_promo,
-                            precio_final: precio.precio_final,
-                            promo_vence: precio.promo_vence,
-                            fecha_scraping: precio.fecha_scraping,
-                            esMejor: esMejor
-                        }));
-                        
-                        let precioHtml = "";
+                        const md = encodeURIComponent(JSON.stringify({producto,cantidad:info.cantidad,supermarket:precio.supermarket,precio:precio.precio,precio_promo:precio.precio_promo,precio_final:precio.precio_final,promo_vence:precio.promo_vence,fecha_scraping:precio.fecha_scraping,esMejor}));
+                        let ph = "";
                         if (precio.precio_promo) {
-                            precioHtml = `<span class="price-promo">
-                                <span class="price-original">$${precio.precio}</span>
-                                <span class="price-oferta">$${precio.precio_promo}</span>
-                                <span class="badge-promo">OFERTA</span>
-                            </span>`;
-                            if (precio.promo_vence) {
-                                precioHtml += `<span class="promo-vence">Vence: ${formatDate(precio.promo_vence)}</span>`;
-                            }
-                        } else {
-                            precioHtml = `<span class="price">$${precio.precio}</span>`;
-                        }
-                        
-                        html += `<div class="price-item ${clase}" onclick="abrirModal('${modalData}')">
-                            <span class="supermarket">🏪 ${precio.supermarket}</span>
-                            <div class="price-info">
-                                ${precioHtml}
-                                ${esMejor ? '<span class="badge">MÁS BARATO</span>' : ''}
-                            </div>
-                        </div>`;
-                        
+                            ph = `<span class="price-promo"><span class="price-original">$${precio.precio}</span><span class="price-oferta">$${precio.precio_promo}</span><span class="badge-promo">OFERTA</span></span>`;
+                            if (precio.promo_vence) ph += `<span class="promo-vence">Vence: ${formatDate(precio.promo_vence)}</span>`;
+                        } else { ph = `<span class="price">$${precio.precio}</span>`; }
+                        html += `<div class="price-item ${clase}" onclick="abrirModal('${md}')"><span class="supermarket">🏪 ${precio.supermarket}</span><div class="price-info">${ph}${esMejor?'<span class="badge">MÁS BARATO</span>':''}</div></div>`;
                         if (precio.fecha_scraping) fechaScraping = precio.fecha_scraping;
                     }
                     html += `</div>`;
                 }
-                
                 document.getElementById("results").innerHTML = html;
-                
-                if (fechaScraping) {
-                    document.getElementById("scrape-date").innerHTML = 
-                        `📅 Precios actualizados: ${formatDate(fechaScraping)}`;
-                }
-            } catch (error) {
-                document.getElementById("results").innerHTML = "<p>Error en la búsqueda</p>";
-            }
+                if (fechaScraping) document.getElementById("scrape-date").innerHTML = `Precios actualizados: ${formatDate(fechaScraping)}`;
+            } catch (error) { document.getElementById("results").innerHTML = "<p>Error en la búsqueda</p>"; }
         }
-        
-        function formatDate(dateStr) {
-            const d = new Date(dateStr + 'T00:00:00');
-            const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
-            return d.toLocaleDateString('es-AR', opciones);
-        }
-        
+        function formatDate(dateStr) { const d = new Date(dateStr+'T00:00:00'); return d.toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'}); }
         searchInput.addEventListener("keypress", (e) => { if (e.key === "Enter") buscar(); });
-        
         function abrirModal(encodedData) {
             const d = JSON.parse(decodeURIComponent(encodedData));
-            let html = `
-                <h3>🏪 ${d.supermarket}</h3>
-                <div class="modal-subtitle">${d.producto} — ${d.cantidad}</div>
-                <div class="modal-row">
-                    <span class="modal-label">Precio regular</span>
-                    <span class="modal-value">$${d.precio}</span>
-                </div>`;
-            
+            let html = `<h3>🏪 ${d.supermarket}</h3><div class="modal-subtitle">${d.producto} — ${d.cantidad}</div><div class="modal-row"><span class="modal-label">Precio regular</span><span class="modal-value">$${d.precio}</span></div>`;
             if (d.precio_promo) {
-                html += `
-                <div class="modal-row">
-                    <span class="modal-label">Precio promocional</span>
-                    <span class="modal-value promo">$${d.precio_promo}</span>
-                </div>
-                <div class="modal-row">
-                    <span class="modal-label">Ahorro</span>
-                    <span class="modal-value promo">-$${d.precio - d.precio_promo} (${Math.round((1 - d.precio_promo/d.precio) * 100)}%)</span>
-                </div>`;
-                if (d.promo_vence) {
-                    const hoy = new Date();
-                    const vence = new Date(d.promo_vence + 'T00:00:00');
-                    const diasRestantes = Math.ceil((vence - hoy) / (1000 * 60 * 60 * 24));
-                    html += `
-                    <div class="modal-row">
-                        <span class="modal-label">Promo vence</span>
-                        <span class="modal-value promo">${formatDate(d.promo_vence)} (${diasRestantes > 0 ? diasRestantes + ' días' : 'Vencida'})</span>
-                    </div>`;
-                }
+                html += `<div class="modal-row"><span class="modal-label">Precio promocional</span><span class="modal-value promo">$${d.precio_promo}</span></div><div class="modal-row"><span class="modal-label">Ahorro</span><span class="modal-value promo">-$${d.precio-d.precio_promo} (${Math.round((1-d.precio_promo/d.precio)*100)}%)</span></div>`;
+                if (d.promo_vence) { const dias = Math.ceil((new Date(d.promo_vence+'T00:00:00')-new Date())/(1000*60*60*24)); html += `<div class="modal-row"><span class="modal-label">Promo vence</span><span class="modal-value promo">${formatDate(d.promo_vence)} (${dias>0?dias+' días':'Vencida'})</span></div>`; }
             }
-            
-            if (d.esMejor) {
-                html += `
-                <div class="modal-row">
-                    <span class="modal-label">Veredicto</span>
-                    <span class="modal-value mejor">✅ Mejor precio disponible</span>
-                </div>`;
-            }
-            
-            html += `
-                <div class="modal-source">
-                    <strong>📊 Datos del scraping</strong><br>
-                    Fuente: ${d.supermarket} Online<br>
-                    Fecha de extracción: ${d.fecha_scraping ? formatDate(d.fecha_scraping) : 'No disponible'}<br>
-                    Método: Scraping automático del sitio web<br>
-                    Producto: ${d.producto} (${d.cantidad})
-                </div>`;
-            
+            if (d.esMejor) html += `<div class="modal-row"><span class="modal-label">Veredicto</span><span class="modal-value mejor">✅ Mejor precio disponible</span></div>`;
+            html += `<div class="modal-source"><strong>📊 Datos del scraping</strong>Fuente: ${d.supermarket} Online<br>Fecha de extracción: ${d.fecha_scraping?formatDate(d.fecha_scraping):'No disponible'}<br>Método: Scraping automático del sitio web<br>Producto: ${d.producto} (${d.cantidad})</div>`;
             document.getElementById('modal-content').innerHTML = html;
             document.getElementById('modal-overlay').classList.add('active');
         }
-        
-        function cerrarModal(event) {
-            if (!event || event.target === document.getElementById('modal-overlay') || event.target.classList.contains('modal-close')) {
-                document.getElementById('modal-overlay').classList.remove('active');
-            }
-        }
-        
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarModal(); });
-
-        // Cargar productos al inicio
+        function cerrarModal(event) { if (!event||event.target===document.getElementById('modal-overlay')||event.target.classList.contains('modal-close')) document.getElementById('modal-overlay').classList.remove('active'); }
+        document.addEventListener('keydown', (e) => { if (e.key==='Escape') cerrarModal(); });
         cargarProductos();
     </script>
 </body>
@@ -537,15 +292,7 @@ def products():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    c.execute('''
-        SELECT p.nombre, p.cantidad, MIN(
-            CASE WHEN pr.precio_promo IS NOT NULL THEN pr.precio_promo ELSE pr.precio END
-        ) as precio_min
-        FROM productos p
-        JOIN precios pr ON p.id = pr.producto_id
-        GROUP BY p.id
-        ORDER BY p.nombre
-    ''')
+    c.execute('SELECT p.nombre, p.cantidad, MIN(CASE WHEN pr.precio_promo IS NOT NULL THEN pr.precio_promo ELSE pr.precio END) as precio_min FROM productos p JOIN precios pr ON p.id = pr.producto_id GROUP BY p.id ORDER BY p.nombre')
     results = c.fetchall()
     conn.close()
     return jsonify([{'nombre': r['nombre'], 'cantidad': r['cantidad'], 'precio_min': r['precio_min']} for r in results])
@@ -554,39 +301,19 @@ def products():
 def search():
     init_db()
     q = request.args.get('q', '').lower()
-    if not q:
-        return jsonify({})
+    if not q: return jsonify({})
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    c.execute('''
-        SELECT p.nombre, p.cantidad, s.nombre as supermarket, 
-               pr.precio, pr.precio_promo, pr.promo_vence, pr.fecha_scraping
-        FROM precios pr
-        JOIN productos p ON pr.producto_id = p.id
-        JOIN supermarkets s ON pr.supermercado_id = s.id
-        WHERE LOWER(p.nombre) LIKE ?
-        ORDER BY p.nombre, pr.precio
-    ''', (f'%{q}%',))
+    c.execute('SELECT p.nombre, p.cantidad, s.nombre as supermarket, pr.precio, pr.precio_promo, pr.promo_vence, pr.fecha_scraping FROM precios pr JOIN productos p ON pr.producto_id = p.id JOIN supermarkets s ON pr.supermercado_id = s.id WHERE LOWER(p.nombre) LIKE ? ORDER BY p.nombre, pr.precio', (f'%{q}%',))
     results = c.fetchall()
     conn.close()
     grouped = {}
     for row in results:
         prod = row['nombre']
-        if prod not in grouped:
-            grouped[prod] = {
-                'cantidad': row['cantidad'],
-                'precios': []
-            }
-        precio_final = row['precio_promo'] if row['precio_promo'] else row['precio']
-        grouped[prod]['precios'].append({
-            'supermarket': row['supermarket'],
-            'precio': row['precio'],
-            'precio_promo': row['precio_promo'],
-            'precio_final': precio_final,
-            'promo_vence': row['promo_vence'],
-            'fecha_scraping': row['fecha_scraping']
-        })
+        if prod not in grouped: grouped[prod] = {'cantidad': row['cantidad'], 'precios': []}
+        pf = row['precio_promo'] if row['precio_promo'] else row['precio']
+        grouped[prod]['precios'].append({'supermarket': row['supermarket'], 'precio': row['precio'], 'precio_promo': row['precio_promo'], 'precio_final': pf, 'promo_vence': row['promo_vence'], 'fecha_scraping': row['fecha_scraping']})
     return jsonify(grouped)
 
 if __name__ == '__main__':
