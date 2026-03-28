@@ -125,25 +125,13 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .autocomplete-item{padding:12px 20px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--border);color:var(--text);transition:background .15s}
 .autocomplete-item:hover{background:var(--accent-bg)}
 .autocomplete-item .qty{color:var(--text3);font-size:12px;margin-left:6px}
-.currency-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;animation:fadeUp .6s ease-out .15s both;flex-wrap:wrap}
-.cur-chip{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:28px;cursor:pointer;transition:all .25s;box-shadow:var(--shadow-sm)}
-.cur-chip:hover{border-color:var(--accent);box-shadow:var(--shadow-md)}
-.cur-chip.active{background:var(--accent-bg);border-color:var(--accent)}
-.cur-chip .globe{width:18px;height:18px;border-radius:50%;border:2px solid var(--text3);position:relative;transition:all .25s}
-.cur-chip.active .globe{border-color:var(--accent)}
-.cur-chip .globe::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:16px;border:1.5px solid var(--text3);border-radius:50%;transition:all .25s}
-.cur-chip.active .globe::after{border-color:var(--accent)}
-.cur-chip .globe::before{content:'';position:absolute;top:50%;left:-1px;right:-1px;height:1.5px;background:var(--text3);transition:all .25s}
-.cur-chip.active .globe::before{background:var(--accent)}
-.cur-chip-text{font-size:13px;font-weight:600;color:var(--text2);transition:color .25s}
-.cur-chip.active .cur-chip-text{color:var(--accent)}
-.cur-select-wrap{display:none;align-items:center;gap:8px}
-.cur-select-wrap.show{display:flex}
-.cur-sel{padding:8px 14px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;outline:none;cursor:pointer;box-shadow:var(--shadow-sm);transition:all .2s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239e9a90' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
-.cur-sel:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
-.cur-rate{font-size:12px;color:var(--text3);font-weight:500;padding:6px 12px;background:var(--card2);border-radius:8px}
 .cur-eq{font-size:11px;color:var(--text3);font-weight:500;display:block;margin-top:2px}
 .cur-eq-i{font-size:11px;color:var(--text3);font-weight:500;margin-left:5px}
+.modal-cur{margin-top:14px;padding:14px;background:var(--card2);border-radius:12px;border:1px solid var(--border)}
+.modal-cur-title{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.modal-cur-row{display:flex;align-items:center;gap:8px}
+.modal-cur-sel{padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;outline:none;cursor:pointer}
+.modal-cur-val{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--accent)}
 .coupons{margin-bottom:28px;animation:fadeUp .6s ease-out .2s both}
 .coupons-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:12px}
 .coupons-scroll{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
@@ -199,40 +187,39 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .no-results{text-align:center;padding:50px 20px;color:var(--text3)}
 .no-results .big{font-size:56px;display:block;margin-bottom:12px}
 .scrape-info{text-align:center;font-size:11px;color:var(--text3);margin-top:16px}
-.loc-section{margin-bottom:28px;animation:fadeUp .6s ease-out .18s both}
-.loc-chip{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:28px;cursor:pointer;transition:all .25s;box-shadow:var(--shadow-sm);width:fit-content;margin:0 auto 14px}
-.loc-chip:hover{border-color:var(--accent);box-shadow:var(--shadow-md)}
-.loc-chip.active{background:var(--accent-bg);border-color:var(--accent)}
-.loc-chip svg{width:18px;height:18px;color:var(--text3);transition:color .25s}
-.loc-chip.active svg{color:var(--accent)}
-.loc-chip span{font-size:13px;font-weight:600;color:var(--text2);transition:color .25s}
-.loc-chip.active span{color:var(--accent)}
-.loc-panel{display:none;animation:fadeUp .3s ease-out}
-.loc-panel.show{display:block}
-.loc-input-wrap{position:relative;margin-bottom:14px}
-.loc-input{width:100%;padding:12px 16px 12px 42px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:all .2s}
-.loc-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.loc-hero{max-width:800px;margin:0 auto 20px;padding:0 20px;animation:fadeUp .5s ease-out .1s both}
+.loc-box{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:24px;box-shadow:var(--shadow-md);position:relative;overflow:hidden}
+.loc-box::before{content:'';position:absolute;right:-30px;top:-30px;width:160px;height:160px;border-radius:50%;background:var(--accent-glow);pointer-events:none}
+.loc-box::after{content:'';position:absolute;right:40px;bottom:-40px;width:100px;height:100px;border-radius:50%;background:var(--accent-glow);pointer-events:none}
+.loc-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.loc-pin-icon{width:44px;height:44px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.loc-pin-icon svg{width:22px;height:22px;color:#fff}
+.loc-title{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.loc-subtitle{font-size:13px;color:var(--text3);margin-top:2px}
+.loc-input-wrap{position:relative;margin-bottom:16px}
+.loc-input{width:100%;padding:14px 18px 14px 44px;border:1.5px solid var(--border);border-radius:14px;font-size:15px;background:var(--card2);color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:all .25s}
+.loc-input:focus{border-color:var(--accent);background:var(--card);box-shadow:0 0 0 3px var(--accent-glow)}
 .loc-input::placeholder{color:var(--text3)}
-.loc-input-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text3)}
-.loc-suggestions{position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:0 0 12px 12px;max-height:180px;overflow-y:auto;z-index:10;display:none;box-shadow:var(--shadow-lg)}
-.loc-sug-item{padding:10px 16px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border);color:var(--text);transition:background .15s}
+.loc-input-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--text3)}
+.loc-suggestions{position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:0 0 14px 14px;max-height:200px;overflow-y:auto;z-index:10;display:none;box-shadow:var(--shadow-lg)}
+.loc-sug-item{padding:12px 18px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--border);color:var(--text);transition:background .15s}
 .loc-sug-item:hover{background:var(--accent-bg)}
-.loc-sug-item .loc-zone{color:var(--text3);font-size:11px;display:block}
+.loc-sug-item .loc-zone{color:var(--text3);font-size:11px;display:block;margin-top:2px}
 .loc-results{display:grid;gap:12px}
-.loc-card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:18px;display:flex;gap:14px;align-items:flex-start;transition:all .25s;animation:scaleIn .3s ease-out}
-.loc-card:hover{border-color:var(--accent);box-shadow:var(--shadow-md)}
-.loc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;flex-shrink:0;font-family:'Space Grotesk',sans-serif}
+.loc-card{background:var(--card2);border:1.5px solid var(--border);border-radius:14px;padding:16px;display:flex;gap:14px;align-items:flex-start;transition:all .25s;animation:scaleIn .3s ease-out;cursor:pointer}
+.loc-card:hover{border-color:var(--accent);background:var(--accent-bg);transform:translateX(4px)}
+.loc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;flex-shrink:0;font-family:'Space Grotesk',sans-serif}
 .loc-icon.coto{background:linear-gradient(135deg,#e8553a,#f97358)}
 .loc-icon.jumbo{background:linear-gradient(135deg,#059669,#34d399)}
 .loc-icon.disco{background:linear-gradient(135deg,#7c3aed,#a78bfa)}
 .loc-info{flex:1}
-.loc-name{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px}
-.loc-addr{font-size:13px;color:var(--text2);margin-bottom:6px}
-.loc-meta{display:flex;gap:12px;flex-wrap:wrap}
+.loc-name{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px}
+.loc-addr{font-size:12px;color:var(--text2);margin-bottom:8px}
+.loc-meta{display:flex;gap:8px;flex-wrap:wrap}
 .loc-tag{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600}
 .loc-tag.open{background:var(--green-bg);color:var(--green)}
 .loc-tag.closed{background:var(--red-bg);color:var(--red)}
-.loc-tag.dist{background:var(--card2);color:var(--text2)}
+.loc-tag.dist{background:var(--card);color:var(--text2);border:1px solid var(--border)}
 .loc-tag.hours{background:var(--accent-bg);color:var(--accent)}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);z-index:100;justify-content:center;align-items:center;padding:20px}
 .modal-bg.on{display:flex}
@@ -302,39 +289,28 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
   <h1 data-es="Encontrá el <em>mejor precio</em> para tu compra" data-en="Find the <em>best price</em> for your groceries" class="i18n-html" id="hero-title"></h1>
   <p data-es="Compará Coto, Jumbo y Disco al instante" data-en="Compare Coto, Jumbo and Disco instantly" class="i18n"></p>
 </div>
+<div class="loc-hero">
+  <div class="loc-box">
+    <div class="loc-header">
+      <div class="loc-pin-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
+      <div>
+        <div class="loc-title i18n" data-es="Supermercados cerca tuyo" data-en="Supermarkets near you" id="loc-title-text"></div>
+        <div class="loc-subtitle i18n" data-es="Escribí tu barrio y encontrá la sucursal más cercana" data-en="Type your neighborhood to find the nearest store"></div>
+      </div>
+    </div>
+    <div class="loc-input-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      <input class="loc-input" type="text" id="loc-input" autocomplete="off"/>
+      <div class="loc-suggestions" id="loc-sug"></div>
+    </div>
+    <div class="loc-results" id="loc-results"></div>
+  </div>
+</div>
 <div class="main">
   <div class="search-wrap">
     <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
     <input type="text" id="search" autocomplete="off"/>
     <div class="autocomplete-list" id="autocomplete"></div>
-  </div>
-  <div class="currency-bar" id="currency-bar">
-    <div class="cur-chip" id="cur-chip" onclick="toggleCurrency()">
-      <div class="globe"></div>
-      <span class="cur-chip-text" id="cur-chip-text" data-es="Convertir moneda" data-en="Convert currency"></span>
-    </div>
-    <div class="cur-select-wrap" id="cur-wrap">
-      <select class="cur-sel" id="cur-select" onchange="updateCurrency()">
-        <option value="USD">USD $</option><option value="EUR">EUR €</option><option value="BRL">BRL R$</option>
-        <option value="GBP">GBP £</option><option value="CLP">CLP</option><option value="UYU">UYU</option>
-        <option value="MXN">MXN</option><option value="JPY">JPY ¥</option><option value="CNY">CNY ¥</option>
-      </select>
-      <span class="cur-rate" id="cur-rate"></span>
-    </div>
-  </div>
-  <div class="loc-section">
-    <div class="loc-chip" id="loc-chip" onclick="toggleLoc()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-      <span id="loc-chip-text" data-es="Supermercados cerca tuyo" data-en="Supermarkets near you"></span>
-    </div>
-    <div class="loc-panel" id="loc-panel">
-      <div class="loc-input-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-        <input class="loc-input" type="text" id="loc-input" autocomplete="off"/>
-        <div class="loc-suggestions" id="loc-sug"></div>
-      </div>
-      <div class="loc-results" id="loc-results"></div>
-    </div>
   </div>
   <div class="coupons">
     <div class="coupons-title i18n" data-es="Cupones disponibles" data-en="Available coupons" id="coup-title"></div>
@@ -361,13 +337,9 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
 </div>
 <div class="toast" id="toast"></div>
 <script>
-let AP=[],lang='es',dark=false,showCur=false,selCur='USD';
+let AP=[],lang='es',dark=false,selCur='USD';
 const XR={USD:{r:1200,s:'US$'},EUR:{r:1300,s:'€'},BRL:{r:230,s:'R$'},GBP:{r:1520,s:'£'},CLP:{r:1.28,s:'CL$'},UYU:{r:28,s:'UY$'},MXN:{r:70,s:'MX$'},JPY:{r:7.8,s:'¥'},CNY:{r:165,s:'¥'}};
-function cv(a){if(!showCur)return '';const c=XR[selCur];return `<span class="cur-eq">${c.s}${(a/c.r).toFixed(2)}</span>`}
-function cvi(a){if(!showCur)return '';const c=XR[selCur];return `<span class="cur-eq-i">(${c.s}${(a/c.r).toFixed(2)})</span>`}
-function toggleCurrency(){showCur=!showCur;document.getElementById('cur-chip').classList.toggle('active',showCur);document.getElementById('cur-wrap').classList.toggle('show',showCur);if(showCur)updCurRate();if(AP.length)showPop(AP);const q=document.getElementById('search').value.trim();if(q)buscar()}
-function updateCurrency(){selCur=document.getElementById('cur-select').value;updCurRate();if(AP.length)showPop(AP);const q=document.getElementById('search').value.trim();if(q)buscar()}
-function updCurRate(){document.getElementById('cur-rate').textContent=`1 ${selCur} ≈ $${XR[selCur].r} ARS`}
+function cvModal(a){const c=XR[selCur];return `${c.s}${(a/c.r).toFixed(2)} ${selCur}`}
 const T={
 es:{desde:'Desde',ph:'¿Qué producto buscás?',nr1:'No encontramos',nr2:'Probá con otro término',na:'No hay resultados para',upd:'Precios actualizados',rp:'Precio regular',pp:'Precio promocional',sav:'Ahorro',pe:'Promo vence',days:'días',exp:'Vencida',verd:'Veredicto',bp:'Mejor precio disponible',st:'Datos del scraping',src:'Fuente',ed:'Fecha de extracción',meth:'Método',as:'Scraping automático',prod:'Producto',nd:'No disponible',cheap:'MÁS BARATO',offer:'OFERTA',expires:'Vence',cc:'Cupón copiado',ct:'Cupones disponibles',pt:'Productos disponibles',off:'OFF',vu:'Válido hasta',cm:'Compra mín.',onl:'Online'},
 en:{desde:'From',ph:'What are you looking for?',nr1:'We couldn\\'t find',nr2:'Try another term',na:'No results for',upd:'Prices updated',rp:'Regular price',pp:'Promo price',sav:'Savings',pe:'Promo expires',days:'days',exp:'Expired',verd:'Verdict',bp:'Best price available',st:'Scraping data',src:'Source',ed:'Extraction date',meth:'Method',as:'Auto website scraping',prod:'Product',nd:'Not available',cheap:'CHEAPEST',offer:'SALE',expires:'Expires',cc:'Coupon copied',ct:'Available coupons',pt:'Available products',off:'OFF',vu:'Valid until',cm:'Min. purchase',onl:'Online'}
@@ -383,19 +355,19 @@ const coups=[
 ];
 function renderCoups(){const s=document.getElementById('coup-scroll'),now=new Date();s.innerHTML=coups.map(c=>{const e=new Date(now.getTime()+c.exp*864e5).toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'short'});return `<div class="coupon ${c.cls}" onclick="copyCoup('${c.code}')"><div class="blob blob1"></div><div class="blob blob2"></div><div class="store">${c.store}</div><div class="disc">${c.disc} ${t('off')}</div><div class="cdesc">${lang==='es'?c.des:c.den}</div><div class="ccode">${c.code}</div><div class="cexp">${t('vu')} ${e} · ${t('cm')} ${c.min}</div></div>`}).join('')}
 function copyCoup(c){navigator.clipboard.writeText(c).then(()=>{const e=document.getElementById('toast');e.textContent='✅ '+t('cc')+': '+c;e.style.display='block';setTimeout(()=>e.style.display='none',2e3)})}
-function setLang(l){lang=l;document.getElementById('btn-es').classList.toggle('active',l==='es');document.getElementById('btn-en').classList.toggle('active',l==='en');document.querySelectorAll('.i18n').forEach(e=>{if(e.dataset[l])e.textContent=e.dataset[l]});document.querySelectorAll('.i18n-html').forEach(e=>{if(e.dataset[l])e.innerHTML=e.dataset[l]});document.getElementById('search').placeholder=t('ph');document.getElementById('coup-title').textContent=t('ct');document.getElementById('prod-title').textContent=t('pt');const cct=document.getElementById('cur-chip-text');if(cct)cct.textContent=cct.dataset[l];const lct=document.getElementById('loc-chip-text');if(lct)lct.textContent=lct.dataset[l];renderCoups();if(AP.length)showPop(AP)}
+function setLang(l){lang=l;document.getElementById('btn-es').classList.toggle('active',l==='es');document.getElementById('btn-en').classList.toggle('active',l==='en');document.querySelectorAll('.i18n').forEach(e=>{if(e.dataset[l])e.textContent=e.dataset[l]});document.querySelectorAll('.i18n-html').forEach(e=>{if(e.dataset[l])e.innerHTML=e.dataset[l]});document.getElementById('search').placeholder=t('ph');document.getElementById('coup-title').textContent=t('ct');document.getElementById('prod-title').textContent=t('pt');const cct=document.getElementById('cur-chip-text');if(cct)cct.textContent=cct.dataset[l];renderCoups();if(AP.length)showPop(AP)}
 async function loadProds(){try{const r=await fetch('/api/products');AP=await r.json();showPop(AP)}catch(e){console.error(e)}}
 const EM={'Leche Entera':'🥛','Yogur Natural':'🥛','Naranjas':'🍊','Huevos':'🥚','Queso Cremoso':'🧀','Manteca':'🧈','Pan Lactal':'🍞','Arroz':'🍚','Fideos Secos':'🍝','Aceite de Girasol':'🫒','Azúcar':'🍬','Harina':'🌾','Galletitas Dulces':'🍪','Gaseosa Cola':'🥤','Agua Mineral':'💧','Papel Higiénico':'🧻','Detergente':'🧴','Jabón en Polvo':'🧼','Pollo Entero':'🍗','Carne Picada':'🥩','Banana':'🍌','Tomate':'🍅','Papa':'🥔','Cebolla':'🧅'};
-function showPop(ps){document.getElementById('grid').innerHTML=ps.map((p,i)=>`<div class="item" onclick="pickProd('${p.nombre}')" style="animation-delay:${i*40}ms;animation:fadeUp .4s ease-out ${i*40}ms both"><span class="emo">${EM[p.nombre]||'🛒'}</span><span class="nm">${p.nombre}</span><span class="qt">${p.cantidad}</span><span class="pr">${t('desde')} $${p.precio_min} ${cvi(p.precio_min)}</span></div>`).join('')}
+function showPop(ps){document.getElementById('grid').innerHTML=ps.map((p,i)=>`<div class="item" onclick="pickProd('${p.nombre}')" style="animation-delay:${i*40}ms;animation:fadeUp .4s ease-out ${i*40}ms both"><span class="emo">${EM[p.nombre]||'🛒'}</span><span class="nm">${p.nombre}</span><span class="qt">${p.cantidad}</span><span class="pr">${t('desde')} $${p.precio_min}</span></div>`).join('')}
 function pickProd(n){document.getElementById('search').value=n;buscar()}
 function filtrarCat(c){document.querySelectorAll('.cat').forEach(b=>b.classList.remove('active'));event.target.closest('.cat').classList.add('active');const cs={'lácteos':['Leche Entera','Yogur Natural','Queso Cremoso','Manteca'],'frutas':['Naranjas','Banana','Tomate','Papa','Cebolla'],'carnes':['Pollo Entero','Carne Picada','Huevos'],'almacén':['Pan Lactal','Arroz','Fideos Secos','Aceite de Girasol','Azúcar','Harina','Galletitas Dulces'],'bebidas':['Gaseosa Cola','Agua Mineral'],'limpieza':['Papel Higiénico','Detergente','Jabón en Polvo']};showPop(c==='todos'?AP:AP.filter(p=>cs[c]?.includes(p.nombre)));document.getElementById('home').style.display='block';document.getElementById('results').innerHTML=''}
 const si=document.getElementById('search'),al=document.getElementById('autocomplete');
 si.addEventListener('input',function(){const q=this.value.toLowerCase().trim();if(q.length<1){al.style.display='none';return}const m=AP.filter(p=>p.nombre.toLowerCase().includes(q));if(!m.length){al.innerHTML=`<div class="autocomplete-item" style="color:var(--text3)">${t('na')} "${q}"</div>`;al.style.display='block';return}al.innerHTML=m.map(p=>`<div class="autocomplete-item" onclick="pickProd('${p.nombre}')">${p.nombre} <span class="qty">${p.cantidad}</span></div>`).join('');al.style.display='block'});
 document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))al.style.display='none'});
-async function buscar(){al.style.display='none';const q=si.value.trim();if(!q)return;document.getElementById('home').style.display='none';try{const r=await fetch(`/api/search?q=${encodeURIComponent(q)}`);const data=await r.json();let h='',fs='';if(!Object.keys(data).length){h=`<div class="no-results"><span class="big">🔍</span><p><strong>${t('nr1')}</strong> "${q}"</p><p style="margin-top:8px;font-size:14px;color:var(--text3)">${t('nr2')}</p></div>`;document.getElementById('home').style.display='block'}for(const[prod,info]of Object.entries(data)){const ps=info.precios,best=Math.min(...ps.map(p=>p.precio_final));h+=`<div class="product"><h3>${prod}</h3><div class="qlabel">${info.cantidad}</div>`;for(const p of ps){const ib=p.precio_final===best,cls=ib?'best':'';const md=encodeURIComponent(JSON.stringify({producto:prod,cantidad:info.cantidad,supermarket:p.supermarket,precio:p.precio,precio_promo:p.precio_promo,precio_final:p.precio_final,promo_vence:p.promo_vence,fecha_scraping:p.fecha_scraping,esMejor:ib}));let ph='';if(p.precio_promo){ph=`<span class="pr-promo"><span class="pr-old">$${p.precio}</span><span class="pr-sale">$${p.precio_promo}</span><span class="tag tag-sale">${t('offer')}</span></span>${cv(p.precio_promo)}`;if(p.promo_vence)ph+=`<span class="promo-exp">${t('expires')}: ${fmtD(p.promo_vence)}</span>`}else{ph=`<span class="pr-val">$${p.precio}</span>${cv(p.precio)}`}h+=`<div class="price-row ${cls}" onclick="openModal('${md}')"><span class="sm-name">🏪 ${p.supermarket}</span><div class="pr-info">${ph}${ib?`<span class="tag tag-best">${t('cheap')}</span>`:''}</div></div>`;if(p.fecha_scraping)fs=p.fecha_scraping}h+=`</div>`}document.getElementById('results').innerHTML=h;if(fs)document.getElementById('scrape-info').innerHTML=`${t('upd')}: ${fmtD(fs)}`}catch(e){document.getElementById('results').innerHTML='<p>Error</p>'}}
+async function buscar(){al.style.display='none';const q=si.value.trim();if(!q)return;document.getElementById('home').style.display='none';try{const r=await fetch(`/api/search?q=${encodeURIComponent(q)}`);const data=await r.json();let h='',fs='';if(!Object.keys(data).length){h=`<div class="no-results"><span class="big">🔍</span><p><strong>${t('nr1')}</strong> "${q}"</p><p style="margin-top:8px;font-size:14px;color:var(--text3)">${t('nr2')}</p></div>`;document.getElementById('home').style.display='block'}for(const[prod,info]of Object.entries(data)){const ps=info.precios,best=Math.min(...ps.map(p=>p.precio_final));h+=`<div class="product"><h3>${prod}</h3><div class="qlabel">${info.cantidad}</div>`;for(const p of ps){const ib=p.precio_final===best,cls=ib?'best':'';const md=encodeURIComponent(JSON.stringify({producto:prod,cantidad:info.cantidad,supermarket:p.supermarket,precio:p.precio,precio_promo:p.precio_promo,precio_final:p.precio_final,promo_vence:p.promo_vence,fecha_scraping:p.fecha_scraping,esMejor:ib}));let ph='';if(p.precio_promo){ph=`<span class="pr-promo"><span class="pr-old">$${p.precio}</span><span class="pr-sale">$${p.precio_promo}</span><span class="tag tag-sale">${t('offer')}</span></span>`;if(p.promo_vence)ph+=`<span class="promo-exp">${t('expires')}: ${fmtD(p.promo_vence)}</span>`}else{ph=`<span class="pr-val">$${p.precio}</span>`}h+=`<div class="price-row ${cls}" onclick="openModal('${md}')"><span class="sm-name">🏪 ${p.supermarket}</span><div class="pr-info">${ph}${ib?`<span class="tag tag-best">${t('cheap')}</span>`:''}</div></div>`;if(p.fecha_scraping)fs=p.fecha_scraping}h+=`</div>`}document.getElementById('results').innerHTML=h;if(fs)document.getElementById('scrape-info').innerHTML=`${t('upd')}: ${fmtD(fs)}`}catch(e){document.getElementById('results').innerHTML='<p>Error</p>'}}
 function fmtD(d){return new Date(d+'T00:00:00').toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'long',year:'numeric'})}
 si.addEventListener('keypress',e=>{if(e.key==='Enter')buscar()});
-function openModal(ed){const d=JSON.parse(decodeURIComponent(ed));let h=`<h3>🏪 ${d.supermarket}</h3><div class="msub">${d.producto} — ${d.cantidad}</div><div class="mrow"><span class="mlbl">${t('rp')}</span><span class="mval">$${d.precio} ${cvi(d.precio)}</span></div>`;if(d.precio_promo){h+=`<div class="mrow"><span class="mlbl">${t('pp')}</span><span class="mval promo">$${d.precio_promo} ${cvi(d.precio_promo)}</span></div><div class="mrow"><span class="mlbl">${t('sav')}</span><span class="mval promo">-$${d.precio-d.precio_promo} (${Math.round((1-d.precio_promo/d.precio)*100)}%)</span></div>`;if(d.promo_vence){const dias=Math.ceil((new Date(d.promo_vence+'T00:00:00')-new Date())/864e5);h+=`<div class="mrow"><span class="mlbl">${t('pe')}</span><span class="mval promo">${fmtD(d.promo_vence)} (${dias>0?dias+' '+t('days'):t('exp')})</span></div>`}}if(d.esMejor)h+=`<div class="mrow"><span class="mlbl">${t('verd')}</span><span class="mval best">✅ ${t('bp')}</span></div>`;h+=`<div class="msrc"><strong>📊 ${t('st')}</strong>${t('src')}: ${d.supermarket} ${t('onl')}<br>${t('ed')}: ${d.fecha_scraping?fmtD(d.fecha_scraping):t('nd')}<br>${t('meth')}: ${t('as')}<br>${t('prod')}: ${d.producto} (${d.cantidad})</div>`;document.getElementById('modal-c').innerHTML=h;document.getElementById('modal-bg').classList.add('on')}
+function openModal(ed){const d=JSON.parse(decodeURIComponent(ed));const pF=d.precio_promo||d.precio;let h=`<h3>🏪 ${d.supermarket}</h3><div class="msub">${d.producto} — ${d.cantidad}</div><div class="mrow"><span class="mlbl">${t('rp')}</span><span class="mval">$${d.precio}</span></div>`;if(d.precio_promo){h+=`<div class="mrow"><span class="mlbl">${t('pp')}</span><span class="mval promo">$${d.precio_promo}</span></div><div class="mrow"><span class="mlbl">${t('sav')}</span><span class="mval promo">-$${d.precio-d.precio_promo} (${Math.round((1-d.precio_promo/d.precio)*100)}%)</span></div>`;if(d.promo_vence){const dias=Math.ceil((new Date(d.promo_vence+'T00:00:00')-new Date())/864e5);h+=`<div class="mrow"><span class="mlbl">${t('pe')}</span><span class="mval promo">${fmtD(d.promo_vence)} (${dias>0?dias+' '+t('days'):t('exp')})</span></div>`}}if(d.esMejor)h+=`<div class="mrow"><span class="mlbl">${t('verd')}</span><span class="mval best">✅ ${t('bp')}</span></div>`;h+=`<div class="modal-cur"><div class="modal-cur-title">${lang==='es'?'Equivalencia en otra moneda':'Currency equivalent'}</div><div class="modal-cur-row"><select class="modal-cur-sel" onchange="selCur=this.value;document.getElementById('mcv').textContent=cvModal(${pF})"><option value="USD">USD $</option><option value="EUR">EUR €</option><option value="BRL">BRL R$</option><option value="GBP">GBP £</option><option value="CLP">CLP</option><option value="UYU">UYU</option><option value="MXN">MXN</option><option value="JPY">JPY ¥</option><option value="CNY">CNY ¥</option></select><span class="modal-cur-val" id="mcv">${cvModal(pF)}</span></div></div>`;h+=`<div class="msrc"><strong>📊 ${t('st')}</strong>${t('src')}: ${d.supermarket} ${t('onl')}<br>${t('ed')}: ${d.fecha_scraping?fmtD(d.fecha_scraping):t('nd')}<br>${t('meth')}: ${t('as')}<br>${t('prod')}: ${d.producto} (${d.cantidad})</div>`;document.getElementById('modal-c').innerHTML=h;document.getElementById('modal-bg').classList.add('on')}
 function closeModal(e){if(!e||e.target===document.getElementById('modal-bg')||e.target.classList.contains('mx'))document.getElementById('modal-bg').classList.remove('on')}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 setLang('es');loadProds();renderCoups();
@@ -425,7 +397,7 @@ const STORES=[
 
 const BARRIOS=['Belgrano','Nuñez','Colegiales','Palermo','Recoleta','Barrio Norte','Retiro','Caballito','Flores','Floresta','Almagro','Balvanera','Abasto','Once','Boedo','Parque Chacabuco','Villa Crespo','Chacarita','San Telmo','La Boca','Monserrat','San Nicolás','Puerto Madero','Devoto','Villa Urquiza','Saavedra','Liniers','Mataderos','Villa Lugano','Pompeya'];
 
-function toggleLoc(){const chip=document.getElementById('loc-chip'),panel=document.getElementById('loc-panel');chip.classList.toggle('active');panel.classList.toggle('show');if(panel.classList.contains('show')){document.getElementById('loc-input').placeholder=lang==='es'?'Escribí tu barrio...':'Type your neighborhood...';document.getElementById('loc-input').focus()}}
+document.getElementById('loc-input').placeholder=lang==='es'?'Escribí tu barrio...':'Type your neighborhood...';
 
 const locInput=document.getElementById('loc-input'),locSug=document.getElementById('loc-sug');
 locInput.addEventListener('input',function(){const q=this.value.toLowerCase().trim();if(q.length<2){locSug.style.display='none';return}const m=BARRIOS.filter(b=>b.toLowerCase().includes(q));if(!m.length){locSug.innerHTML=`<div class="loc-sug-item" style="color:var(--text3)">${lang==='es'?'No encontramos ese barrio':'Neighborhood not found'}</div>`;locSug.style.display='block';return}locSug.innerHTML=m.map(b=>`<div class="loc-sug-item" onclick="selectBarrio('${b}')">${b}<span class="loc-zone">Buenos Aires, CABA</span></div>`).join('');locSug.style.display='block'});
