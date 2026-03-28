@@ -166,35 +166,35 @@ def index():
     <title>GroceryFinder - Mejores precios en Buenos Aires</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%); min-height: 100vh; padding: 20px; }
         .container { background: white; border-radius: 15px; padding: 30px; max-width: 700px; width: 100%; margin: 0 auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
         .header { text-align: center; margin-bottom: 25px; }
         .header h1 { color: #333; font-size: 28px; margin-bottom: 5px; }
         .header p { color: #666; font-size: 14px; }
         .search-box { position: relative; display: flex; gap: 10px; margin-bottom: 20px; }
         .search-box input { flex: 1; padding: 12px 15px; border: 2px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; transition: border 0.3s; }
-        .search-box input:focus { border-color: #667eea; }
+        .search-box input:focus { border-color: #56ab2f; }
         .search-box button { padding: 12px 25px; background: #4caf50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: background 0.3s; }
         .search-box button:hover { background: #45a049; }
         .autocomplete-list { position: absolute; top: 100%; left: 0; right: 70px; background: white; border: 1px solid #ddd; border-top: none; border-radius: 0 0 8px 8px; max-height: 200px; overflow-y: auto; z-index: 10; display: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .autocomplete-item { padding: 10px 15px; cursor: pointer; font-size: 14px; border-bottom: 1px solid #f0f0f0; }
-        .autocomplete-item:hover { background: #f0f4ff; }
+        .autocomplete-item:hover { background: #f0f9e8; }
         .autocomplete-item .cantidad { color: #999; font-size: 12px; margin-left: 5px; }
-        .info-bar { background: #f0f4ff; border-radius: 8px; padding: 12px 15px; margin-bottom: 20px; font-size: 13px; color: #555; display: flex; justify-content: space-between; align-items: center; }
-        .info-bar .fecha { color: #667eea; font-weight: 600; }
+        .info-bar { background: #f0f9e8; border-radius: 8px; padding: 12px 15px; margin-bottom: 20px; font-size: 13px; color: #555; display: flex; justify-content: space-between; align-items: center; }
+        .info-bar .fecha { color: #56ab2f; font-weight: 600; }
         .categories { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
         .cat-btn { padding: 6px 14px; border: 1px solid #ddd; border-radius: 20px; background: white; cursor: pointer; font-size: 13px; transition: all 0.3s; }
-        .cat-btn:hover, .cat-btn.active { background: #667eea; color: white; border-color: #667eea; }
+        .cat-btn:hover, .cat-btn.active { background: #56ab2f; color: white; border-color: #56ab2f; }
         .section-title { font-size: 16px; color: #333; margin-bottom: 12px; font-weight: 600; }
         .results { margin-top: 10px; }
-        .product { margin-bottom: 15px; padding: 15px; border-left: 4px solid #667eea; background: #f9f9f9; border-radius: 0 8px 8px 0; }
+        .product { margin-bottom: 15px; padding: 15px; border-left: 4px solid #56ab2f; background: #f9f9f9; border-radius: 0 8px 8px 0; }
         .product h3 { color: #333; margin-bottom: 3px; font-size: 17px; }
         .product .cantidad-label { color: #888; font-size: 13px; margin-bottom: 10px; }
         .price-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; }
         .price-item:last-child { border-bottom: none; }
         .supermarket { display: flex; align-items: center; gap: 5px; font-size: 14px; }
         .price-info { text-align: right; }
-        .price { font-weight: bold; color: #667eea; font-size: 15px; }
+        .price { font-weight: bold; color: #56ab2f; font-size: 15px; }
         .price-promo { font-size: 13px; }
         .price-original { text-decoration: line-through; color: #999; margin-right: 8px; }
         .price-oferta { color: #e53e3e; font-weight: bold; }
@@ -205,11 +205,11 @@ def index():
         .badge-promo { background: #e53e3e; color: white; padding: 2px 8px; border-radius: 3px; font-size: 11px; margin-left: 8px; }
         .popular-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; }
         .popular-item { background: #f9f9f9; border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.3s; border: 1px solid #eee; }
-        .popular-item:hover { background: #f0f4ff; border-color: #667eea; transform: translateY(-2px); }
+        .popular-item:hover { background: #f0f9e8; border-color: #56ab2f; transform: translateY(-2px); }
         .popular-item .emoji { font-size: 28px; display: block; margin-bottom: 5px; }
         .popular-item .name { font-size: 13px; color: #333; font-weight: 600; }
         .popular-item .qty { font-size: 11px; color: #888; }
-        .popular-item .desde { font-size: 12px; color: #667eea; font-weight: 600; margin-top: 4px; }
+        .popular-item .desde { font-size: 12px; color: #56ab2f; font-weight: 600; margin-top: 4px; }
         .no-results { text-align: center; padding: 30px; color: #888; }
         .no-results .emoji-big { font-size: 48px; display: block; margin-bottom: 10px; }
         .scrape-date { text-align: center; font-size: 11px; color: #aaa; margin-top: 15px; }
