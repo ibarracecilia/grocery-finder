@@ -276,6 +276,15 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .loc-geo-btn:hover{background:var(--accent2);transform:translateY(-2px)}
 .loc-geo-btn svg{width:16px;height:16px}
 .loc-geo-status{font-size:12px;color:var(--text3);margin-left:8px}
+.loc-consent{display:none;background:var(--card2);border:1.5px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px;animation:fadeUp .3s ease-out}
+.loc-consent.show{display:block}
+.loc-consent-text{font-size:14px;color:var(--text);line-height:1.6;margin-bottom:14px}
+.loc-consent-sub{font-size:12px;color:var(--text3);margin-bottom:14px}
+.loc-consent-btns{display:flex;gap:10px}
+.loc-consent-yes{padding:9px 20px;border-radius:10px;background:var(--accent);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.loc-consent-yes:hover{background:var(--accent2)}
+.loc-consent-no{padding:9px 20px;border-radius:10px;background:var(--card);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;border:1.5px solid var(--border);cursor:pointer;transition:all .2s}
+.loc-consent-no:hover{border-color:var(--text3)}
 /* About section - compact */
 .about-section{max-width:800px;margin:0 auto;padding:24px 20px 8px}
 .about-box{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
@@ -377,7 +386,15 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
       <input class="loc-input" type="text" id="loc-input" autocomplete="off"/>
       <div class="loc-suggestions" id="loc-sug"></div>
     </div>
-    <button class="loc-geo-btn" onclick="useMyLocation()" id="geo-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m10-10h-4M6 12H2"/></svg><span id="geo-btn-text" class="i18n" data-es="Usar mi ubicaci&oacute;n" data-en="Use my location"></span></button><span class="loc-geo-status" id="geo-status"></span>
+    <button class="loc-geo-btn" onclick="showGeoConsent()" id="geo-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m10-10h-4M6 12H2"/></svg><span id="geo-btn-text" class="i18n" data-es="Usar mi ubicaci&oacute;n" data-en="Use my location"></span></button><span class="loc-geo-status" id="geo-status"></span>
+    <div class="loc-consent" id="loc-consent">
+      <div class="loc-consent-text i18n" data-es="Para mostrarte los supermercados m&aacute;s cercanos, necesitamos acceder a tu ubicaci&oacute;n." data-en="To show you the nearest supermarkets, we need to access your location."></div>
+      <div class="loc-consent-sub i18n" data-es="Tu ubicaci&oacute;n no se guarda ni se comparte. Solo se usa para calcular la distancia a las sucursales." data-en="Your location is not saved or shared. It is only used to calculate the distance to stores."></div>
+      <div class="loc-consent-btns">
+        <button class="loc-consent-yes" onclick="acceptGeo()"><span class="i18n" data-es="S&iacute;, mostrar supermercados cerca" data-en="Yes, show nearby supermarkets"></span></button>
+        <button class="loc-consent-no" onclick="declineGeo()"><span class="i18n" data-es="No, gracias" data-en="No, thanks"></span></button>
+      </div>
+    </div>
     <div id="loc-map"></div>
     <div class="loc-results" id="loc-results"></div>
   </div>
@@ -1057,7 +1074,19 @@ function getDistance(lat1, lng1, lat2, lng2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-function useMyLocation() {
+function showGeoConsent() {
+  document.getElementById('loc-consent').classList.add('show');
+  document.getElementById('geo-btn').style.display = 'none';
+}
+
+function declineGeo() {
+  document.getElementById('loc-consent').classList.remove('show');
+  document.getElementById('geo-btn').style.display = 'inline-flex';
+}
+
+function acceptGeo() {
+  document.getElementById('loc-consent').classList.remove('show');
+  document.getElementById('geo-btn').style.display = 'inline-flex';
   var status = document.getElementById('geo-status');
   status.textContent = lang === 'es' ? 'Buscando...' : 'Searching...';
 
@@ -1070,12 +1099,13 @@ function useMyLocation() {
     var lat = pos.coords.latitude;
     var lng = pos.coords.longitude;
     status.textContent = '';
+    document.getElementById('geo-btn').style.display = 'none';
     showMap(lat, lng);
   }, function(err) {
     if (err.code === 1) {
-      status.textContent = lang === 'es' ? 'Permiso denegado' : 'Permission denied';
+      status.textContent = lang === 'es' ? 'Permiso denegado. Activ\u00e1 la ubicaci\u00f3n en los ajustes de tu navegador.' : 'Permission denied. Enable location in your browser settings.';
     } else {
-      status.textContent = lang === 'es' ? 'No pudimos obtener tu ubicaci\u00f3n' : 'Could not get your location';
+      status.textContent = lang === 'es' ? 'No pudimos obtener tu ubicaci\u00f3n. Intent\u00e1 de nuevo.' : 'Could not get your location. Try again.';
     }
   }, {enableHighAccuracy: true, timeout: 10000});
 }
