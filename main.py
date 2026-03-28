@@ -68,466 +68,273 @@ def index():
     return '''<!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GroceryFinder</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: linear-gradient(160deg, #e8f0fe 0%, #f0fdf9 40%, #fdf4f0 100%); --bg-color: #eef3fa; --card: #ffffff; --card-border: #e2e8f0; --text: #1e293b;
-            --text-secondary: #64748b; --text-muted: #94a3b8; --accent: #0d9488;
-            --accent-hover: #0f766e; --accent-light: #f0fdfa; --accent-border: #ccfbf1;
-            --input-bg: #f8fafc; --input-border: #e2e8f0; --divider: #e2e8f0;
-            --item-bg: #f8fafc; --shadow: rgba(0,0,0,0.06); --shadow-lg: rgba(0,0,0,0.04);
-            --modal-bg: rgba(15,23,42,0.4); --toast-bg: #1e293b; --price-strike: #cbd5e1;
-            --red: #dc2626; --green: #059669;
-        }
-        [data-theme="dark"] {
-            --bg: none; --bg-color: #0f172a; --card: #1e293b; --card-border: #334155; --text: #f1f5f9;
-            --text-secondary: #94a3b8; --text-muted: #64748b; --accent: #2dd4bf;
-            --accent-hover: #14b8a6; --accent-light: #134e4a; --accent-border: #115e59;
-            --input-bg: #0f172a; --input-border: #334155; --divider: #334155;
-            --item-bg: #0f172a; --shadow: rgba(0,0,0,0.2); --shadow-lg: rgba(0,0,0,0.3);
-            --modal-bg: rgba(0,0,0,0.6); --toast-bg: #f1f5f9; --price-strike: #475569;
-            --red: #f87171; --green: #34d399;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-color); background-image: var(--bg); min-height: 100vh; padding: 20px 16px; transition: background 0.4s, color 0.4s; color: var(--text); }
-        .top-bar { max-width: 750px; margin: 0 auto 14px; display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
-        .top-bar .logo { display: flex; align-items: center; gap: 0; }
-        .top-bar .logo svg { height: 64px; width: auto; }
-        @keyframes pulse-node { 0%,100%{opacity:0.2;r:2.5} 50%{opacity:0.7;r:3.5} }
-        @keyframes glow-core { 0%,100%{opacity:0.5} 50%{opacity:1} }
-        @keyframes pulse-pin { 0%,100%{opacity:0.4} 50%{opacity:0.8} }
-        .logo-node { animation: pulse-node 2.5s ease-in-out infinite; }
-        .logo-node:nth-child(2) { animation-delay: 0.4s; }
-        .logo-node:nth-child(3) { animation-delay: 0.8s; }
-        .logo-node:nth-child(4) { animation-delay: 1.2s; }
-        .logo-node:nth-child(5) { animation-delay: 1.6s; }
-        .logo-core { animation: glow-core 3s ease-in-out infinite; }
-        .logo-pin { animation: pulse-pin 2s ease-in-out infinite; }
-        .logo-pin:nth-child(odd) { animation-delay: 0.3s; }
-        .logo-svg:hover .logo-node { animation-duration: 1s; }
-        .logo-svg:hover .logo-core { animation-duration: 1s; opacity: 1; }
-        @media (prefers-reduced-motion: reduce) {
-            .logo-node, .logo-core, .logo-pin { animation: none; }
-        }
-        .top-bar .right { display: flex; align-items: center; gap: 10px; }
-        .top-bar .tagline { font-size: 11px; color: var(--text-muted); font-weight: 500; }
-        .lang-toggle { display: flex; border: 1.5px solid var(--card-border); border-radius: 8px; overflow: hidden; }
-        .lang-btn { padding: 4px 10px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; background: var(--card); color: var(--text-secondary); font-family: 'Inter', sans-serif; transition: all 0.2s; }
-        .lang-btn.active { background: var(--accent); color: white; }
-        /* Dark mode toggle */
-        .theme-toggle { width: 48px; height: 26px; border-radius: 13px; background: var(--card-border); border: none; cursor: pointer; position: relative; transition: background 0.3s; padding: 0; }
-        [data-theme="dark"] .theme-toggle { background: var(--accent); }
-        .theme-toggle .toggle-circle { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: white; transition: all 0.3s; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
-        [data-theme="dark"] .theme-toggle .toggle-circle { left: 25px; }
-        .container { background: var(--card); border-radius: 20px; padding: 32px; max-width: 750px; width: 100%; margin: 0 auto; box-shadow: 0 1px 3px var(--shadow), 0 8px 30px var(--shadow-lg), 0 0 60px rgba(13,148,136,0.04); border: 1px solid var(--card-border); transition: all 0.4s; }
-        .header { text-align: center; margin-bottom: 28px; }
-        .header h1 { color: var(--text); font-size: 30px; margin-bottom: 6px; font-weight: 700; letter-spacing: -0.8px; line-height: 1.2; }
-        .header p { color: var(--text-muted); font-size: 15px; line-height: 1.5; }
-        .coupons-section { margin-bottom: 22px; }
-        .currency-bar { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; padding: 10px 16px; background: var(--item-bg); border-radius: 12px; border: 1px solid var(--card-border); flex-wrap: wrap; }
-        .currency-bar label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
-        .currency-bar select { padding: 6px 10px; border: 1.5px solid var(--card-border); border-radius: 8px; background: var(--card); color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; outline: none; cursor: pointer; }
-        .currency-bar select:focus { border-color: var(--accent); }
-        .currency-bar .currency-toggle { padding: 6px 14px; border: 1.5px solid var(--card-border); border-radius: 8px; background: var(--card); color: var(--text-secondary); font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .currency-bar .currency-toggle.active { background: var(--accent); color: white; border-color: var(--accent); }
-        .currency-eq { font-size: 11px; color: var(--text-muted); font-weight: 500; display: block; margin-top: 2px; }
-        .currency-eq-inline { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-left: 6px; }
-        .coupons-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin; }
-        .coupons-scroll::-webkit-scrollbar { height: 4px; }
-        .coupons-scroll::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
-        .coupon { min-width: 220px; border-radius: 12px; padding: 16px; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s; flex-shrink: 0; }
-        .coupon:hover { transform: translateY(-2px); }
-        .coupon-coto { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
-        .coupon-jumbo { background: linear-gradient(135deg, #059669, #10b981); color: white; }
-        .coupon-disco { background: linear-gradient(135deg, #7c3aed, #8b5cf6); color: white; }
-        .coupon .discount { font-size: 28px; font-weight: 700; line-height: 1; }
-        .coupon .coupon-desc { font-size: 12px; margin-top: 4px; opacity: 0.9; }
-        .coupon .coupon-code { display: inline-block; background: rgba(255,255,255,0.25); padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; margin-top: 8px; letter-spacing: 1px; }
-        .coupon .coupon-exp { font-size: 10px; opacity: 0.7; margin-top: 6px; }
-        .coupon .store-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; opacity: 0.9; }
-        .coupon-circle { position: absolute; right: -15px; top: -15px; width: 70px; height: 70px; border-radius: 50%; background: rgba(255,255,255,0.1); }
-        .coupon-circle2 { position: absolute; right: 20px; bottom: -20px; width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.08); }
-        .coupon-copied { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--toast-bg); color: var(--bg); padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 200; display: none; animation: fadeUp 0.3s ease-out; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-        .search-box { position: relative; display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-box input { flex: 1; padding: 13px 16px; border: 1.5px solid var(--input-border); border-radius: 10px; font-size: 15px; outline: none; transition: all 0.2s; background: var(--input-bg); font-family: 'Inter', sans-serif; color: var(--text); }
-        .search-box input:focus { border-color: var(--accent); background: var(--card); box-shadow: 0 0 0 3px rgba(13,148,136,0.1); }
-        .search-box input::placeholder { color: var(--text-muted); }
-        .search-box button { padding: 13px 24px; background: var(--accent); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; font-family: 'Inter', sans-serif; }
-        .search-box button:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(13,148,136,0.25); }
-        .autocomplete-list { position: absolute; top: 100%; left: 0; right: 80px; background: var(--card); border: 1px solid var(--card-border); border-top: none; border-radius: 0 0 10px 10px; max-height: 200px; overflow-y: auto; z-index: 10; display: none; box-shadow: 0 8px 20px var(--shadow); }
-        .autocomplete-item { padding: 10px 16px; cursor: pointer; font-size: 14px; border-bottom: 1px solid var(--divider); color: var(--text); }
-        .autocomplete-item:hover { background: var(--accent-light); }
-        .autocomplete-item .cantidad { color: var(--text-muted); font-size: 12px; margin-left: 5px; }
-        .categories { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
-        .cat-btn { padding: 8px 18px; border: 1.5px solid var(--card-border); border-radius: 25px; background: var(--card); cursor: pointer; font-size: 14px; transition: all 0.2s; font-family: 'Inter', sans-serif; font-weight: 500; color: var(--text-secondary); }
-        .cat-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
-        .cat-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
-        .section-title { font-size: 14px; color: var(--text-muted); margin-bottom: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
-        .results { margin-top: 10px; }
-        .product { margin-bottom: 16px; padding: 20px; border-left: 4px solid var(--accent); background: var(--item-bg); border-radius: 0 14px 14px 0; }
-        .product h3 { color: var(--text); margin-bottom: 4px; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
-        .product .cantidad-label { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; font-weight: 500; }
-        .price-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--divider); cursor: pointer; transition: all 0.15s; }
-        .price-item:last-child { border-bottom: none; }
-        .price-item:hover { opacity: 0.8; }
-        .supermarket { display: flex; align-items: center; gap: 6px; font-size: 15px; color: var(--text-secondary); font-weight: 500; }
-        .price-info { text-align: right; }
-        .price { font-weight: 700; color: var(--accent); font-size: 17px; letter-spacing: -0.3px; }
-        .price-promo { font-size: 13px; }
-        .price-original { text-decoration: line-through; color: var(--price-strike); margin-right: 8px; }
-        .price-oferta { color: var(--red); font-weight: 700; }
-        .promo-vence { font-size: 11px; color: var(--red); display: block; margin-top: 2px; }
-        .cheapest { background: var(--accent-light); padding: 10px; border-radius: 8px; border: 1px solid var(--accent-border); }
-        .cheapest .price { color: var(--green); }
-        .badge { background: var(--green); color: white; padding: 3px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
-        .badge-promo { background: var(--red); color: white; padding: 3px 10px; border-radius: 20px; font-size: 10px; margin-left: 8px; font-weight: 600; text-transform: uppercase; }
-        .popular-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 20px; }
-        .popular-item { background: var(--card); border-radius: 14px; padding: 18px 12px; text-align: center; cursor: pointer; transition: all 0.25s; border: 1.5px solid var(--card-border); }
-        .popular-item:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(13,148,136,0.1); }
-        .popular-item .emoji { font-size: 36px; display: block; margin-bottom: 10px; }
-        .popular-item .name { font-size: 14px; color: var(--text); font-weight: 600; display: block; letter-spacing: -0.2px; }
-        .popular-item .qty { font-size: 12px; color: var(--text-muted); display: block; margin-top: 3px; }
-        .popular-item .desde { font-size: 14px; color: var(--accent); font-weight: 700; margin-top: 8px; display: block; }
-        .no-results { text-align: center; padding: 40px; color: var(--text-muted); }
-        .no-results .emoji-big { font-size: 48px; display: block; margin-bottom: 10px; }
-        .scrape-date { text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 15px; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--modal-bg); backdrop-filter: blur(4px); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
-        .modal-overlay.active { display: flex; }
-        .modal { background: var(--card); border-radius: 16px; padding: 28px; max-width: 420px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.12); position: relative; animation: modalIn 0.25s ease-out; border: 1px solid var(--card-border); }
-        @keyframes modalIn { from { transform: scale(0.95) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-        .modal-close { position: absolute; top: 14px; right: 16px; background: var(--item-bg); border: none; font-size: 16px; cursor: pointer; color: var(--text-secondary); width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-        .modal-close:hover { background: var(--divider); color: var(--text); }
-        .modal h3 { font-size: 18px; color: var(--text); margin-bottom: 5px; font-weight: 700; }
-        .modal .modal-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
-        .modal-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--divider); font-size: 14px; }
-        .modal-row:last-child { border-bottom: none; }
-        .modal-label { color: var(--text-secondary); }
-        .modal-value { color: var(--text); font-weight: 600; }
-        .modal-value.promo { color: var(--red); }
-        .modal-value.mejor { color: var(--green); }
-        .modal-source { margin-top: 18px; padding: 14px; background: var(--item-bg); border-radius: 10px; font-size: 12px; color: var(--text-secondary); border: 1px solid var(--card-border); line-height: 1.6; }
-        .modal-source strong { color: var(--text); display: block; margin-bottom: 4px; }
-        @media (max-width: 500px) {
-            .container { padding: 20px 15px; }
-            .header h1 { font-size: 22px; }
-            .popular-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-            .popular-item { padding: 10px 6px; }
-            .popular-item .emoji { font-size: 26px; }
-            .coupon { min-width: 190px; }
-            .top-bar { flex-wrap: wrap; gap: 8px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GroceryFinder</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#fafaf8;--card:#fff;--card2:#f5f3ef;--border:#e8e5df;--text:#1a1a18;--text2:#6b6960;--text3:#9e9a90;
+--accent:#0d9488;--accent2:#06b6a4;--accent-bg:#e6faf7;--accent-glow:rgba(13,148,136,0.12);
+--red:#e8553a;--red-bg:#fef0ec;--green:#1a9e6f;--green-bg:#e8f8f0;
+--shadow-sm:0 1px 2px rgba(26,26,24,0.04);--shadow-md:0 4px 20px rgba(26,26,24,0.06);--shadow-lg:0 12px 40px rgba(26,26,24,0.08);
+--shadow-glow:0 0 40px rgba(13,148,136,0.08);--radius:16px;
+}
+[data-theme="dark"]{
+--bg:#111110;--card:#1c1c1a;--card2:#242422;--border:#333330;--text:#f0ede6;--text2:#a09d94;--text3:#6b6960;
+--accent:#2dd4bf;--accent2:#5eead4;--accent-bg:#0d2d28;--accent-glow:rgba(45,212,191,0.15);
+--red:#f87171;--red-bg:#3b1515;--green:#34d399;--green-bg:#0d3320;
+--shadow-sm:0 1px 2px rgba(0,0,0,0.2);--shadow-md:0 4px 20px rgba(0,0,0,0.3);--shadow-lg:0 12px 40px rgba(0,0,0,0.4);
+--shadow-glow:0 0 40px rgba(45,212,191,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .4s,color .4s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
+@keyframes scaleIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes pulseNode{0%,100%{opacity:.2;r:2.5}50%{opacity:.8;r:3.5}}
+@keyframes glowCore{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes pulsePin{0%,100%{opacity:.4}50%{opacity:.8}}
+.logo-node{animation:pulseNode 2.5s ease-in-out infinite}
+.logo-node:nth-child(2){animation-delay:.4s}.logo-node:nth-child(3){animation-delay:.8s}
+.logo-node:nth-child(4){animation-delay:1.2s}.logo-node:nth-child(5){animation-delay:1.6s}
+.logo-core{animation:glowCore 3s ease-in-out infinite}
+.logo-pin{animation:pulsePin 2s ease-in-out infinite}
+.logo-pin:nth-child(odd){animation-delay:.3s}
+.logo-svg:hover .logo-node{animation-duration:1s}
+.logo-svg:hover .logo-core{opacity:1;animation-duration:1s}
+nav{max-width:800px;margin:0 auto;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+nav .logo svg{height:52px;width:auto}
+nav .controls{display:flex;align-items:center;gap:8px}
+.pill-toggle{display:flex;background:var(--card2);border-radius:10px;padding:3px;border:1px solid var(--border)}
+.pill-btn{padding:5px 12px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);font-family:'DM Sans',sans-serif;transition:all .2s}
+.pill-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(13,148,136,.3)}
+.theme-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--card2);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.theme-btn:hover{border-color:var(--accent);background:var(--accent-bg)}
+.hero{max-width:800px;margin:0 auto;padding:0 20px 24px;animation:fadeUp .6s ease-out}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,5vw,38px);font-weight:700;letter-spacing:-1.5px;line-height:1.1;margin-bottom:8px}
+.hero h1 em{font-style:normal;color:var(--accent);position:relative}
+.hero p{color:var(--text2);font-size:16px;max-width:480px}
+.main{max-width:800px;margin:0 auto;padding:0 20px 40px}
+.search-wrap{position:relative;margin-bottom:24px;animation:fadeUp .6s ease-out .1s both}
+.search-wrap input{width:100%;padding:16px 20px 16px 48px;border:2px solid var(--border);border-radius:14px;font-size:16px;background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:all .25s;box-shadow:var(--shadow-sm)}
+.search-wrap input:focus{border-color:var(--accent);box-shadow:var(--shadow-glow),0 0 0 4px var(--accent-glow)}
+.search-wrap input::placeholder{color:var(--text3)}
+.search-wrap .search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--text3)}
+.autocomplete-list{position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--border);border-radius:0 0 14px 14px;max-height:220px;overflow-y:auto;z-index:10;display:none;box-shadow:var(--shadow-lg)}
+.autocomplete-item{padding:12px 20px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--border);color:var(--text);transition:background .15s}
+.autocomplete-item:hover{background:var(--accent-bg)}
+.autocomplete-item .qty{color:var(--text3);font-size:12px;margin-left:6px}
+.currency-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;padding:10px 16px;background:var(--card2);border-radius:12px;border:1px solid var(--border);flex-wrap:wrap;animation:fadeUp .6s ease-out .15s both}
+.currency-bar label{font-size:13px;color:var(--text2);font-weight:500}
+.currency-bar select{padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;cursor:pointer}
+.cur-toggle{padding:5px 14px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text3);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.cur-toggle.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.cur-eq{font-size:11px;color:var(--text3);font-weight:500;display:block;margin-top:2px}
+.cur-eq-i{font-size:11px;color:var(--text3);font-weight:500;margin-left:5px}
+.coupons{margin-bottom:28px;animation:fadeUp .6s ease-out .2s both}
+.coupons-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:12px}
+.coupons-scroll{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.coupons-scroll::-webkit-scrollbar{height:0}
+.coupon{min-width:240px;border-radius:16px;padding:20px;position:relative;overflow:hidden;cursor:pointer;transition:transform .25s;flex-shrink:0;scroll-snap-align:start}
+.coupon:hover{transform:translateY(-4px) scale(1.01)}
+.coupon:active{transform:scale(.98)}
+.coupon-coto{background:linear-gradient(135deg,#e8553a,#f97358)}
+.coupon-jumbo{background:linear-gradient(135deg,#059669,#34d399)}
+.coupon-disco{background:linear-gradient(135deg,#7c3aed,#a78bfa)}
+.coupon *{color:#fff}
+.coupon .store{font-size:13px;font-weight:600;opacity:.85;margin-bottom:6px}
+.coupon .disc{font-family:'Space Grotesk',sans-serif;font-size:32px;font-weight:700;line-height:1}
+.coupon .cdesc{font-size:13px;margin-top:4px;opacity:.85}
+.coupon .ccode{display:inline-block;background:rgba(255,255,255,.22);backdrop-filter:blur(4px);padding:4px 12px;border-radius:8px;font-size:11px;font-weight:700;margin-top:10px;letter-spacing:1.5px}
+.coupon .cexp{font-size:10px;opacity:.6;margin-top:6px}
+.coupon .blob{position:absolute;border-radius:50%;background:rgba(255,255,255,.1)}
+.coupon .blob1{width:80px;height:80px;right:-20px;top:-20px}
+.coupon .blob2{width:60px;height:60px;right:30px;bottom:-25px;background:rgba(255,255,255,.06)}
+.cats{display:flex;gap:8px;overflow-x:auto;margin-bottom:24px;padding-bottom:4px;animation:fadeUp .6s ease-out .25s both;-webkit-overflow-scrolling:touch}
+.cats::-webkit-scrollbar{height:0}
+.cat{padding:9px 18px;border:1.5px solid var(--border);border-radius:28px;background:var(--card);cursor:pointer;font-size:14px;font-weight:600;color:var(--text2);white-space:nowrap;transition:all .2s;font-family:'DM Sans',sans-serif}
+.cat:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+.cat.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 4px 14px rgba(13,148,136,.25)}
+.sec-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+.item{background:var(--card);border-radius:var(--radius);padding:20px 14px;text-align:center;cursor:pointer;border:1.5px solid var(--border);transition:all .3s;position:relative;overflow:hidden}
+.item:hover{border-color:var(--accent);transform:translateY(-6px);box-shadow:var(--shadow-lg),var(--shadow-glow)}
+.item:active{transform:scale(.97)}
+.item .emo{font-size:42px;display:block;margin-bottom:10px;transition:transform .3s}
+.item:hover .emo{transform:scale(1.15) rotate(-5deg)}
+.item .nm{font-size:14px;font-weight:700;color:var(--text);display:block;letter-spacing:-.2px}
+.item .qt{font-size:12px;color:var(--text3);display:block;margin-top:3px}
+.item .pr{font-family:'Space Grotesk',sans-serif;font-size:16px;color:var(--accent);font-weight:700;margin-top:8px;display:block}
+.results{animation:fadeUp .4s ease-out}
+.product{margin-bottom:18px;padding:22px;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow-sm);animation:scaleIn .3s ease-out;transition:box-shadow .3s}
+.product:hover{box-shadow:var(--shadow-md)}
+.product h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.5px;margin-bottom:2px}
+.product .qlabel{color:var(--text3);font-size:13px;margin-bottom:14px;font-weight:500}
+.price-row{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;margin:4px 0;border-radius:12px;cursor:pointer;transition:all .2s;background:var(--card2);border:1px solid transparent}
+.price-row:hover{border-color:var(--accent);background:var(--accent-bg)}
+.price-row.best{background:var(--green-bg);border:1.5px solid var(--green)}
+.sm-name{font-size:15px;font-weight:600;color:var(--text)}
+.pr-info{text-align:right}
+.pr-val{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--accent);font-size:18px}
+.pr-promo{font-size:13px}
+.pr-old{text-decoration:line-through;color:var(--text3);margin-right:8px}
+.pr-sale{color:var(--red);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-left:8px}
+.tag-best{background:var(--green);color:#fff}
+.tag-sale{background:var(--red);color:#fff}
+.promo-exp{font-size:11px;color:var(--red);display:block;margin-top:3px}
+.no-results{text-align:center;padding:50px 20px;color:var(--text3)}
+.no-results .big{font-size:56px;display:block;margin-bottom:12px}
+.scrape-info{text-align:center;font-size:11px;color:var(--text3);margin-top:16px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);z-index:100;justify-content:center;align-items:center;padding:20px}
+.modal-bg.on{display:flex}
+.modal{background:var(--card);border-radius:20px;padding:30px;max-width:440px;width:100%;box-shadow:var(--shadow-lg);position:relative;animation:scaleIn .25s ease-out;border:1px solid var(--border)}
+.modal .mx{position:absolute;top:14px;right:16px;width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--card2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--text3);transition:all .15s}
+.modal .mx:hover{background:var(--border);color:var(--text)}
+.modal h3{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:4px}
+.modal .msub{font-size:13px;color:var(--text3);margin-bottom:18px}
+.mrow{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:14px}
+.mrow:last-child{border-bottom:none}
+.mlbl{color:var(--text2)}.mval{font-weight:700;color:var(--text)}
+.mval.promo{color:var(--red)}.mval.best{color:var(--green)}
+.msrc{margin-top:18px;padding:16px;background:var(--card2);border-radius:12px;font-size:12px;color:var(--text2);line-height:1.7;border:1px solid var(--border)}
+.msrc strong{color:var(--text);display:block;margin-bottom:4px;font-size:13px}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:12px;font-size:13px;font-weight:600;z-index:200;display:none;animation:fadeUp .3s ease-out}
+@media(max-width:600px){
+nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
+.grid{grid-template-columns:repeat(3,1fr);gap:10px}.item{padding:14px 8px}.item .emo{font-size:32px}
+.coupon{min-width:200px;padding:16px}
+}
+</style>
 </head>
 <body>
-    <div class="top-bar">
-        <div class="logo">
-            <svg class="logo-svg" viewBox="0 0 420 140" xmlns="http://www.w3.org/2000/svg">
-                <line x1="8" y1="30" x2="28" y2="45" stroke="var(--accent)" stroke-width="1.5" opacity="0.3"/>
-                <line x1="4" y1="72" x2="24" y2="62" stroke="var(--accent)" stroke-width="1.5" opacity="0.25"/>
-                <line x1="10" y1="105" x2="28" y2="92" stroke="var(--accent)" stroke-width="1.5" opacity="0.3"/>
-                <line x1="100" y1="10" x2="85" y2="26" stroke="var(--accent)" stroke-width="1.5" opacity="0.2"/>
-                <line x1="108" y1="45" x2="98" y2="52" stroke="var(--accent)" stroke-width="1.5" opacity="0.25"/>
-                <circle class="logo-node" cx="8" cy="30" r="2.5" fill="var(--accent)"/>
-                <circle class="logo-node" cx="4" cy="72" r="2.5" fill="var(--accent)"/>
-                <circle class="logo-node" cx="10" cy="105" r="2.5" fill="var(--accent)"/>
-                <circle class="logo-node" cx="100" cy="10" r="2.5" fill="var(--accent)"/>
-                <circle class="logo-node" cx="108" cy="45" r="2.5" fill="var(--accent)"/>
-                <path d="M 62 8 A 52 52 0 1 0 62 114" fill="none" stroke="var(--accent)" stroke-width="9" stroke-linecap="round"/>
-                <line x1="62" y1="61" x2="40" y2="61" stroke="var(--accent)" stroke-width="9" stroke-linecap="round"/>
-                <path d="M 60 59 L 100 59 L 94 96 L 48 96 Z" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linejoin="round"/>
-                <circle cx="59" cy="108" r="6" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
-                <circle cx="86" cy="108" r="6" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
-                <rect x="64" y="69" width="17" height="17" rx="2.5" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity="0.8"/>
-                <line class="logo-pin" x1="70" y1="69" x2="70" y2="65" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
-                <line class="logo-pin" x1="77" y1="69" x2="77" y2="65" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
-                <line class="logo-pin" x1="64" y1="76" x2="60" y2="76" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
-                <line class="logo-pin" x1="64" y1="81" x2="60" y2="81" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
-                <line class="logo-pin" x1="81" y1="76" x2="85" y2="76" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
-                <line class="logo-pin" x1="81" y1="81" x2="85" y2="81" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
-                <line class="logo-pin" x1="70" y1="86" x2="70" y2="90" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
-                <line class="logo-pin" x1="77" y1="86" x2="77" y2="90" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
-                <circle class="logo-core" cx="73" cy="78" r="3" fill="var(--accent)" opacity="0.7"/>
-                <text x="125" y="55" style="font-family:'Inter',sans-serif;font-size:30px;font-weight:700;letter-spacing:-1px;" fill="var(--text)">Grocery</text>
-                <text x="262" y="55" style="font-family:'Inter',sans-serif;font-size:30px;font-weight:700;letter-spacing:-1px;" fill="var(--accent)">Finder</text>
-                <text x="125" y="76" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;" fill="var(--accent)" opacity="0.6">AI-POWERED PRICE COMPARISON</text>
-                <text x="125" y="96" style="font-family:'Inter',sans-serif;font-size:11px;font-weight:400;" fill="var(--text-muted)">Buenos Aires, Argentina</text>
-            </svg>
-        </div>
-        <div class="right">
-            <div class="lang-toggle">
-                <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
-                <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
-            </div>
-            <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
-                <div class="toggle-circle" id="toggle-icon">☀️</div>
-            </button>
-        </div>
+<nav>
+  <div class="logo">
+    <svg class="logo-svg" viewBox="0 0 420 140" xmlns="http://www.w3.org/2000/svg">
+      <line x1="8" y1="30" x2="28" y2="45" stroke="var(--accent)" stroke-width="1.5" opacity=".3"/>
+      <line x1="4" y1="72" x2="24" y2="62" stroke="var(--accent)" stroke-width="1.5" opacity=".25"/>
+      <line x1="10" y1="105" x2="28" y2="92" stroke="var(--accent)" stroke-width="1.5" opacity=".3"/>
+      <line x1="100" y1="10" x2="85" y2="26" stroke="var(--accent)" stroke-width="1.5" opacity=".2"/>
+      <line x1="108" y1="45" x2="98" y2="52" stroke="var(--accent)" stroke-width="1.5" opacity=".25"/>
+      <circle class="logo-node" cx="8" cy="30" r="2.5" fill="var(--accent)"/>
+      <circle class="logo-node" cx="4" cy="72" r="2.5" fill="var(--accent)"/>
+      <circle class="logo-node" cx="10" cy="105" r="2.5" fill="var(--accent)"/>
+      <circle class="logo-node" cx="100" cy="10" r="2.5" fill="var(--accent)"/>
+      <circle class="logo-node" cx="108" cy="45" r="2.5" fill="var(--accent)"/>
+      <path d="M62 8A52 52 0 1 0 62 114" fill="none" stroke="var(--accent)" stroke-width="9" stroke-linecap="round"/>
+      <line x1="62" y1="61" x2="40" y2="61" stroke="var(--accent)" stroke-width="9" stroke-linecap="round"/>
+      <path d="M60 59L100 59 94 96 48 96Z" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linejoin="round"/>
+      <circle cx="59" cy="108" r="6" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+      <circle cx="86" cy="108" r="6" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+      <rect x="64" y="69" width="17" height="17" rx="2.5" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity=".8"/>
+      <line class="logo-pin" x1="70" y1="69" x2="70" y2="65" stroke="var(--accent)" stroke-width="1.2" opacity=".5"/>
+      <line class="logo-pin" x1="77" y1="69" x2="77" y2="65" stroke="var(--accent)" stroke-width="1.2" opacity=".5"/>
+      <line class="logo-pin" x1="64" y1="76" x2="60" y2="76" stroke="var(--accent)" stroke-width="1.2" opacity=".5"/>
+      <line class="logo-pin" x1="64" y1="81" x2="60" y2="81" stroke="var(--accent)" stroke-width="1.2" opacity=".5"/>
+      <line class="logo-pin" x1="81" y1="76" x2="85" y2="76" stroke="var(--accent)" stroke-width="1.2" opacity=".5"/>
+      <line class="logo-pin" x1="81" y1="81" x2="85" y2="81" stroke="var(--accent)" stroke-width="1.2" opacity=".5"/>
+      <line class="logo-pin" x1="70" y1="86" x2="70" y2="90" stroke="var(--accent)" stroke-width="1.2" opacity=".5"/>
+      <line class="logo-pin" x1="77" y1="86" x2="77" y2="90" stroke="var(--accent)" stroke-width="1.2" opacity=".5"/>
+      <circle class="logo-core" cx="73" cy="78" r="3" fill="var(--accent)" opacity=".7"/>
+      <text x="125" y="55" style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;letter-spacing:-1px" fill="var(--text)">Grocery</text>
+      <text x="262" y="55" style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;letter-spacing:-1px" fill="var(--accent)">Finder</text>
+      <text x="125" y="76" style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px" fill="var(--accent)" opacity=".6">AI-POWERED PRICE COMPARISON</text>
+      <text x="125" y="96" style="font-family:'DM Sans',sans-serif;font-size:11px" fill="var(--text3)">Buenos Aires, Argentina</text>
+    </svg>
+  </div>
+  <div class="controls">
+    <div class="pill-toggle">
+      <button class="pill-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+      <button class="pill-btn" id="btn-en" onclick="setLang('en')">EN</button>
     </div>
-    <div class="container">
-        <div class="header">
-            <h1 data-es="Compará precios al instante" data-en="Compare prices instantly" class="i18n"></h1>
-            <p data-es="Encontrá el mejor precio entre Coto, Jumbo y Disco" data-en="Find the best price across Coto, Jumbo and Disco" class="i18n"></p>
-        </div>
-        <div class="currency-bar" id="currency-bar">
-            <label id="currency-label" data-es="Equivalencia:" data-en="Currency:" class="i18n"></label>
-            <button class="currency-toggle" id="currency-toggle" onclick="toggleCurrency()">OFF</button>
-            <select id="currency-select" onchange="updateCurrency()" style="display:none;">
-                <option value="USD">USD - Dólar</option>
-                <option value="EUR">EUR - Euro</option>
-                <option value="BRL">BRL - Real</option>
-                <option value="GBP">GBP - Libra</option>
-                <option value="CLP">CLP - Peso Chileno</option>
-                <option value="UYU">UYU - Peso Uruguayo</option>
-                <option value="MXN">MXN - Peso Mexicano</option>
-                <option value="JPY">JPY - Yen</option>
-                <option value="CNY">CNY - Yuan</option>
-            </select>
-            <span id="currency-rate" style="display:none; font-size:11px; color:var(--text-muted);"></span>
-        </div>
-        <div class="coupons-section">
-            <p class="section-title i18n" data-es="Cupones disponibles" data-en="Available coupons" id="coupons-title"></p>
-            <div class="coupons-scroll" id="coupons-scroll"></div>
-        </div>
-        <div class="search-box">
-            <input type="text" id="search" autocomplete="off" />
-            <div class="autocomplete-list" id="autocomplete"></div>
-            <button onclick="buscar()" id="search-btn"></button>
-        </div>
-        <div class="categories" id="categories">
-            <button class="cat-btn active" onclick="filtrarCategoria('todos')" data-es="Todos" data-en="All" class="i18n"></button>
-            <button class="cat-btn" onclick="filtrarCategoria('lácteos')">🥛 <span data-es="Lácteos" data-en="Dairy" class="i18n"></span></button>
-            <button class="cat-btn" onclick="filtrarCategoria('frutas')">🍎 <span data-es="Frutas y Verduras" data-en="Fruits & Vegetables" class="i18n"></span></button>
-            <button class="cat-btn" onclick="filtrarCategoria('carnes')">🥩 <span data-es="Carnes" data-en="Meats" class="i18n"></span></button>
-            <button class="cat-btn" onclick="filtrarCategoria('almacén')">🏪 <span data-es="Almacén" data-en="Pantry" class="i18n"></span></button>
-            <button class="cat-btn" onclick="filtrarCategoria('bebidas')">🥤 <span data-es="Bebidas" data-en="Drinks" class="i18n"></span></button>
-            <button class="cat-btn" onclick="filtrarCategoria('limpieza')">🧹 <span data-es="Limpieza" data-en="Cleaning" class="i18n"></span></button>
-        </div>
-        <div id="home-section">
-            <p class="section-title i18n" data-es="Productos disponibles" data-en="Available products" id="products-title"></p>
-            <div class="popular-grid" id="popular-grid"></div>
-        </div>
-        <div id="results" class="results"></div>
-        <div class="scrape-date" id="scrape-date"></div>
-    </div>
-    <div class="modal-overlay" id="modal-overlay" onclick="cerrarModal(event)">
-        <div class="modal" id="modal">
-            <button class="modal-close" onclick="cerrarModal()">&times;</button>
-            <div id="modal-content"></div>
-        </div>
-    </div>
-    <div class="coupon-copied" id="coupon-copied"></div>
-    <script>
-        let allProducts = [];
-        let lang = 'es';
-        let darkMode = false;
-        let showCurrency = false;
-        let selectedCurrency = 'USD';
-
-        const exchangeRates = {
-            'USD': { rate: 1200, symbol: 'US$', name: 'Dólar' },
-            'EUR': { rate: 1300, symbol: '€', name: 'Euro' },
-            'BRL': { rate: 230, symbol: 'R$', name: 'Real' },
-            'GBP': { rate: 1520, symbol: '£', name: 'Libra' },
-            'CLP': { rate: 1.28, symbol: 'CL$', name: 'Peso Chileno' },
-            'UYU': { rate: 28, symbol: 'UY$', name: 'Peso Uruguayo' },
-            'MXN': { rate: 70, symbol: 'MX$', name: 'Peso Mexicano' },
-            'JPY': { rate: 7.8, symbol: '¥', name: 'Yen' },
-            'CNY': { rate: 165, symbol: '¥', name: 'Yuan' },
-        };
-
-        function convertARS(ars) {
-            if (!showCurrency) return '';
-            const cur = exchangeRates[selectedCurrency];
-            const converted = (ars / cur.rate).toFixed(2);
-            return `<span class="currency-eq">${cur.symbol}${converted} ${selectedCurrency}</span>`;
-        }
-
-        function convertARSinline(ars) {
-            if (!showCurrency) return '';
-            const cur = exchangeRates[selectedCurrency];
-            const converted = (ars / cur.rate).toFixed(2);
-            return `<span class="currency-eq-inline">(${cur.symbol}${converted})</span>`;
-        }
-
-        function toggleCurrency() {
-            showCurrency = !showCurrency;
-            const btn = document.getElementById('currency-toggle');
-            const sel = document.getElementById('currency-select');
-            const rate = document.getElementById('currency-rate');
-            btn.classList.toggle('active', showCurrency);
-            btn.textContent = showCurrency ? 'ON' : 'OFF';
-            sel.style.display = showCurrency ? 'inline-block' : 'none';
-            rate.style.display = showCurrency ? 'inline' : 'none';
-            if (showCurrency) updateCurrencyRate();
-            if (allProducts.length) mostrarPopulares(allProducts);
-            const q = document.getElementById("search").value.trim();
-            if (q) buscar();
-        }
-
-        function updateCurrency() {
-            selectedCurrency = document.getElementById('currency-select').value;
-            updateCurrencyRate();
-            if (allProducts.length) mostrarPopulares(allProducts);
-            const q = document.getElementById("search").value.trim();
-            if (q) buscar();
-        }
-
-        function updateCurrencyRate() {
-            const cur = exchangeRates[selectedCurrency];
-            const rateEl = document.getElementById('currency-rate');
-            const rateText = lang === 'es' ? `1 ${selectedCurrency} ≈ $${cur.rate} ARS` : `1 ${selectedCurrency} ≈ $${cur.rate} ARS`;
-            rateEl.textContent = rateText;
-        }
-
-        const T = {
-            es: { desde:'Desde', search_placeholder:'¿Qué producto buscás?', search_btn:'Buscar', no_results_1:'No encontramos', no_results_2:'Probá con otro término o elegí un producto de la lista', no_autocomplete:'No hay resultados para', updated:'Precios actualizados', regular_price:'Precio regular', promo_price:'Precio promocional', savings:'Ahorro', promo_expires:'Promo vence', days:'días', expired:'Vencida', verdict:'Veredicto', best_price:'Mejor precio disponible', scrape_title:'Datos del scraping', source:'Fuente', extraction_date:'Fecha de extracción', method:'Método', auto_scraping:'Scraping automático del sitio web', product:'Producto', not_available:'No disponible', cheapest:'MÁS BARATO', offer:'OFERTA', expires:'Vence', coupon_copied:'Cupón copiado', coupons_title:'Cupones disponibles', products_title:'Productos disponibles', coupon_off:'OFF', coupon_valid:'Válido hasta', coupon_min:'Compra mínima', online:'Online' },
-            en: { desde:'From', search_placeholder:'What product are you looking for?', search_btn:'Search', no_results_1:'We couldn\\'t find', no_results_2:'Try another term or pick a product from the list', no_autocomplete:'No results for', updated:'Prices updated', regular_price:'Regular price', promo_price:'Promotional price', savings:'Savings', promo_expires:'Promo expires', days:'days', expired:'Expired', verdict:'Verdict', best_price:'Best price available', scrape_title:'Scraping data', source:'Source', extraction_date:'Extraction date', method:'Method', auto_scraping:'Automatic website scraping', product:'Product', not_available:'Not available', cheapest:'CHEAPEST', offer:'SALE', expires:'Expires', coupon_copied:'Coupon copied', coupons_title:'Available coupons', products_title:'Available products', coupon_off:'OFF', coupon_valid:'Valid until', coupon_min:'Min. purchase', online:'Online' }
-        };
-        function t(key) { return T[lang][key] || key; }
-
-        function toggleTheme() {
-            darkMode = !darkMode;
-            document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : '');
-            document.getElementById('toggle-icon').textContent = darkMode ? '🌙' : '☀️';
-        }
-
-        const coupons = [
-            { store:'Coto', cls:'coupon-coto', discount:'15%', desc_es:'en Lácteos y Quesos', desc_en:'on Dairy & Cheese', code:'COTO15LACTEOS', min_es:'$5.000', min_en:'$5,000 ARS', exp:7 },
-            { store:'Jumbo', cls:'coupon-jumbo', discount:'20%', desc_es:'en Frutas y Verduras', desc_en:'on Fruits & Vegetables', code:'JUMBO20FRESH', min_es:'$3.000', min_en:'$3,000 ARS', exp:5 },
-            { store:'Disco', cls:'coupon-disco', discount:'10%', desc_es:'en toda tu compra', desc_en:'on your entire purchase', code:'DISCO10TODO', min_es:'$8.000', min_en:'$8,000 ARS', exp:10 },
-            { store:'Coto', cls:'coupon-coto', discount:'25%', desc_es:'en Bebidas', desc_en:'on Beverages', code:'COTO25BEBIDAS', min_es:'$2.000', min_en:'$2,000 ARS', exp:3 },
-            { store:'Jumbo', cls:'coupon-jumbo', discount:'2x1', desc_es:'en Limpieza', desc_en:'on Cleaning products', code:'JUMBO2X1CLEAN', min_es:'$4.000', min_en:'$4,000 ARS', exp:12 },
-        ];
-
-        function renderCoupons() {
-            const scroll = document.getElementById('coupons-scroll');
-            const now = new Date();
-            scroll.innerHTML = coupons.map(c => {
-                const exp = new Date(now.getTime() + c.exp*24*60*60*1000);
-                const expStr = exp.toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'short'});
-                const desc = lang==='es' ? c.desc_es : c.desc_en;
-                const min = lang==='es' ? c.min_es : c.min_en;
-                return `<div class="coupon ${c.cls}" onclick="copyCoupon('${c.code}')"><div class="coupon-circle"></div><div class="coupon-circle2"></div><div class="store-name">${c.store}</div><div class="discount">${c.discount} ${t('coupon_off')}</div><div class="coupon-desc">${desc}</div><div class="coupon-code">${c.code}</div><div class="coupon-exp">${t('coupon_valid')} ${expStr} · ${t('coupon_min')} ${min}</div></div>`;
-            }).join('');
-        }
-
-        function copyCoupon(code) {
-            navigator.clipboard.writeText(code).then(() => {
-                const el = document.getElementById('coupon-copied');
-                el.textContent = '✅ ' + t('coupon_copied') + ': ' + code;
-                el.style.display = 'block';
-                setTimeout(() => { el.style.display = 'none'; }, 2000);
-            });
-        }
-
-        function setLang(l) {
-            lang = l;
-            document.getElementById('btn-es').classList.toggle('active', l==='es');
-            document.getElementById('btn-en').classList.toggle('active', l==='en');
-            document.querySelectorAll('.i18n').forEach(el => { if (el.dataset[l]) el.textContent = el.dataset[l]; });
-            document.getElementById('search').placeholder = t('search_placeholder');
-            document.getElementById('search-btn').textContent = t('search_btn');
-            document.getElementById('coupons-title').textContent = t('coupons_title');
-            document.getElementById('products-title').textContent = t('products_title');
-            renderCoupons();
-            if (allProducts.length) mostrarPopulares(allProducts);
-        }
-
-        async function cargarProductos() {
-            try { const r = await fetch('/api/products'); allProducts = await r.json(); mostrarPopulares(allProducts); } catch(e) { console.error(e); }
-        }
-
-        function mostrarPopulares(productos) {
-            const emojis = {'Leche Entera':'🥛','Yogur Natural':'🥛','Naranjas':'🍊','Huevos':'🥚','Queso Cremoso':'🧀','Manteca':'🧈','Pan Lactal':'🍞','Arroz':'🍚','Fideos Secos':'🍝','Aceite de Girasol':'🫒','Azúcar':'🍬','Harina':'🌾','Galletitas Dulces':'🍪','Gaseosa Cola':'🥤','Agua Mineral':'💧','Papel Higiénico':'🧻','Detergente':'🧴','Jabón en Polvo':'🧼','Pollo Entero':'🍗','Carne Picada':'🥩','Banana':'🍌','Tomate':'🍅','Papa':'🥔','Cebolla':'🧅'};
-            document.getElementById('popular-grid').innerHTML = productos.map(p => `<div class="popular-item" onclick="buscarProducto('${p.nombre}')"><span class="emoji">${emojis[p.nombre]||'🛒'}</span><span class="name">${p.nombre}</span><span class="qty">${p.cantidad}</span><span class="desde">${t('desde')} $${p.precio_min} ${convertARSinline(p.precio_min)}</span></div>`).join('');
-        }
-
-        function buscarProducto(nombre) { document.getElementById('search').value = nombre; buscar(); }
-
-        function filtrarCategoria(cat) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            event.target.closest('.cat-btn').classList.add('active');
-            const cats = {'lácteos':['Leche Entera','Yogur Natural','Queso Cremoso','Manteca'],'frutas':['Naranjas','Banana','Tomate','Papa','Cebolla'],'carnes':['Pollo Entero','Carne Picada','Huevos'],'almacén':['Pan Lactal','Arroz','Fideos Secos','Aceite de Girasol','Azúcar','Harina','Galletitas Dulces'],'bebidas':['Gaseosa Cola','Agua Mineral'],'limpieza':['Papel Higiénico','Detergente','Jabón en Polvo']};
-            mostrarPopulares(cat==='todos' ? allProducts : allProducts.filter(p => cats[cat]?.includes(p.nombre)));
-            document.getElementById('home-section').style.display = 'block';
-            document.getElementById('results').innerHTML = '';
-        }
-
-        const searchInput = document.getElementById('search');
-        const autocompleteList = document.getElementById('autocomplete');
-        searchInput.addEventListener('input', function() {
-            const q = this.value.toLowerCase().trim();
-            if (q.length < 1) { autocompleteList.style.display = 'none'; return; }
-            const matches = allProducts.filter(p => p.nombre.toLowerCase().includes(q));
-            if (matches.length === 0) { autocompleteList.innerHTML = '<div class="autocomplete-item" style="color:var(--text-muted);">' + t('no_autocomplete') + ' "' + q + '"</div>'; autocompleteList.style.display = 'block'; return; }
-            autocompleteList.innerHTML = matches.map(p => `<div class="autocomplete-item" onclick="buscarProducto('${p.nombre}')">${p.nombre} <span class="cantidad">${p.cantidad}</span></div>`).join('');
-            autocompleteList.style.display = 'block';
-        });
-        document.addEventListener('click', function(e) { if (!e.target.closest('.search-box')) autocompleteList.style.display = 'none'; });
-
-        async function buscar() {
-            autocompleteList.style.display = 'none';
-            const q = document.getElementById("search").value.trim();
-            if (!q) return;
-            document.getElementById('home-section').style.display = 'none';
-            try {
-                const r = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-                const data = await r.json();
-                let html = "", fechaScraping = "";
-                if (Object.keys(data).length === 0) {
-                    html = `<div class="no-results"><span class="emoji-big">🔍</span><p>${t('no_results_1')} "<strong>${q}</strong>"</p><p style="margin-top:8px;font-size:13px;">${t('no_results_2')}</p></div>`;
-                    document.getElementById('home-section').style.display = 'block';
-                }
-                for (const [producto, info] of Object.entries(data)) {
-                    const precios = info.precios;
-                    const mejorPrecio = Math.min(...precios.map(p => p.precio_final));
-                    html += `<div class="product"><h3>${producto}</h3><div class="cantidad-label">${info.cantidad}</div>`;
-                    for (const precio of precios) {
-                        const esMejor = precio.precio_final === mejorPrecio;
-                        const clase = esMejor ? "cheapest" : "";
-                        const md = encodeURIComponent(JSON.stringify({producto,cantidad:info.cantidad,supermarket:precio.supermarket,precio:precio.precio,precio_promo:precio.precio_promo,precio_final:precio.precio_final,promo_vence:precio.promo_vence,fecha_scraping:precio.fecha_scraping,esMejor}));
-                        let ph = "";
-                        if (precio.precio_promo) {
-                            ph = `<span class="price-promo"><span class="price-original">$${precio.precio}</span><span class="price-oferta">$${precio.precio_promo}</span><span class="badge-promo">${t('offer')}</span></span>${convertARS(precio.precio_promo)}`;
-                            if (precio.promo_vence) ph += `<span class="promo-vence">${t('expires')}: ${formatDate(precio.promo_vence)}</span>`;
-                        } else { ph = `<span class="price">$${precio.precio}</span>${convertARS(precio.precio)}`; }
-                        html += `<div class="price-item ${clase}" onclick="abrirModal('${md}')"><span class="supermarket">🏪 ${precio.supermarket}</span><div class="price-info">${ph}${esMejor?'<span class="badge">'+t('cheapest')+'</span>':''}</div></div>`;
-                        if (precio.fecha_scraping) fechaScraping = precio.fecha_scraping;
-                    }
-                    html += `</div>`;
-                }
-                document.getElementById("results").innerHTML = html;
-                if (fechaScraping) document.getElementById("scrape-date").innerHTML = `${t('updated')}: ${formatDate(fechaScraping)}`;
-            } catch(e) { document.getElementById("results").innerHTML = "<p>Error</p>"; }
-        }
-
-        function formatDate(ds) { return new Date(ds+'T00:00:00').toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'long',year:'numeric'}); }
-        searchInput.addEventListener("keypress", (e) => { if (e.key==="Enter") buscar(); });
-
-        function abrirModal(ed) {
-            const d = JSON.parse(decodeURIComponent(ed));
-            let h = `<h3>🏪 ${d.supermarket}</h3><div class="modal-subtitle">${d.producto} — ${d.cantidad}</div><div class="modal-row"><span class="modal-label">${t('regular_price')}</span><span class="modal-value">$${d.precio} ${convertARSinline(d.precio)}</span></div>`;
-            if (d.precio_promo) {
-                h += `<div class="modal-row"><span class="modal-label">${t('promo_price')}</span><span class="modal-value promo">$${d.precio_promo} ${convertARSinline(d.precio_promo)}</span></div><div class="modal-row"><span class="modal-label">${t('savings')}</span><span class="modal-value promo">-$${d.precio-d.precio_promo} (${Math.round((1-d.precio_promo/d.precio)*100)}%)</span></div>`;
-                if (d.promo_vence) { const dias = Math.ceil((new Date(d.promo_vence+'T00:00:00')-new Date())/(1000*60*60*24)); h += `<div class="modal-row"><span class="modal-label">${t('promo_expires')}</span><span class="modal-value promo">${formatDate(d.promo_vence)} (${dias>0?dias+' '+t('days'):t('expired')})</span></div>`; }
-            }
-            if (d.esMejor) h += `<div class="modal-row"><span class="modal-label">${t('verdict')}</span><span class="modal-value mejor">✅ ${t('best_price')}</span></div>`;
-            h += `<div class="modal-source"><strong>📊 ${t('scrape_title')}</strong>${t('source')}: ${d.supermarket} ${t('online')}<br>${t('extraction_date')}: ${d.fecha_scraping?formatDate(d.fecha_scraping):t('not_available')}<br>${t('method')}: ${t('auto_scraping')}<br>${t('product')}: ${d.producto} (${d.cantidad})</div>`;
-            document.getElementById('modal-content').innerHTML = h;
-            document.getElementById('modal-overlay').classList.add('active');
-        }
-
-        function cerrarModal(e) { if (!e||e.target===document.getElementById('modal-overlay')||e.target.classList.contains('modal-close')) document.getElementById('modal-overlay').classList.remove('active'); }
-        document.addEventListener('keydown', (e) => { if (e.key==='Escape') cerrarModal(); });
-
-        setLang('es');
-        cargarProductos();
-        renderCoupons();
-    </script>
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀️</button>
+  </div>
+</nav>
+<div class="hero">
+  <h1 data-es="Encontrá el <em>mejor precio</em> para tu compra" data-en="Find the <em>best price</em> for your groceries" class="i18n-html" id="hero-title"></h1>
+  <p data-es="Compará Coto, Jumbo y Disco al instante" data-en="Compare Coto, Jumbo and Disco instantly" class="i18n"></p>
+</div>
+<div class="main">
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+    <input type="text" id="search" autocomplete="off"/>
+    <div class="autocomplete-list" id="autocomplete"></div>
+  </div>
+  <div class="currency-bar" id="currency-bar">
+    <label class="i18n" data-es="Equivalencia:" data-en="Currency:"></label>
+    <button class="cur-toggle" id="cur-toggle" onclick="toggleCurrency()">OFF</button>
+    <select id="cur-select" onchange="updateCurrency()" style="display:none">
+      <option value="USD">USD $</option><option value="EUR">EUR €</option><option value="BRL">BRL R$</option>
+      <option value="GBP">GBP £</option><option value="CLP">CLP</option><option value="UYU">UYU</option>
+      <option value="MXN">MXN</option><option value="JPY">JPY ¥</option><option value="CNY">CNY ¥</option>
+    </select>
+    <span id="cur-rate" style="display:none;font-size:11px;color:var(--text3)"></span>
+  </div>
+  <div class="coupons">
+    <div class="coupons-title i18n" data-es="Cupones disponibles" data-en="Available coupons" id="coup-title"></div>
+    <div class="coupons-scroll" id="coup-scroll"></div>
+  </div>
+  <div class="cats" id="cats">
+    <button class="cat active" onclick="filtrarCat('todos')" data-es="Todos" data-en="All" class="i18n"></button>
+    <button class="cat" onclick="filtrarCat('lácteos')"><span data-es="🥛 Lácteos" data-en="🥛 Dairy" class="i18n"></span></button>
+    <button class="cat" onclick="filtrarCat('frutas')"><span data-es="🍎 Frutas" data-en="🍎 Fruits" class="i18n"></span></button>
+    <button class="cat" onclick="filtrarCat('carnes')"><span data-es="🥩 Carnes" data-en="🥩 Meats" class="i18n"></span></button>
+    <button class="cat" onclick="filtrarCat('almacén')"><span data-es="🏪 Almacén" data-en="🏪 Pantry" class="i18n"></span></button>
+    <button class="cat" onclick="filtrarCat('bebidas')"><span data-es="🥤 Bebidas" data-en="🥤 Drinks" class="i18n"></span></button>
+    <button class="cat" onclick="filtrarCat('limpieza')"><span data-es="🧹 Limpieza" data-en="🧹 Cleaning" class="i18n"></span></button>
+  </div>
+  <div id="home">
+    <div class="sec-title i18n" data-es="Productos disponibles" data-en="Available products" id="prod-title"></div>
+    <div class="grid" id="grid"></div>
+  </div>
+  <div id="results" class="results"></div>
+  <div class="scrape-info" id="scrape-info"></div>
+</div>
+<div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
+  <div class="modal"><button class="mx" onclick="closeModal()">&times;</button><div id="modal-c"></div></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+let AP=[],lang='es',dark=false,showCur=false,selCur='USD';
+const XR={USD:{r:1200,s:'US$'},EUR:{r:1300,s:'€'},BRL:{r:230,s:'R$'},GBP:{r:1520,s:'£'},CLP:{r:1.28,s:'CL$'},UYU:{r:28,s:'UY$'},MXN:{r:70,s:'MX$'},JPY:{r:7.8,s:'¥'},CNY:{r:165,s:'¥'}};
+function cv(a){if(!showCur)return '';const c=XR[selCur];return `<span class="cur-eq">${c.s}${(a/c.r).toFixed(2)}</span>`}
+function cvi(a){if(!showCur)return '';const c=XR[selCur];return `<span class="cur-eq-i">(${c.s}${(a/c.r).toFixed(2)})</span>`}
+function toggleCurrency(){showCur=!showCur;const b=document.getElementById('cur-toggle'),s=document.getElementById('cur-select'),r=document.getElementById('cur-rate');b.classList.toggle('active',showCur);b.textContent=showCur?'ON':'OFF';s.style.display=showCur?'inline-block':'none';r.style.display=showCur?'inline':'none';if(showCur)updCurRate();if(AP.length)showPop(AP);const q=document.getElementById('search').value.trim();if(q)buscar()}
+function updateCurrency(){selCur=document.getElementById('cur-select').value;updCurRate();if(AP.length)showPop(AP);const q=document.getElementById('search').value.trim();if(q)buscar()}
+function updCurRate(){document.getElementById('cur-rate').textContent=`1 ${selCur} ≈ $${XR[selCur].r} ARS`}
+const T={
+es:{desde:'Desde',ph:'¿Qué producto buscás?',nr1:'No encontramos',nr2:'Probá con otro término',na:'No hay resultados para',upd:'Precios actualizados',rp:'Precio regular',pp:'Precio promocional',sav:'Ahorro',pe:'Promo vence',days:'días',exp:'Vencida',verd:'Veredicto',bp:'Mejor precio disponible',st:'Datos del scraping',src:'Fuente',ed:'Fecha de extracción',meth:'Método',as:'Scraping automático',prod:'Producto',nd:'No disponible',cheap:'MÁS BARATO',offer:'OFERTA',expires:'Vence',cc:'Cupón copiado',ct:'Cupones disponibles',pt:'Productos disponibles',off:'OFF',vu:'Válido hasta',cm:'Compra mín.',onl:'Online'},
+en:{desde:'From',ph:'What are you looking for?',nr1:'We couldn\\'t find',nr2:'Try another term',na:'No results for',upd:'Prices updated',rp:'Regular price',pp:'Promo price',sav:'Savings',pe:'Promo expires',days:'days',exp:'Expired',verd:'Verdict',bp:'Best price available',st:'Scraping data',src:'Source',ed:'Extraction date',meth:'Method',as:'Auto website scraping',prod:'Product',nd:'Not available',cheap:'CHEAPEST',offer:'SALE',expires:'Expires',cc:'Coupon copied',ct:'Available coupons',pt:'Available products',off:'OFF',vu:'Valid until',cm:'Min. purchase',onl:'Online'}
+};
+function t(k){return T[lang][k]||k}
+function toggleTheme(){dark=!dark;document.documentElement.setAttribute('data-theme',dark?'dark':'');document.getElementById('theme-btn').textContent=dark?'🌙':'☀️'}
+const coups=[
+{store:'Coto',cls:'coupon-coto',disc:'15%',des:'en Lácteos',den:'on Dairy',code:'COTO15LAC',min:'$5.000',exp:7},
+{store:'Jumbo',cls:'coupon-jumbo',disc:'20%',des:'en Frutas',den:'on Fruits',code:'JUMBO20FRU',min:'$3.000',exp:5},
+{store:'Disco',cls:'coupon-disco',disc:'10%',des:'en todo',den:'on everything',code:'DISCO10ALL',min:'$8.000',exp:10},
+{store:'Coto',cls:'coupon-coto',disc:'25%',des:'en Bebidas',den:'on Drinks',code:'COTO25BEB',min:'$2.000',exp:3},
+{store:'Jumbo',cls:'coupon-jumbo',disc:'2x1',des:'en Limpieza',den:'on Cleaning',code:'JUMBO2X1CL',min:'$4.000',exp:12}
+];
+function renderCoups(){const s=document.getElementById('coup-scroll'),now=new Date();s.innerHTML=coups.map(c=>{const e=new Date(now.getTime()+c.exp*864e5).toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'short'});return `<div class="coupon ${c.cls}" onclick="copyCoup('${c.code}')"><div class="blob blob1"></div><div class="blob blob2"></div><div class="store">${c.store}</div><div class="disc">${c.disc} ${t('off')}</div><div class="cdesc">${lang==='es'?c.des:c.den}</div><div class="ccode">${c.code}</div><div class="cexp">${t('vu')} ${e} · ${t('cm')} ${c.min}</div></div>`}).join('')}
+function copyCoup(c){navigator.clipboard.writeText(c).then(()=>{const e=document.getElementById('toast');e.textContent='✅ '+t('cc')+': '+c;e.style.display='block';setTimeout(()=>e.style.display='none',2e3)})}
+function setLang(l){lang=l;document.getElementById('btn-es').classList.toggle('active',l==='es');document.getElementById('btn-en').classList.toggle('active',l==='en');document.querySelectorAll('.i18n').forEach(e=>{if(e.dataset[l])e.textContent=e.dataset[l]});document.querySelectorAll('.i18n-html').forEach(e=>{if(e.dataset[l])e.innerHTML=e.dataset[l]});document.getElementById('search').placeholder=t('ph');document.getElementById('coup-title').textContent=t('ct');document.getElementById('prod-title').textContent=t('pt');renderCoups();if(AP.length)showPop(AP)}
+async function loadProds(){try{const r=await fetch('/api/products');AP=await r.json();showPop(AP)}catch(e){console.error(e)}}
+const EM={'Leche Entera':'🥛','Yogur Natural':'🥛','Naranjas':'🍊','Huevos':'🥚','Queso Cremoso':'🧀','Manteca':'🧈','Pan Lactal':'🍞','Arroz':'🍚','Fideos Secos':'🍝','Aceite de Girasol':'🫒','Azúcar':'🍬','Harina':'🌾','Galletitas Dulces':'🍪','Gaseosa Cola':'🥤','Agua Mineral':'💧','Papel Higiénico':'🧻','Detergente':'🧴','Jabón en Polvo':'🧼','Pollo Entero':'🍗','Carne Picada':'🥩','Banana':'🍌','Tomate':'🍅','Papa':'🥔','Cebolla':'🧅'};
+function showPop(ps){document.getElementById('grid').innerHTML=ps.map((p,i)=>`<div class="item" onclick="pickProd('${p.nombre}')" style="animation-delay:${i*40}ms;animation:fadeUp .4s ease-out ${i*40}ms both"><span class="emo">${EM[p.nombre]||'🛒'}</span><span class="nm">${p.nombre}</span><span class="qt">${p.cantidad}</span><span class="pr">${t('desde')} $${p.precio_min} ${cvi(p.precio_min)}</span></div>`).join('')}
+function pickProd(n){document.getElementById('search').value=n;buscar()}
+function filtrarCat(c){document.querySelectorAll('.cat').forEach(b=>b.classList.remove('active'));event.target.closest('.cat').classList.add('active');const cs={'lácteos':['Leche Entera','Yogur Natural','Queso Cremoso','Manteca'],'frutas':['Naranjas','Banana','Tomate','Papa','Cebolla'],'carnes':['Pollo Entero','Carne Picada','Huevos'],'almacén':['Pan Lactal','Arroz','Fideos Secos','Aceite de Girasol','Azúcar','Harina','Galletitas Dulces'],'bebidas':['Gaseosa Cola','Agua Mineral'],'limpieza':['Papel Higiénico','Detergente','Jabón en Polvo']};showPop(c==='todos'?AP:AP.filter(p=>cs[c]?.includes(p.nombre)));document.getElementById('home').style.display='block';document.getElementById('results').innerHTML=''}
+const si=document.getElementById('search'),al=document.getElementById('autocomplete');
+si.addEventListener('input',function(){const q=this.value.toLowerCase().trim();if(q.length<1){al.style.display='none';return}const m=AP.filter(p=>p.nombre.toLowerCase().includes(q));if(!m.length){al.innerHTML=`<div class="autocomplete-item" style="color:var(--text3)">${t('na')} "${q}"</div>`;al.style.display='block';return}al.innerHTML=m.map(p=>`<div class="autocomplete-item" onclick="pickProd('${p.nombre}')">${p.nombre} <span class="qty">${p.cantidad}</span></div>`).join('');al.style.display='block'});
+document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))al.style.display='none'});
+async function buscar(){al.style.display='none';const q=si.value.trim();if(!q)return;document.getElementById('home').style.display='none';try{const r=await fetch(`/api/search?q=${encodeURIComponent(q)}`);const data=await r.json();let h='',fs='';if(!Object.keys(data).length){h=`<div class="no-results"><span class="big">🔍</span><p><strong>${t('nr1')}</strong> "${q}"</p><p style="margin-top:8px;font-size:14px;color:var(--text3)">${t('nr2')}</p></div>`;document.getElementById('home').style.display='block'}for(const[prod,info]of Object.entries(data)){const ps=info.precios,best=Math.min(...ps.map(p=>p.precio_final));h+=`<div class="product"><h3>${prod}</h3><div class="qlabel">${info.cantidad}</div>`;for(const p of ps){const ib=p.precio_final===best,cls=ib?'best':'';const md=encodeURIComponent(JSON.stringify({producto:prod,cantidad:info.cantidad,supermarket:p.supermarket,precio:p.precio,precio_promo:p.precio_promo,precio_final:p.precio_final,promo_vence:p.promo_vence,fecha_scraping:p.fecha_scraping,esMejor:ib}));let ph='';if(p.precio_promo){ph=`<span class="pr-promo"><span class="pr-old">$${p.precio}</span><span class="pr-sale">$${p.precio_promo}</span><span class="tag tag-sale">${t('offer')}</span></span>${cv(p.precio_promo)}`;if(p.promo_vence)ph+=`<span class="promo-exp">${t('expires')}: ${fmtD(p.promo_vence)}</span>`}else{ph=`<span class="pr-val">$${p.precio}</span>${cv(p.precio)}`}h+=`<div class="price-row ${cls}" onclick="openModal('${md}')"><span class="sm-name">🏪 ${p.supermarket}</span><div class="pr-info">${ph}${ib?`<span class="tag tag-best">${t('cheap')}</span>`:''}</div></div>`;if(p.fecha_scraping)fs=p.fecha_scraping}h+=`</div>`}document.getElementById('results').innerHTML=h;if(fs)document.getElementById('scrape-info').innerHTML=`${t('upd')}: ${fmtD(fs)}`}catch(e){document.getElementById('results').innerHTML='<p>Error</p>'}}
+function fmtD(d){return new Date(d+'T00:00:00').toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'long',year:'numeric'})}
+si.addEventListener('keypress',e=>{if(e.key==='Enter')buscar()});
+function openModal(ed){const d=JSON.parse(decodeURIComponent(ed));let h=`<h3>🏪 ${d.supermarket}</h3><div class="msub">${d.producto} — ${d.cantidad}</div><div class="mrow"><span class="mlbl">${t('rp')}</span><span class="mval">$${d.precio} ${cvi(d.precio)}</span></div>`;if(d.precio_promo){h+=`<div class="mrow"><span class="mlbl">${t('pp')}</span><span class="mval promo">$${d.precio_promo} ${cvi(d.precio_promo)}</span></div><div class="mrow"><span class="mlbl">${t('sav')}</span><span class="mval promo">-$${d.precio-d.precio_promo} (${Math.round((1-d.precio_promo/d.precio)*100)}%)</span></div>`;if(d.promo_vence){const dias=Math.ceil((new Date(d.promo_vence+'T00:00:00')-new Date())/864e5);h+=`<div class="mrow"><span class="mlbl">${t('pe')}</span><span class="mval promo">${fmtD(d.promo_vence)} (${dias>0?dias+' '+t('days'):t('exp')})</span></div>`}}if(d.esMejor)h+=`<div class="mrow"><span class="mlbl">${t('verd')}</span><span class="mval best">✅ ${t('bp')}</span></div>`;h+=`<div class="msrc"><strong>📊 ${t('st')}</strong>${t('src')}: ${d.supermarket} ${t('onl')}<br>${t('ed')}: ${d.fecha_scraping?fmtD(d.fecha_scraping):t('nd')}<br>${t('meth')}: ${t('as')}<br>${t('prod')}: ${d.producto} (${d.cantidad})</div>`;document.getElementById('modal-c').innerHTML=h;document.getElementById('modal-bg').classList.add('on')}
+function closeModal(e){if(!e||e.target===document.getElementById('modal-bg')||e.target.classList.contains('mx'))document.getElementById('modal-bg').classList.remove('on')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+setLang('es');loadProds();renderCoups();
+</script>
 </body>
 </html>'''
 
