@@ -14,28 +14,24 @@ def init_db():
     c.execute('CREATE TABLE supermarkets (id INTEGER PRIMARY KEY, nombre TEXT)')
     c.execute('CREATE TABLE productos (id INTEGER PRIMARY KEY, nombre TEXT UNIQUE, cantidad TEXT)')
     c.execute('CREATE TABLE precios (id INTEGER PRIMARY KEY, supermercado_id INTEGER, producto_id INTEGER, precio REAL, precio_promo REAL, promo_vence TEXT, fecha_scraping TEXT)')
-    
     c.execute("INSERT INTO supermarkets VALUES (1, 'Coto')")
     c.execute("INSERT INTO supermarkets VALUES (2, 'Jumbo')")
     c.execute("INSERT INTO supermarkets VALUES (3, 'Disco')")
-    
     productos = [
-        (1, 'Leche Entera', '1L'), (2, 'Yogur Natural', '200g'), (3, 'Naranjas', '1kg'),
-        (4, 'Huevos', '12 unidades'), (5, 'Queso Cremoso', '1kg'), (6, 'Manteca', '200g'),
-        (7, 'Pan Lactal', '500g'), (8, 'Arroz', '1kg'), (9, 'Fideos Secos', '500g'),
-        (10, 'Aceite de Girasol', '1.5L'), (11, 'Azúcar', '1kg'), (12, 'Harina', '1kg'),
-        (13, 'Galletitas Dulces', '300g'), (14, 'Gaseosa Cola', '2.25L'), (15, 'Agua Mineral', '2L'),
-        (16, 'Papel Higiénico', '4 rollos'), (17, 'Detergente', '750ml'), (18, 'Jabón en Polvo', '800g'),
-        (19, 'Pollo Entero', '1kg'), (20, 'Carne Picada', '1kg'), (21, 'Banana', '1kg'),
-        (22, 'Tomate', '1kg'), (23, 'Papa', '1kg'), (24, 'Cebolla', '1kg'),
+        (1,'Leche Entera','1L'),(2,'Yogur Natural','200g'),(3,'Naranjas','1kg'),
+        (4,'Huevos','12 unidades'),(5,'Queso Cremoso','1kg'),(6,'Manteca','200g'),
+        (7,'Pan Lactal','500g'),(8,'Arroz','1kg'),(9,'Fideos Secos','500g'),
+        (10,'Aceite de Girasol','1.5L'),(11,'Azúcar','1kg'),(12,'Harina','1kg'),
+        (13,'Galletitas Dulces','300g'),(14,'Gaseosa Cola','2.25L'),(15,'Agua Mineral','2L'),
+        (16,'Papel Higiénico','4 rollos'),(17,'Detergente','750ml'),(18,'Jabón en Polvo','800g'),
+        (19,'Pollo Entero','1kg'),(20,'Carne Picada','1kg'),(21,'Banana','1kg'),
+        (22,'Tomate','1kg'),(23,'Papa','1kg'),(24,'Cebolla','1kg'),
     ]
     for p in productos:
         c.execute('INSERT INTO productos VALUES (?, ?, ?)', p)
-    
     hoy = datetime.now().strftime('%Y-%m-%d')
     pv1 = (datetime.now() + timedelta(days=7)).strftime('%Y-%m-%d')
     pv2 = (datetime.now() + timedelta(days=14)).strftime('%Y-%m-%d')
-    
     precios = [
         (1,1,1,1250,1100,pv1,hoy),(2,2,1,1240,None,None,hoy),(3,3,1,1230,1150,pv2,hoy),
         (4,1,2,890,None,None,hoy),(5,2,2,850,790,pv1,hoy),(6,3,2,920,None,None,hoy),
@@ -82,11 +78,33 @@ def index():
         .top-bar { max-width: 750px; margin: 0 auto 14px; display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
         .top-bar .logo { font-size: 20px; font-weight: 700; color: #0d9488; letter-spacing: -0.5px; }
         .top-bar .logo span { color: #334155; }
+        .top-bar .right { display: flex; align-items: center; gap: 12px; }
         .top-bar .tagline { font-size: 11px; color: #94a3b8; font-weight: 500; }
+        .lang-toggle { display: flex; border: 1.5px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
+        .lang-btn { padding: 4px 10px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; background: white; color: #64748b; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+        .lang-btn.active { background: #0d9488; color: white; }
         .container { background: white; border-radius: 16px; padding: 28px; max-width: 750px; width: 100%; margin: 0 auto; box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 30px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; }
         .header { text-align: center; margin-bottom: 24px; }
         .header h1 { color: #1e293b; font-size: 26px; margin-bottom: 4px; font-weight: 700; letter-spacing: -0.5px; }
         .header p { color: #94a3b8; font-size: 14px; }
+        .coupons-section { margin-bottom: 22px; }
+        .coupons-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin; }
+        .coupons-scroll::-webkit-scrollbar { height: 4px; }
+        .coupons-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .coupon { min-width: 220px; border-radius: 12px; padding: 16px; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s; flex-shrink: 0; }
+        .coupon:hover { transform: translateY(-2px); }
+        .coupon-coto { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
+        .coupon-jumbo { background: linear-gradient(135deg, #059669, #10b981); color: white; }
+        .coupon-disco { background: linear-gradient(135deg, #7c3aed, #8b5cf6); color: white; }
+        .coupon .discount { font-size: 28px; font-weight: 700; line-height: 1; }
+        .coupon .coupon-desc { font-size: 12px; margin-top: 4px; opacity: 0.9; }
+        .coupon .coupon-code { display: inline-block; background: rgba(255,255,255,0.25); padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; margin-top: 8px; letter-spacing: 1px; }
+        .coupon .coupon-exp { font-size: 10px; opacity: 0.7; margin-top: 6px; }
+        .coupon .store-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; opacity: 0.9; }
+        .coupon-circle { position: absolute; right: -15px; top: -15px; width: 70px; height: 70px; border-radius: 50%; background: rgba(255,255,255,0.1); }
+        .coupon-circle2 { position: absolute; right: 20px; bottom: -20px; width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.08); }
+        .coupon-copied { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 200; display: none; animation: fadeUp 0.3s ease-out; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
         .search-box { position: relative; display: flex; gap: 10px; margin-bottom: 20px; }
         .search-box input { flex: 1; padding: 13px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 15px; outline: none; transition: all 0.2s; background: #f8fafc; font-family: 'Inter', sans-serif; }
         .search-box input:focus { border-color: #0d9488; background: white; box-shadow: 0 0 0 3px rgba(13,148,136,0.1); }
@@ -151,48 +169,155 @@ def index():
             .popular-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
             .popular-item { padding: 10px 6px; }
             .popular-item .emoji { font-size: 26px; }
+            .coupon { min-width: 190px; }
         }
     </style>
 </head>
 <body>
     <div class="top-bar">
         <div class="logo"><span>Grocery</span>Finder</div>
-        <div class="tagline">Buenos Aires, Argentina</div>
+        <div class="right">
+            <div class="tagline">Buenos Aires, Argentina</div>
+            <div class="lang-toggle">
+                <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+                <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+            </div>
+        </div>
     </div>
     <div class="container">
         <div class="header">
-            <h1>Compará precios al instante</h1>
-            <p>Encontrá el mejor precio entre Coto, Jumbo y Disco</p>
+            <h1 data-es="Compará precios al instante" data-en="Compare prices instantly" class="i18n"></h1>
+            <p data-es="Encontrá el mejor precio entre Coto, Jumbo y Disco" data-en="Find the best price across Coto, Jumbo and Disco" class="i18n"></p>
         </div>
+
+        <div class="coupons-section">
+            <p class="section-title i18n" data-es="Cupones disponibles" data-en="Available coupons" id="coupons-title"></p>
+            <div class="coupons-scroll" id="coupons-scroll"></div>
+        </div>
+
         <div class="search-box">
-            <input type="text" id="search" placeholder="¿Qué producto buscás?" autocomplete="off" />
+            <input type="text" id="search" data-es-placeholder="¿Qué producto buscás?" data-en-placeholder="What product are you looking for?" autocomplete="off" />
             <div class="autocomplete-list" id="autocomplete"></div>
-            <button onclick="buscar()">Buscar</button>
+            <button onclick="buscar()" class="i18n-btn" data-es="Buscar" data-en="Search" id="search-btn"></button>
         </div>
+
         <div class="categories" id="categories">
-            <button class="cat-btn active" onclick="filtrarCategoria('todos')">Todos</button>
-            <button class="cat-btn" onclick="filtrarCategoria('lácteos')">🥛 Lácteos</button>
-            <button class="cat-btn" onclick="filtrarCategoria('frutas')">🍎 Frutas y Verduras</button>
-            <button class="cat-btn" onclick="filtrarCategoria('carnes')">🥩 Carnes</button>
-            <button class="cat-btn" onclick="filtrarCategoria('almacén')">🏪 Almacén</button>
-            <button class="cat-btn" onclick="filtrarCategoria('bebidas')">🥤 Bebidas</button>
-            <button class="cat-btn" onclick="filtrarCategoria('limpieza')">🧹 Limpieza</button>
+            <button class="cat-btn active" onclick="filtrarCategoria('todos')" data-es="Todos" data-en="All" class="i18n-cat"></button>
+            <button class="cat-btn" onclick="filtrarCategoria('lácteos')">🥛 <span data-es="Lácteos" data-en="Dairy" class="i18n"></span></button>
+            <button class="cat-btn" onclick="filtrarCategoria('frutas')">🍎 <span data-es="Frutas y Verduras" data-en="Fruits & Vegetables" class="i18n"></span></button>
+            <button class="cat-btn" onclick="filtrarCategoria('carnes')">🥩 <span data-es="Carnes" data-en="Meats" class="i18n"></span></button>
+            <button class="cat-btn" onclick="filtrarCategoria('almacén')">🏪 <span data-es="Almacén" data-en="Pantry" class="i18n"></span></button>
+            <button class="cat-btn" onclick="filtrarCategoria('bebidas')">🥤 <span data-es="Bebidas" data-en="Drinks" class="i18n"></span></button>
+            <button class="cat-btn" onclick="filtrarCategoria('limpieza')">🧹 <span data-es="Limpieza" data-en="Cleaning" class="i18n"></span></button>
         </div>
+
         <div id="home-section">
-            <p class="section-title">Productos disponibles</p>
+            <p class="section-title i18n" data-es="Productos disponibles" data-en="Available products" id="products-title"></p>
             <div class="popular-grid" id="popular-grid"></div>
         </div>
         <div id="results" class="results"></div>
         <div class="scrape-date" id="scrape-date"></div>
     </div>
+
     <div class="modal-overlay" id="modal-overlay" onclick="cerrarModal(event)">
         <div class="modal" id="modal">
             <button class="modal-close" onclick="cerrarModal()">&times;</button>
             <div id="modal-content"></div>
         </div>
     </div>
+    <div class="coupon-copied" id="coupon-copied"></div>
+
     <script>
         let allProducts = [];
+        let lang = 'es';
+
+        const T = {
+            es: {
+                desde: 'Desde', search_placeholder: '¿Qué producto buscás?', search_btn: 'Buscar',
+                no_results_1: 'No encontramos', no_results_2: 'Probá con otro término o elegí un producto de la lista',
+                no_autocomplete: 'No hay resultados para', updated: 'Precios actualizados',
+                regular_price: 'Precio regular', promo_price: 'Precio promocional', savings: 'Ahorro',
+                promo_expires: 'Promo vence', days: 'días', expired: 'Vencida', verdict: 'Veredicto',
+                best_price: 'Mejor precio disponible', scrape_title: 'Datos del scraping',
+                source: 'Fuente', extraction_date: 'Fecha de extracción', method: 'Método',
+                auto_scraping: 'Scraping automático del sitio web', product: 'Producto',
+                not_available: 'No disponible', cheapest: 'MÁS BARATO', offer: 'OFERTA',
+                expires: 'Vence', coupon_copied: 'Cupón copiado',
+                coupons_title: 'Cupones disponibles', products_title: 'Productos disponibles',
+                coupon_off: 'OFF', coupon_in: 'en', coupon_valid: 'Válido hasta',
+                coupon_min: 'Compra mínima', coupon_tap: 'Tocá para copiar el código',
+                online: 'Online',
+            },
+            en: {
+                desde: 'From', search_placeholder: 'What product are you looking for?', search_btn: 'Search',
+                no_results_1: 'We couldn\\'t find', no_results_2: 'Try another term or pick a product from the list',
+                no_autocomplete: 'No results for', updated: 'Prices updated',
+                regular_price: 'Regular price', promo_price: 'Promotional price', savings: 'Savings',
+                promo_expires: 'Promo expires', days: 'days', expired: 'Expired', verdict: 'Verdict',
+                best_price: 'Best price available', scrape_title: 'Scraping data',
+                source: 'Source', extraction_date: 'Extraction date', method: 'Method',
+                auto_scraping: 'Automatic website scraping', product: 'Product',
+                not_available: 'Not available', cheapest: 'CHEAPEST', offer: 'SALE',
+                expires: 'Expires', coupon_copied: 'Coupon copied',
+                coupons_title: 'Available coupons', products_title: 'Available products',
+                coupon_off: 'OFF', coupon_in: 'at', coupon_valid: 'Valid until',
+                coupon_min: 'Minimum purchase', coupon_tap: 'Tap to copy code',
+                online: 'Online',
+            }
+        };
+        function t(key) { return T[lang][key] || key; }
+
+        const coupons = [
+            { store: 'Coto', cls: 'coupon-coto', discount: '15%', desc_es: 'en Lácteos y Quesos', desc_en: 'on Dairy & Cheese', code: 'COTO15LACTEOS', min_es: '$5.000', min_en: '$5,000 ARS', exp: 7 },
+            { store: 'Jumbo', cls: 'coupon-jumbo', discount: '20%', desc_es: 'en Frutas y Verduras', desc_en: 'on Fruits & Vegetables', code: 'JUMBO20FRESH', min_es: '$3.000', min_en: '$3,000 ARS', exp: 5 },
+            { store: 'Disco', cls: 'coupon-disco', discount: '10%', desc_es: 'en toda tu compra', desc_en: 'on your entire purchase', code: 'DISCO10TODO', min_es: '$8.000', min_en: '$8,000 ARS', exp: 10 },
+            { store: 'Coto', cls: 'coupon-coto', discount: '25%', desc_es: 'en Bebidas', desc_en: 'on Beverages', code: 'COTO25BEBIDAS', min_es: '$2.000', min_en: '$2,000 ARS', exp: 3 },
+            { store: 'Jumbo', cls: 'coupon-jumbo', discount: '2x1', desc_es: 'en Limpieza', desc_en: 'on Cleaning products', code: 'JUMBO2X1CLEAN', min_es: '$4.000', min_en: '$4,000 ARS', exp: 12 },
+        ];
+
+        function renderCoupons() {
+            const scroll = document.getElementById('coupons-scroll');
+            const now = new Date();
+            scroll.innerHTML = coupons.map(c => {
+                const exp = new Date(now.getTime() + c.exp * 24*60*60*1000);
+                const expStr = exp.toLocaleDateString(lang === 'es' ? 'es-AR' : 'en-US', {day:'numeric',month:'short'});
+                const desc = lang === 'es' ? c.desc_es : c.desc_en;
+                const min = lang === 'es' ? c.min_es : c.min_en;
+                return `<div class="coupon ${c.cls}" onclick="copyCoupon('${c.code}')">
+                    <div class="coupon-circle"></div><div class="coupon-circle2"></div>
+                    <div class="store-name">${c.store}</div>
+                    <div class="discount">${c.discount} ${t('coupon_off')}</div>
+                    <div class="coupon-desc">${desc}</div>
+                    <div class="coupon-code">${c.code}</div>
+                    <div class="coupon-exp">${t('coupon_valid')} ${expStr} · ${t('coupon_min')} ${min}</div>
+                </div>`;
+            }).join('');
+        }
+
+        function copyCoupon(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                const el = document.getElementById('coupon-copied');
+                el.textContent = '✅ ' + t('coupon_copied') + ': ' + code;
+                el.style.display = 'block';
+                setTimeout(() => { el.style.display = 'none'; }, 2000);
+            });
+        }
+
+        function setLang(l) {
+            lang = l;
+            document.getElementById('btn-es').classList.toggle('active', l === 'es');
+            document.getElementById('btn-en').classList.toggle('active', l === 'en');
+            document.querySelectorAll('.i18n').forEach(el => {
+                if (el.dataset[l]) el.textContent = el.dataset[l];
+            });
+            document.getElementById('search').placeholder = t('search_placeholder');
+            document.getElementById('search-btn').textContent = t('search_btn');
+            document.getElementById('coupons-title').textContent = t('coupons_title');
+            document.getElementById('products-title').textContent = t('products_title');
+            renderCoupons();
+            if (allProducts.length) mostrarPopulares(allProducts);
+        }
+
         async function cargarProductos() {
             try {
                 const response = await fetch('/api/products');
@@ -200,6 +325,7 @@ def index():
                 mostrarPopulares(allProducts);
             } catch (error) { console.error('Error:', error); }
         }
+
         function mostrarPopulares(productos) {
             const emojis = {'Leche Entera':'🥛','Yogur Natural':'🥛','Naranjas':'🍊','Huevos':'🥚','Queso Cremoso':'🧀','Manteca':'🧈','Pan Lactal':'🍞','Arroz':'🍚','Fideos Secos':'🍝','Aceite de Girasol':'🫒','Azúcar':'🍬','Harina':'🌾','Galletitas Dulces':'🍪','Gaseosa Cola':'🥤','Agua Mineral':'💧','Papel Higiénico':'🧻','Detergente':'🧴','Jabón en Polvo':'🧼','Pollo Entero':'🍗','Carne Picada':'🥩','Banana':'🍌','Tomate':'🍅','Papa':'🥔','Cebolla':'🧅'};
             document.getElementById('popular-grid').innerHTML = productos.map(p => `
@@ -207,29 +333,33 @@ def index():
                     <span class="emoji">${emojis[p.nombre]||'🛒'}</span>
                     <span class="name">${p.nombre}</span>
                     <span class="qty">${p.cantidad}</span>
-                    <span class="desde">Desde $${p.precio_min}</span>
+                    <span class="desde">${t('desde')} $${p.precio_min}</span>
                 </div>`).join('');
         }
+
         function buscarProducto(nombre) { document.getElementById('search').value = nombre; buscar(); }
+
         function filtrarCategoria(cat) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+            event.target.closest('.cat-btn').classList.add('active');
             const cats = {'lácteos':['Leche Entera','Yogur Natural','Queso Cremoso','Manteca'],'frutas':['Naranjas','Banana','Tomate','Papa','Cebolla'],'carnes':['Pollo Entero','Carne Picada','Huevos'],'almacén':['Pan Lactal','Arroz','Fideos Secos','Aceite de Girasol','Azúcar','Harina','Galletitas Dulces'],'bebidas':['Gaseosa Cola','Agua Mineral'],'limpieza':['Papel Higiénico','Detergente','Jabón en Polvo']};
             mostrarPopulares(cat === 'todos' ? allProducts : allProducts.filter(p => cats[cat]?.includes(p.nombre)));
             document.getElementById('home-section').style.display = 'block';
             document.getElementById('results').innerHTML = '';
         }
+
         const searchInput = document.getElementById('search');
         const autocompleteList = document.getElementById('autocomplete');
         searchInput.addEventListener('input', function() {
             const q = this.value.toLowerCase().trim();
             if (q.length < 1) { autocompleteList.style.display = 'none'; return; }
             const matches = allProducts.filter(p => p.nombre.toLowerCase().includes(q));
-            if (matches.length === 0) { autocompleteList.innerHTML = '<div class="autocomplete-item" style="color:#94a3b8;">No hay resultados para "' + q + '"</div>'; autocompleteList.style.display = 'block'; return; }
+            if (matches.length === 0) { autocompleteList.innerHTML = '<div class="autocomplete-item" style="color:#94a3b8;">' + t('no_autocomplete') + ' "' + q + '"</div>'; autocompleteList.style.display = 'block'; return; }
             autocompleteList.innerHTML = matches.map(p => `<div class="autocomplete-item" onclick="buscarProducto('${p.nombre}')">${p.nombre} <span class="cantidad">${p.cantidad}</span></div>`).join('');
             autocompleteList.style.display = 'block';
         });
         document.addEventListener('click', function(e) { if (!e.target.closest('.search-box')) autocompleteList.style.display = 'none'; });
+
         async function buscar() {
             autocompleteList.style.display = 'none';
             const q = document.getElementById("search").value.trim();
@@ -240,7 +370,7 @@ def index():
                 const data = await response.json();
                 let html = "", fechaScraping = "";
                 if (Object.keys(data).length === 0) {
-                    html = `<div class="no-results"><span class="emoji-big">🔍</span><p>No encontramos "<strong>${q}</strong>"</p><p style="margin-top:8px;font-size:13px;">Probá con otro término o elegí un producto de la lista</p></div>`;
+                    html = `<div class="no-results"><span class="emoji-big">🔍</span><p>${t('no_results_1')} "<strong>${q}</strong>"</p><p style="margin-top:8px;font-size:13px;">${t('no_results_2')}</p></div>`;
                     document.getElementById('home-section').style.display = 'block';
                 }
                 for (const [producto, info] of Object.entries(data)) {
@@ -253,35 +383,42 @@ def index():
                         const md = encodeURIComponent(JSON.stringify({producto,cantidad:info.cantidad,supermarket:precio.supermarket,precio:precio.precio,precio_promo:precio.precio_promo,precio_final:precio.precio_final,promo_vence:precio.promo_vence,fecha_scraping:precio.fecha_scraping,esMejor}));
                         let ph = "";
                         if (precio.precio_promo) {
-                            ph = `<span class="price-promo"><span class="price-original">$${precio.precio}</span><span class="price-oferta">$${precio.precio_promo}</span><span class="badge-promo">OFERTA</span></span>`;
-                            if (precio.promo_vence) ph += `<span class="promo-vence">Vence: ${formatDate(precio.promo_vence)}</span>`;
+                            ph = `<span class="price-promo"><span class="price-original">$${precio.precio}</span><span class="price-oferta">$${precio.precio_promo}</span><span class="badge-promo">${t('offer')}</span></span>`;
+                            if (precio.promo_vence) ph += `<span class="promo-vence">${t('expires')}: ${formatDate(precio.promo_vence)}</span>`;
                         } else { ph = `<span class="price">$${precio.precio}</span>`; }
-                        html += `<div class="price-item ${clase}" onclick="abrirModal('${md}')"><span class="supermarket">🏪 ${precio.supermarket}</span><div class="price-info">${ph}${esMejor?'<span class="badge">MÁS BARATO</span>':''}</div></div>`;
+                        html += `<div class="price-item ${clase}" onclick="abrirModal('${md}')"><span class="supermarket">🏪 ${precio.supermarket}</span><div class="price-info">${ph}${esMejor?'<span class="badge">'+t('cheapest')+'</span>':''}</div></div>`;
                         if (precio.fecha_scraping) fechaScraping = precio.fecha_scraping;
                     }
                     html += `</div>`;
                 }
                 document.getElementById("results").innerHTML = html;
-                if (fechaScraping) document.getElementById("scrape-date").innerHTML = `Precios actualizados: ${formatDate(fechaScraping)}`;
-            } catch (error) { document.getElementById("results").innerHTML = "<p>Error en la búsqueda</p>"; }
+                if (fechaScraping) document.getElementById("scrape-date").innerHTML = `${t('updated')}: ${formatDate(fechaScraping)}`;
+            } catch (error) { document.getElementById("results").innerHTML = "<p>Error</p>"; }
         }
-        function formatDate(dateStr) { const d = new Date(dateStr+'T00:00:00'); return d.toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'}); }
+
+        function formatDate(dateStr) { const d = new Date(dateStr+'T00:00:00'); return d.toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'long',year:'numeric'}); }
         searchInput.addEventListener("keypress", (e) => { if (e.key === "Enter") buscar(); });
+
         function abrirModal(encodedData) {
             const d = JSON.parse(decodeURIComponent(encodedData));
-            let html = `<h3>🏪 ${d.supermarket}</h3><div class="modal-subtitle">${d.producto} — ${d.cantidad}</div><div class="modal-row"><span class="modal-label">Precio regular</span><span class="modal-value">$${d.precio}</span></div>`;
+            let html = `<h3>🏪 ${d.supermarket}</h3><div class="modal-subtitle">${d.producto} — ${d.cantidad}</div><div class="modal-row"><span class="modal-label">${t('regular_price')}</span><span class="modal-value">$${d.precio}</span></div>`;
             if (d.precio_promo) {
-                html += `<div class="modal-row"><span class="modal-label">Precio promocional</span><span class="modal-value promo">$${d.precio_promo}</span></div><div class="modal-row"><span class="modal-label">Ahorro</span><span class="modal-value promo">-$${d.precio-d.precio_promo} (${Math.round((1-d.precio_promo/d.precio)*100)}%)</span></div>`;
-                if (d.promo_vence) { const dias = Math.ceil((new Date(d.promo_vence+'T00:00:00')-new Date())/(1000*60*60*24)); html += `<div class="modal-row"><span class="modal-label">Promo vence</span><span class="modal-value promo">${formatDate(d.promo_vence)} (${dias>0?dias+' días':'Vencida'})</span></div>`; }
+                html += `<div class="modal-row"><span class="modal-label">${t('promo_price')}</span><span class="modal-value promo">$${d.precio_promo}</span></div><div class="modal-row"><span class="modal-label">${t('savings')}</span><span class="modal-value promo">-$${d.precio-d.precio_promo} (${Math.round((1-d.precio_promo/d.precio)*100)}%)</span></div>`;
+                if (d.promo_vence) { const dias = Math.ceil((new Date(d.promo_vence+'T00:00:00')-new Date())/(1000*60*60*24)); html += `<div class="modal-row"><span class="modal-label">${t('promo_expires')}</span><span class="modal-value promo">${formatDate(d.promo_vence)} (${dias>0?dias+' '+t('days'):t('expired')})</span></div>`; }
             }
-            if (d.esMejor) html += `<div class="modal-row"><span class="modal-label">Veredicto</span><span class="modal-value mejor">✅ Mejor precio disponible</span></div>`;
-            html += `<div class="modal-source"><strong>📊 Datos del scraping</strong>Fuente: ${d.supermarket} Online<br>Fecha de extracción: ${d.fecha_scraping?formatDate(d.fecha_scraping):'No disponible'}<br>Método: Scraping automático del sitio web<br>Producto: ${d.producto} (${d.cantidad})</div>`;
+            if (d.esMejor) html += `<div class="modal-row"><span class="modal-label">${t('verdict')}</span><span class="modal-value mejor">✅ ${t('best_price')}</span></div>`;
+            html += `<div class="modal-source"><strong>📊 ${t('scrape_title')}</strong>${t('source')}: ${d.supermarket} ${t('online')}<br>${t('extraction_date')}: ${d.fecha_scraping?formatDate(d.fecha_scraping):t('not_available')}<br>${t('method')}: ${t('auto_scraping')}<br>${t('product')}: ${d.producto} (${d.cantidad})</div>`;
             document.getElementById('modal-content').innerHTML = html;
             document.getElementById('modal-overlay').classList.add('active');
         }
+
         function cerrarModal(event) { if (!event||event.target===document.getElementById('modal-overlay')||event.target.classList.contains('modal-close')) document.getElementById('modal-overlay').classList.remove('active'); }
         document.addEventListener('keydown', (e) => { if (e.key==='Escape') cerrarModal(); });
+
+        // Init
+        setLang('es');
         cargarProductos();
+        renderCoupons();
     </script>
 </body>
 </html>'''
