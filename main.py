@@ -1043,7 +1043,7 @@ function selectBarrio(b) {
         if (st.barrios[k].toLowerCase() === b.toLowerCase()) { found = true; break; }
       }
       if (found) {
-        results.push({name: s.name, cls: s.cls, letter: s.letter, addr: st.addr, hours: st.hours});
+        results.push({name: s.name, cls: s.cls, letter: s.letter, color: s.color, addr: st.addr, hours: st.hours, lat: st.lat, lng: st.lng});
       }
     }
   }
@@ -1052,6 +1052,7 @@ function selectBarrio(b) {
   var lr = document.getElementById('loc-results');
   if (!results.length) {
     lr.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3)">' + (lang === 'es' ? 'No hay sucursales cercanas en ' + b : 'No nearby stores in ' + b) + '</div>';
+    document.getElementById('loc-map').style.display = 'none';
     return;
   }
   var html = '';
@@ -1061,6 +1062,46 @@ function selectBarrio(b) {
     html += '<div class="loc-card"><div class="loc-icon ' + r.cls + '">' + r.letter + '</div><div class="loc-info"><div class="loc-name">' + r.name + '</div><div class="loc-addr">' + r.addr + '</div><div class="loc-meta"><span class="loc-tag ' + (open ? 'open' : 'closed') + '">' + (open ? (lang === 'es' ? 'Abierto' : 'Open') : (lang === 'es' ? 'Cerrado' : 'Closed')) + '</span><span class="loc-tag hours">' + r.hours + '</span></div></div></div>';
   }
   lr.innerHTML = html;
+
+  // Show map centered on results
+  showBarrioMap(results);
+}
+
+function showBarrioMap(results) {
+  var mapDiv = document.getElementById('loc-map');
+  mapDiv.style.display = 'block';
+  if (locMap) { locMap.remove(); }
+
+  var centerLat = 0, centerLng = 0;
+  for (var i = 0; i < results.length; i++) {
+    centerLat += results[i].lat;
+    centerLng += results[i].lng;
+  }
+  centerLat /= results.length;
+  centerLng /= results.length;
+
+  locMap = L.map('loc-map').setView([centerLat, centerLng], 14);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap',
+    maxZoom: 18
+  }).addTo(locMap);
+
+  var bounds = L.latLngBounds();
+  for (var i = 0; i < results.length; i++) {
+    var n = results[i];
+    var icon = L.divIcon({
+      className: '',
+      html: '<div style="background:' + n.color + ';color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;font-family:Space Grotesk,sans-serif;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)">' + n.letter + '</div>',
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
+    });
+    L.marker([n.lat, n.lng], {icon: icon}).addTo(locMap)
+      .bindPopup('<strong>' + n.name + '</strong><br>' + n.addr + '<br><span style="color:#888">' + n.hours + '</span>');
+    bounds.extend([n.lat, n.lng]);
+  }
+  if (results.length > 1) {
+    locMap.fitBounds(bounds, {padding: [40, 40]});
+  }
 }
 
 // ========== MAP & GEOLOCATION ==========
