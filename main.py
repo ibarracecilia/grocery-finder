@@ -361,7 +361,7 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
       <div class="loc-pin-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
       <div>
         <div class="loc-title i18n" data-es="Supermercados cerca tuyo" data-en="Supermarkets near you"></div>
-        <div class="loc-subtitle i18n" data-es="Escrib&iacute; tu barrio y encontr&aacute; la sucursal m&aacute;s cercana" data-en="Type your neighborhood to find the nearest store"></div>
+        <div class="loc-subtitle i18n" data-es="Escrib&iacute; tu barrio o localidad en CABA y GBA" data-en="Type your neighborhood in Buenos Aires metro area"></div>
       </div>
     </div>
     <div class="loc-input-wrap">
@@ -913,28 +913,61 @@ renderCoups();
 
 var STORES = [
   {name:'Coto', cls:'coto', letter:'C', stores:[
-    {addr:'Av. Cabildo 2571, Belgrano', barrios:['Belgrano','N\u00fa\u00f1ez','Colegiales'], hours:'8:00 - 22:00', dist:'0.4 km'},
-    {addr:'Av. Rivadavia 5150, Caballito', barrios:['Caballito','Flores','Almagro'], hours:'8:00 - 22:00', dist:'0.6 km'},
-    {addr:'Av. Corrientes 3247, Abasto', barrios:['Balvanera','Abasto','Once','Almagro'], hours:'8:00 - 22:00', dist:'0.5 km'},
-    {addr:'Av. Directorio 2820, Parque Chacabuco', barrios:['Parque Chacabuco','Boedo','Caballito'], hours:'8:00 - 21:30', dist:'0.7 km'},
-    {addr:'Av. C\u00f3rdoba 5650, Palermo', barrios:['Palermo','Villa Crespo','Chacarita'], hours:'8:00 - 22:00', dist:'0.3 km'},
-    {addr:'Av. Juan B. Justo 3563, Villa Crespo', barrios:['Villa Crespo','Palermo','Chacarita'], hours:'8:00 - 22:00', dist:'0.5 km'}
+    {addr:'Av. Cabildo 2571, Belgrano', barrios:['Belgrano','N\u00fa\u00f1ez','Colegiales'], hours:'8:00 - 22:00'},
+    {addr:'Av. Rivadavia 5150, Caballito', barrios:['Caballito','Flores','Almagro'], hours:'8:00 - 22:00'},
+    {addr:'Av. Corrientes 3247, Abasto', barrios:['Balvanera','Abasto','Once','Almagro'], hours:'8:00 - 22:00'},
+    {addr:'Av. Directorio 2820, Parque Chacabuco', barrios:['Parque Chacabuco','Boedo','Caballito'], hours:'8:00 - 21:30'},
+    {addr:'Av. C\u00f3rdoba 5650, Palermo', barrios:['Palermo','Villa Crespo','Chacarita'], hours:'8:00 - 22:00'},
+    {addr:'Av. Juan B. Justo 3563, Villa Crespo', barrios:['Villa Crespo','Palermo','Chacarita'], hours:'8:00 - 22:00'},
+    {addr:'Ag\u00fcero 616, Abasto', barrios:['Abasto','Balvanera','Once'], hours:'8:00 - 22:00'},
+    {addr:'Av. Mart\u00edn Garc\u00eda 495, Barracas', barrios:['Barracas','La Boca','San Telmo'], hours:'8:00 - 21:30'},
+    {addr:'Av. Ricardo Balb\u00edn 2030, San Mart\u00edn', barrios:['San Mart\u00edn','Villa Ballester','Caseros'], hours:'8:00 - 22:00'},
+    {addr:'Comesa\u00f1a 4056, Ciudadela', barrios:['Ciudadela','Ramos Mej\u00eda','Liniers'], hours:'8:00 - 21:30'},
+    {addr:'Av. Rivadavia 14452, Ramos Mej\u00eda', barrios:['Ramos Mej\u00eda','Ciudadela','Haedo'], hours:'8:00 - 22:00'},
+    {addr:'Av. Hip\u00f3lito Yrigoyen 8627, Lomas de Zamora', barrios:['Lomas de Zamora','Banfield','Temperley'], hours:'8:00 - 22:00'},
+    {addr:'Av. Calchaqui 3101, Quilmes', barrios:['Quilmes','Quilmes Oeste','Bernal'], hours:'8:00 - 22:00'},
+    {addr:'Av. Mitre 2530, Avellaneda', barrios:['Avellaneda','Sarand\u00ed','Lan\u00fas'], hours:'8:00 - 21:30'},
+    {addr:'Autopista Panamericana Km 35, Tortugas', barrios:['Tortugas','Pacheco','Tigre'], hours:'8:00 - 22:00'},
+    {addr:'Av. Vergara 3560, Hurlingham', barrios:['Hurlingham','Mor\u00f3n','Ituzaing\u00f3'], hours:'8:00 - 21:30'}
   ]},
   {name:'Jumbo', cls:'jumbo', letter:'J', stores:[
-    {addr:'Av. Bullrich 345, Palermo', barrios:['Palermo','Recoleta','Belgrano'], hours:'9:00 - 21:30', dist:'0.8 km'},
-    {addr:'Av. Rivadavia 7550, Flores', barrios:['Flores','Floresta','Caballito'], hours:'9:00 - 21:00', dist:'1.2 km'},
-    {addr:'Av. Santa Fe 1860, Recoleta', barrios:['Recoleta','Barrio Norte','Retiro'], hours:'9:00 - 21:30', dist:'0.6 km'},
-    {addr:'Av. Corrientes 5559, Villa Crespo', barrios:['Villa Crespo','Chacarita','Almagro'], hours:'9:00 - 21:00', dist:'0.9 km'}
+    {addr:'Av. Bullrich 345, Palermo', barrios:['Palermo','Recoleta','Belgrano'], hours:'9:00 - 21:30'},
+    {addr:'Av. Rivadavia 7550, Flores', barrios:['Flores','Floresta','Caballito'], hours:'9:00 - 21:00'},
+    {addr:'Av. Santa Fe 4950, Palermo', barrios:['Palermo','Recoleta','Barrio Norte','Belgrano'], hours:'9:00 - 21:30'},
+    {addr:'Av. Corrientes 5559, Villa Crespo', barrios:['Villa Crespo','Chacarita','Almagro'], hours:'9:00 - 21:00'},
+    {addr:'Lola Mora 450, Puerto Madero', barrios:['Puerto Madero','San Telmo','Retiro'], hours:'9:00 - 21:00'},
+    {addr:'Av. Juan B. Justo 4701, Palermo', barrios:['Palermo','Villa Crespo'], hours:'9:00 - 21:00'},
+    {addr:'Av. Calchaqui 3950, Quilmes Oeste', barrios:['Quilmes','Quilmes Oeste','Bernal','Ezpeleta'], hours:'8:30 - 21:30'},
+    {addr:'Av. Mitre 1075, Quilmes', barrios:['Quilmes','Bernal'], hours:'9:00 - 21:00'},
+    {addr:'Av. Ant\u00e1rtida Argentina 799, Lomas de Zamora', barrios:['Lomas de Zamora','Banfield','Temperley'], hours:'9:00 - 21:00'},
+    {addr:'Blvd. Juan Manuel de Rosas 658, Mor\u00f3n', barrios:['Mor\u00f3n','Haedo','Castelar'], hours:'9:00 - 21:00'},
+    {addr:'San Lorenzo 3773, San Mart\u00edn', barrios:['San Mart\u00edn','Villa Ballester','Caseros'], hours:'9:00 - 21:00'},
+    {addr:'Av. Paran\u00e1 3745, Mart\u00ednez', barrios:['Mart\u00ednez','San Isidro','Olivos','Vicente L\u00f3pez'], hours:'9:00 - 21:00'},
+    {addr:'Av. Libertador 2261, San Fernando', barrios:['San Fernando','Victoria','Tigre'], hours:'9:00 - 21:00'},
+    {addr:'Boulogne Sur Mer 1275, Pacheco', barrios:['Pacheco','Tigre','Tortugas'], hours:'8:00 - 21:00'},
+    {addr:'Las Magnolias 698, Pilar', barrios:['Pilar','Del Viso','Escobar'], hours:'8:00 - 21:00'}
   ]},
   {name:'Disco', cls:'disco', letter:'D', stores:[
-    {addr:'Av. Libertador 2475, Recoleta', barrios:['Recoleta','Palermo','Retiro','Barrio Norte'], hours:'8:30 - 21:00', dist:'0.5 km'},
-    {addr:'Av. Cabildo 1550, Belgrano', barrios:['Belgrano','N\u00fa\u00f1ez','Colegiales'], hours:'8:30 - 21:00', dist:'0.7 km'},
-    {addr:'Av. Acoyte 440, Caballito', barrios:['Caballito','Almagro','Boedo'], hours:'8:30 - 21:00', dist:'0.4 km'},
-    {addr:'Av. Scalabrini Ortiz 3178, Palermo', barrios:['Palermo','Villa Crespo'], hours:'8:30 - 21:00', dist:'0.6 km'}
+    {addr:'Av. Libertador 2475, Recoleta', barrios:['Recoleta','Palermo','Retiro','Barrio Norte'], hours:'8:30 - 21:00'},
+    {addr:'Av. Cabildo 1550, Belgrano', barrios:['Belgrano','N\u00fa\u00f1ez','Colegiales'], hours:'8:30 - 21:00'},
+    {addr:'Av. Acoyte 440, Caballito', barrios:['Caballito','Almagro','Boedo'], hours:'8:30 - 21:00'},
+    {addr:'Av. Scalabrini Ortiz 3178, Palermo', barrios:['Palermo','Villa Crespo'], hours:'8:30 - 21:00'},
+    {addr:'Av. Entre R\u00edos 361, San Telmo', barrios:['San Telmo','Monserrat','Barracas'], hours:'8:30 - 21:00'},
+    {addr:'Av. Quintana 366, Recoleta', barrios:['Recoleta','Barrio Norte','Retiro'], hours:'8:30 - 21:00'},
+    {addr:'J.E. Uriburu 1230, Recoleta', barrios:['Recoleta','Barrio Norte','Balvanera'], hours:'8:30 - 21:00'},
+    {addr:'Gorostiaga 1632, Las Ca\u00f1itas', barrios:['Palermo','Belgrano','Colegiales'], hours:'8:30 - 21:00'},
+    {addr:'Av. Meeks 256, Lomas de Zamora', barrios:['Lomas de Zamora','Banfield','Temperley'], hours:'8:00 - 21:00'},
+    {addr:'Intendente Garc\u00eda Silva 855, Mor\u00f3n', barrios:['Mor\u00f3n','Haedo','Castelar'], hours:'8:00 - 20:00'},
+    {addr:'Av. Centenario 388, San Isidro', barrios:['San Isidro','Mart\u00ednez','Olivos'], hours:'8:30 - 21:00'},
+    {addr:'Av. Maipu 1819, Vicente L\u00f3pez', barrios:['Vicente L\u00f3pez','Olivos','Mart\u00ednez'], hours:'8:30 - 21:00'},
+    {addr:'Amenedo 302, Adrogu\u00e9', barrios:['Adrogu\u00e9','Lomas de Zamora','Temperley'], hours:'8:30 - 21:00'},
+    {addr:'Vieytes 1042, Banfield', barrios:['Banfield','Lomas de Zamora','Lan\u00fas'], hours:'8:30 - 21:00'},
+    {addr:'Blanco Encalada 2509, B\u00e9ccar', barrios:['B\u00e9ccar','San Isidro','Mart\u00ednez'], hours:'8:30 - 21:00'},
+    {addr:'Gdor. Inocencio Arias 3247, Castelar', barrios:['Castelar','Mor\u00f3n','Ituzaing\u00f3'], hours:'8:30 - 21:00'}
   ]}
 ];
 
-var BARRIOS = ['Belgrano','N\u00fa\u00f1ez','Colegiales','Palermo','Recoleta','Barrio Norte','Retiro','Caballito','Flores','Floresta','Almagro','Balvanera','Abasto','Once','Boedo','Parque Chacabuco','Villa Crespo','Chacarita','San Telmo','La Boca','Monserrat','San Nicol\u00e1s','Puerto Madero','Devoto','Villa Urquiza','Saavedra','Liniers','Mataderos','Villa Lugano','Pompeya'];
+var BARRIOS = ['Belgrano','N\u00fa\u00f1ez','Colegiales','Palermo','Recoleta','Barrio Norte','Retiro','Caballito','Flores','Floresta','Almagro','Balvanera','Abasto','Once','Boedo','Parque Chacabuco','Villa Crespo','Chacarita','San Telmo','La Boca','Monserrat','San Nicol\u00e1s','Puerto Madero','Barracas','Devoto','Villa Urquiza','Saavedra','Liniers','Mataderos','Villa Lugano','Pompeya','Quilmes','Quilmes Oeste','Bernal','Ezpeleta','Avellaneda','Sarand\u00ed','Lan\u00fas','Lomas de Zamora','Banfield','Temperley','Adrogu\u00e9','Mor\u00f3n','Haedo','Castelar','Ituzaing\u00f3','Ramos Mej\u00eda','Ciudadela','Hurlingham','San Mart\u00edn','Villa Ballester','Caseros','San Isidro','Mart\u00ednez','Olivos','Vicente L\u00f3pez','B\u00e9ccar','San Fernando','Victoria','Tigre','Pacheco','Tortugas','Pilar','Del Viso','Escobar'];
 
 var locInput = document.getElementById('loc-input');
 var locSug = document.getElementById('loc-sug');
@@ -950,7 +983,7 @@ locInput.addEventListener('input', function() {
   }
   var html = '';
   for (var i = 0; i < m.length; i++) {
-    html += '<div class="loc-sug-item" onclick="selectBarrio(\'' + escName(m[i]) + '\')">' + m[i] + '<span class="loc-zone">Buenos Aires, CABA</span></div>';
+    html += '<div class="loc-sug-item" onclick="selectBarrio(\'' + escName(m[i]) + '\')">' + m[i] + '<span class="loc-zone">Buenos Aires</span></div>';
   }
   locSug.innerHTML = html;
   locSug.style.display = 'block';
@@ -973,11 +1006,11 @@ function selectBarrio(b) {
         if (st.barrios[k].toLowerCase() === b.toLowerCase()) { found = true; break; }
       }
       if (found) {
-        results.push({name: s.name, cls: s.cls, letter: s.letter, addr: st.addr, hours: st.hours, dist: st.dist});
+        results.push({name: s.name, cls: s.cls, letter: s.letter, addr: st.addr, hours: st.hours});
       }
     }
   }
-  results.sort(function(a, bb) { return parseFloat(a.dist) - parseFloat(bb.dist); });
+  results.sort(function(a, bb) { return a.name.localeCompare(bb.name); });
   var now = new Date().getHours();
   var lr = document.getElementById('loc-results');
   if (!results.length) {
@@ -988,7 +1021,7 @@ function selectBarrio(b) {
   for (var i = 0; i < results.length; i++) {
     var r = results[i];
     var open = now >= 8 && now < 21;
-    html += '<div class="loc-card"><div class="loc-icon ' + r.cls + '">' + r.letter + '</div><div class="loc-info"><div class="loc-name">' + r.name + '</div><div class="loc-addr">' + r.addr + '</div><div class="loc-meta"><span class="loc-tag ' + (open ? 'open' : 'closed') + '">' + (open ? (lang === 'es' ? 'Abierto' : 'Open') : (lang === 'es' ? 'Cerrado' : 'Closed')) + '</span><span class="loc-tag hours">' + r.hours + '</span><span class="loc-tag dist">' + r.dist + '</span></div></div></div>';
+    html += '<div class="loc-card"><div class="loc-icon ' + r.cls + '">' + r.letter + '</div><div class="loc-info"><div class="loc-name">' + r.name + '</div><div class="loc-addr">' + r.addr + '</div><div class="loc-meta"><span class="loc-tag ' + (open ? 'open' : 'closed') + '">' + (open ? (lang === 'es' ? 'Abierto' : 'Open') : (lang === 'es' ? 'Cerrado' : 'Closed')) + '</span><span class="loc-tag hours">' + r.hours + '</span></div></div></div>';
   }
   lr.innerHTML = html;
 }
