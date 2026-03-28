@@ -74,7 +74,7 @@ def index():
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f0f4f8; --card: #ffffff; --card-border: #e2e8f0; --text: #1e293b;
+            --bg: linear-gradient(160deg, #e8f0fe 0%, #f0fdf9 40%, #fdf4f0 100%); --bg-color: #eef3fa; --card: #ffffff; --card-border: #e2e8f0; --text: #1e293b;
             --text-secondary: #64748b; --text-muted: #94a3b8; --accent: #0d9488;
             --accent-hover: #0f766e; --accent-light: #f0fdfa; --accent-border: #ccfbf1;
             --input-bg: #f8fafc; --input-border: #e2e8f0; --divider: #e2e8f0;
@@ -83,7 +83,7 @@ def index():
             --red: #dc2626; --green: #059669;
         }
         [data-theme="dark"] {
-            --bg: #0f172a; --card: #1e293b; --card-border: #334155; --text: #f1f5f9;
+            --bg: none; --bg-color: #0f172a; --card: #1e293b; --card-border: #334155; --text: #f1f5f9;
             --text-secondary: #94a3b8; --text-muted: #64748b; --accent: #2dd4bf;
             --accent-hover: #14b8a6; --accent-light: #134e4a; --accent-border: #115e59;
             --input-bg: #0f172a; --input-border: #334155; --divider: #334155;
@@ -92,10 +92,10 @@ def index():
             --red: #f87171; --green: #34d399;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); min-height: 100vh; padding: 20px 16px; transition: background 0.4s, color 0.4s; color: var(--text); }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-color); background-image: var(--bg); min-height: 100vh; padding: 20px 16px; transition: background 0.4s, color 0.4s; color: var(--text); }
         .top-bar { max-width: 750px; margin: 0 auto 14px; display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
         .top-bar .logo { display: flex; align-items: center; gap: 0; }
-        .top-bar .logo svg { height: 56px; width: auto; }
+        .top-bar .logo svg { height: 64px; width: auto; }
         @keyframes pulse-node { 0%,100%{opacity:0.2;r:2.5} 50%{opacity:0.7;r:3.5} }
         @keyframes glow-core { 0%,100%{opacity:0.5} 50%{opacity:1} }
         @keyframes pulse-pin { 0%,100%{opacity:0.4} 50%{opacity:0.8} }
@@ -122,7 +122,7 @@ def index():
         [data-theme="dark"] .theme-toggle { background: var(--accent); }
         .theme-toggle .toggle-circle { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: white; transition: all 0.3s; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
         [data-theme="dark"] .theme-toggle .toggle-circle { left: 25px; }
-        .container { background: var(--card); border-radius: 20px; padding: 32px; max-width: 750px; width: 100%; margin: 0 auto; box-shadow: 0 1px 3px var(--shadow), 0 8px 30px var(--shadow-lg); border: 1px solid var(--card-border); transition: all 0.4s; }
+        .container { background: var(--card); border-radius: 20px; padding: 32px; max-width: 750px; width: 100%; margin: 0 auto; box-shadow: 0 1px 3px var(--shadow), 0 8px 30px var(--shadow-lg), 0 0 60px rgba(13,148,136,0.04); border: 1px solid var(--card-border); transition: all 0.4s; }
         .header { text-align: center; margin-bottom: 28px; }
         .header h1 { color: var(--text); font-size: 30px; margin-bottom: 6px; font-weight: 700; letter-spacing: -0.8px; line-height: 1.2; }
         .header p { color: var(--text-muted); font-size: 15px; line-height: 1.5; }
@@ -217,39 +217,39 @@ def index():
 <body>
     <div class="top-bar">
         <div class="logo">
-            <svg class="logo-svg" viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
-                <line x1="8" y1="35" x2="30" y2="52" stroke="var(--accent)" stroke-width="1.5" opacity="0.3"/>
-                <line x1="4" y1="85" x2="26" y2="72" stroke="var(--accent)" stroke-width="1.5" opacity="0.25"/>
-                <line x1="12" y1="120" x2="32" y2="104" stroke="var(--accent)" stroke-width="1.5" opacity="0.3"/>
-                <line x1="112" y1="12" x2="92" y2="30" stroke="var(--accent)" stroke-width="1.5" opacity="0.2"/>
-                <line x1="120" y1="52" x2="108" y2="60" stroke="var(--accent)" stroke-width="1.5" opacity="0.25"/>
-                <circle class="logo-node" cx="8" cy="35" r="2.5" fill="var(--accent)"/>
-                <circle class="logo-node" cx="4" cy="85" r="2.5" fill="var(--accent)"/>
-                <circle class="logo-node" cx="12" cy="120" r="2.5" fill="var(--accent)"/>
-                <circle class="logo-node" cx="112" cy="12" r="2.5" fill="var(--accent)"/>
-                <circle class="logo-node" cx="120" cy="52" r="2.5" fill="var(--accent)"/>
-                <path d="M 70 10 A 60 60 0 1 0 70 130" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round"/>
-                <line x1="70" y1="70" x2="45" y2="70" stroke="var(--accent)" stroke-width="10" stroke-linecap="round"/>
-                <path d="M 68 68 L 112 68 L 105 110 L 54 110 Z" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linejoin="round"/>
-                <circle cx="67" cy="124" r="7" fill="none" stroke="var(--accent)" stroke-width="3"/>
-                <circle cx="97" cy="124" r="7" fill="none" stroke="var(--accent)" stroke-width="3"/>
-                <rect x="72" y="80" width="19" height="19" rx="3" fill="none" stroke="var(--accent)" stroke-width="1.8" opacity="0.8"/>
-                <line class="logo-pin" x1="78" y1="80" x2="78" y2="75" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
-                <line class="logo-pin" x1="86" y1="80" x2="86" y2="75" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
-                <line class="logo-pin" x1="72" y1="87" x2="67" y2="87" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
-                <line class="logo-pin" x1="72" y1="93" x2="67" y2="93" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
-                <line class="logo-pin" x1="91" y1="87" x2="96" y2="87" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
-                <line class="logo-pin" x1="91" y1="93" x2="96" y2="93" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
-                <line class="logo-pin" x1="78" y1="99" x2="78" y2="104" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
-                <line class="logo-pin" x1="86" y1="99" x2="86" y2="104" stroke="var(--accent)" stroke-width="1.3" opacity="0.5"/>
-                <circle class="logo-core" cx="81" cy="89" r="3.5" fill="var(--accent)" opacity="0.7"/>
-                <text x="138" y="68" style="font-family:'Inter',sans-serif;font-size:32px;font-weight:700;letter-spacing:-1px;" fill="var(--text)">Grocery</text>
-                <text x="138" y="68" style="font-family:'Inter',sans-serif;font-size:32px;font-weight:700;letter-spacing:-1px;" fill="var(--accent)" dx="116">Finder</text>
-                <text x="138" y="90" style="font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;" fill="var(--accent)" opacity="0.7">AI-POWERED PRICE COMPARISON</text>
+            <svg class="logo-svg" viewBox="0 0 420 140" xmlns="http://www.w3.org/2000/svg">
+                <line x1="8" y1="30" x2="28" y2="45" stroke="var(--accent)" stroke-width="1.5" opacity="0.3"/>
+                <line x1="4" y1="72" x2="24" y2="62" stroke="var(--accent)" stroke-width="1.5" opacity="0.25"/>
+                <line x1="10" y1="105" x2="28" y2="92" stroke="var(--accent)" stroke-width="1.5" opacity="0.3"/>
+                <line x1="100" y1="10" x2="85" y2="26" stroke="var(--accent)" stroke-width="1.5" opacity="0.2"/>
+                <line x1="108" y1="45" x2="98" y2="52" stroke="var(--accent)" stroke-width="1.5" opacity="0.25"/>
+                <circle class="logo-node" cx="8" cy="30" r="2.5" fill="var(--accent)"/>
+                <circle class="logo-node" cx="4" cy="72" r="2.5" fill="var(--accent)"/>
+                <circle class="logo-node" cx="10" cy="105" r="2.5" fill="var(--accent)"/>
+                <circle class="logo-node" cx="100" cy="10" r="2.5" fill="var(--accent)"/>
+                <circle class="logo-node" cx="108" cy="45" r="2.5" fill="var(--accent)"/>
+                <path d="M 62 8 A 52 52 0 1 0 62 114" fill="none" stroke="var(--accent)" stroke-width="9" stroke-linecap="round"/>
+                <line x1="62" y1="61" x2="40" y2="61" stroke="var(--accent)" stroke-width="9" stroke-linecap="round"/>
+                <path d="M 60 59 L 100 59 L 94 96 L 48 96 Z" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linejoin="round"/>
+                <circle cx="59" cy="108" r="6" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+                <circle cx="86" cy="108" r="6" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+                <rect x="64" y="69" width="17" height="17" rx="2.5" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity="0.8"/>
+                <line class="logo-pin" x1="70" y1="69" x2="70" y2="65" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
+                <line class="logo-pin" x1="77" y1="69" x2="77" y2="65" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
+                <line class="logo-pin" x1="64" y1="76" x2="60" y2="76" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
+                <line class="logo-pin" x1="64" y1="81" x2="60" y2="81" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
+                <line class="logo-pin" x1="81" y1="76" x2="85" y2="76" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
+                <line class="logo-pin" x1="81" y1="81" x2="85" y2="81" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
+                <line class="logo-pin" x1="70" y1="86" x2="70" y2="90" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
+                <line class="logo-pin" x1="77" y1="86" x2="77" y2="90" stroke="var(--accent)" stroke-width="1.2" opacity="0.5"/>
+                <circle class="logo-core" cx="73" cy="78" r="3" fill="var(--accent)" opacity="0.7"/>
+                <text x="125" y="55" style="font-family:'Inter',sans-serif;font-size:30px;font-weight:700;letter-spacing:-1px;" fill="var(--text)">Grocery</text>
+                <text x="262" y="55" style="font-family:'Inter',sans-serif;font-size:30px;font-weight:700;letter-spacing:-1px;" fill="var(--accent)">Finder</text>
+                <text x="125" y="76" style="font-family:'Inter',sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;" fill="var(--accent)" opacity="0.6">AI-POWERED PRICE COMPARISON</text>
+                <text x="125" y="96" style="font-family:'Inter',sans-serif;font-size:11px;font-weight:400;" fill="var(--text-muted)">Buenos Aires, Argentina</text>
             </svg>
         </div>
         <div class="right">
-            <div class="tagline">Buenos Aires, Argentina</div>
             <div class="lang-toggle">
                 <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
                 <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
