@@ -127,6 +127,14 @@ def index():
         .header h1 { color: var(--text); font-size: 30px; margin-bottom: 6px; font-weight: 700; letter-spacing: -0.8px; line-height: 1.2; }
         .header p { color: var(--text-muted); font-size: 15px; line-height: 1.5; }
         .coupons-section { margin-bottom: 22px; }
+        .currency-bar { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; padding: 10px 16px; background: var(--item-bg); border-radius: 12px; border: 1px solid var(--card-border); flex-wrap: wrap; }
+        .currency-bar label { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+        .currency-bar select { padding: 6px 10px; border: 1.5px solid var(--card-border); border-radius: 8px; background: var(--card); color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; outline: none; cursor: pointer; }
+        .currency-bar select:focus { border-color: var(--accent); }
+        .currency-bar .currency-toggle { padding: 6px 14px; border: 1.5px solid var(--card-border); border-radius: 8px; background: var(--card); color: var(--text-secondary); font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .currency-bar .currency-toggle.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .currency-eq { font-size: 11px; color: var(--text-muted); font-weight: 500; display: block; margin-top: 2px; }
+        .currency-eq-inline { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-left: 6px; }
         .coupons-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin; }
         .coupons-scroll::-webkit-scrollbar { height: 4px; }
         .coupons-scroll::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
@@ -264,6 +272,22 @@ def index():
             <h1 data-es="Compará precios al instante" data-en="Compare prices instantly" class="i18n"></h1>
             <p data-es="Encontrá el mejor precio entre Coto, Jumbo y Disco" data-en="Find the best price across Coto, Jumbo and Disco" class="i18n"></p>
         </div>
+        <div class="currency-bar" id="currency-bar">
+            <label id="currency-label" data-es="Equivalencia:" data-en="Currency:" class="i18n"></label>
+            <button class="currency-toggle" id="currency-toggle" onclick="toggleCurrency()">OFF</button>
+            <select id="currency-select" onchange="updateCurrency()" style="display:none;">
+                <option value="USD">USD - Dólar</option>
+                <option value="EUR">EUR - Euro</option>
+                <option value="BRL">BRL - Real</option>
+                <option value="GBP">GBP - Libra</option>
+                <option value="CLP">CLP - Peso Chileno</option>
+                <option value="UYU">UYU - Peso Uruguayo</option>
+                <option value="MXN">MXN - Peso Mexicano</option>
+                <option value="JPY">JPY - Yen</option>
+                <option value="CNY">CNY - Yuan</option>
+            </select>
+            <span id="currency-rate" style="display:none; font-size:11px; color:var(--text-muted);"></span>
+        </div>
         <div class="coupons-section">
             <p class="section-title i18n" data-es="Cupones disponibles" data-en="Available coupons" id="coupons-title"></p>
             <div class="coupons-scroll" id="coupons-scroll"></div>
@@ -300,6 +324,64 @@ def index():
         let allProducts = [];
         let lang = 'es';
         let darkMode = false;
+        let showCurrency = false;
+        let selectedCurrency = 'USD';
+
+        const exchangeRates = {
+            'USD': { rate: 1200, symbol: 'US$', name: 'Dólar' },
+            'EUR': { rate: 1300, symbol: '€', name: 'Euro' },
+            'BRL': { rate: 230, symbol: 'R$', name: 'Real' },
+            'GBP': { rate: 1520, symbol: '£', name: 'Libra' },
+            'CLP': { rate: 1.28, symbol: 'CL$', name: 'Peso Chileno' },
+            'UYU': { rate: 28, symbol: 'UY$', name: 'Peso Uruguayo' },
+            'MXN': { rate: 70, symbol: 'MX$', name: 'Peso Mexicano' },
+            'JPY': { rate: 7.8, symbol: '¥', name: 'Yen' },
+            'CNY': { rate: 165, symbol: '¥', name: 'Yuan' },
+        };
+
+        function convertARS(ars) {
+            if (!showCurrency) return '';
+            const cur = exchangeRates[selectedCurrency];
+            const converted = (ars / cur.rate).toFixed(2);
+            return `<span class="currency-eq">${cur.symbol}${converted} ${selectedCurrency}</span>`;
+        }
+
+        function convertARSinline(ars) {
+            if (!showCurrency) return '';
+            const cur = exchangeRates[selectedCurrency];
+            const converted = (ars / cur.rate).toFixed(2);
+            return `<span class="currency-eq-inline">(${cur.symbol}${converted})</span>`;
+        }
+
+        function toggleCurrency() {
+            showCurrency = !showCurrency;
+            const btn = document.getElementById('currency-toggle');
+            const sel = document.getElementById('currency-select');
+            const rate = document.getElementById('currency-rate');
+            btn.classList.toggle('active', showCurrency);
+            btn.textContent = showCurrency ? 'ON' : 'OFF';
+            sel.style.display = showCurrency ? 'inline-block' : 'none';
+            rate.style.display = showCurrency ? 'inline' : 'none';
+            if (showCurrency) updateCurrencyRate();
+            if (allProducts.length) mostrarPopulares(allProducts);
+            const q = document.getElementById("search").value.trim();
+            if (q) buscar();
+        }
+
+        function updateCurrency() {
+            selectedCurrency = document.getElementById('currency-select').value;
+            updateCurrencyRate();
+            if (allProducts.length) mostrarPopulares(allProducts);
+            const q = document.getElementById("search").value.trim();
+            if (q) buscar();
+        }
+
+        function updateCurrencyRate() {
+            const cur = exchangeRates[selectedCurrency];
+            const rateEl = document.getElementById('currency-rate');
+            const rateText = lang === 'es' ? `1 ${selectedCurrency} ≈ $${cur.rate} ARS` : `1 ${selectedCurrency} ≈ $${cur.rate} ARS`;
+            rateEl.textContent = rateText;
+        }
 
         const T = {
             es: { desde:'Desde', search_placeholder:'¿Qué producto buscás?', search_btn:'Buscar', no_results_1:'No encontramos', no_results_2:'Probá con otro término o elegí un producto de la lista', no_autocomplete:'No hay resultados para', updated:'Precios actualizados', regular_price:'Precio regular', promo_price:'Precio promocional', savings:'Ahorro', promo_expires:'Promo vence', days:'días', expired:'Vencida', verdict:'Veredicto', best_price:'Mejor precio disponible', scrape_title:'Datos del scraping', source:'Fuente', extraction_date:'Fecha de extracción', method:'Método', auto_scraping:'Scraping automático del sitio web', product:'Producto', not_available:'No disponible', cheapest:'MÁS BARATO', offer:'OFERTA', expires:'Vence', coupon_copied:'Cupón copiado', coupons_title:'Cupones disponibles', products_title:'Productos disponibles', coupon_off:'OFF', coupon_valid:'Válido hasta', coupon_min:'Compra mínima', online:'Online' },
@@ -361,7 +443,7 @@ def index():
 
         function mostrarPopulares(productos) {
             const emojis = {'Leche Entera':'🥛','Yogur Natural':'🥛','Naranjas':'🍊','Huevos':'🥚','Queso Cremoso':'🧀','Manteca':'🧈','Pan Lactal':'🍞','Arroz':'🍚','Fideos Secos':'🍝','Aceite de Girasol':'🫒','Azúcar':'🍬','Harina':'🌾','Galletitas Dulces':'🍪','Gaseosa Cola':'🥤','Agua Mineral':'💧','Papel Higiénico':'🧻','Detergente':'🧴','Jabón en Polvo':'🧼','Pollo Entero':'🍗','Carne Picada':'🥩','Banana':'🍌','Tomate':'🍅','Papa':'🥔','Cebolla':'🧅'};
-            document.getElementById('popular-grid').innerHTML = productos.map(p => `<div class="popular-item" onclick="buscarProducto('${p.nombre}')"><span class="emoji">${emojis[p.nombre]||'🛒'}</span><span class="name">${p.nombre}</span><span class="qty">${p.cantidad}</span><span class="desde">${t('desde')} $${p.precio_min}</span></div>`).join('');
+            document.getElementById('popular-grid').innerHTML = productos.map(p => `<div class="popular-item" onclick="buscarProducto('${p.nombre}')"><span class="emoji">${emojis[p.nombre]||'🛒'}</span><span class="name">${p.nombre}</span><span class="qty">${p.cantidad}</span><span class="desde">${t('desde')} $${p.precio_min} ${convertARSinline(p.precio_min)}</span></div>`).join('');
         }
 
         function buscarProducto(nombre) { document.getElementById('search').value = nombre; buscar(); }
@@ -410,9 +492,9 @@ def index():
                         const md = encodeURIComponent(JSON.stringify({producto,cantidad:info.cantidad,supermarket:precio.supermarket,precio:precio.precio,precio_promo:precio.precio_promo,precio_final:precio.precio_final,promo_vence:precio.promo_vence,fecha_scraping:precio.fecha_scraping,esMejor}));
                         let ph = "";
                         if (precio.precio_promo) {
-                            ph = `<span class="price-promo"><span class="price-original">$${precio.precio}</span><span class="price-oferta">$${precio.precio_promo}</span><span class="badge-promo">${t('offer')}</span></span>`;
+                            ph = `<span class="price-promo"><span class="price-original">$${precio.precio}</span><span class="price-oferta">$${precio.precio_promo}</span><span class="badge-promo">${t('offer')}</span></span>${convertARS(precio.precio_promo)}`;
                             if (precio.promo_vence) ph += `<span class="promo-vence">${t('expires')}: ${formatDate(precio.promo_vence)}</span>`;
-                        } else { ph = `<span class="price">$${precio.precio}</span>`; }
+                        } else { ph = `<span class="price">$${precio.precio}</span>${convertARS(precio.precio)}`; }
                         html += `<div class="price-item ${clase}" onclick="abrirModal('${md}')"><span class="supermarket">🏪 ${precio.supermarket}</span><div class="price-info">${ph}${esMejor?'<span class="badge">'+t('cheapest')+'</span>':''}</div></div>`;
                         if (precio.fecha_scraping) fechaScraping = precio.fecha_scraping;
                     }
@@ -428,9 +510,9 @@ def index():
 
         function abrirModal(ed) {
             const d = JSON.parse(decodeURIComponent(ed));
-            let h = `<h3>🏪 ${d.supermarket}</h3><div class="modal-subtitle">${d.producto} — ${d.cantidad}</div><div class="modal-row"><span class="modal-label">${t('regular_price')}</span><span class="modal-value">$${d.precio}</span></div>`;
+            let h = `<h3>🏪 ${d.supermarket}</h3><div class="modal-subtitle">${d.producto} — ${d.cantidad}</div><div class="modal-row"><span class="modal-label">${t('regular_price')}</span><span class="modal-value">$${d.precio} ${convertARSinline(d.precio)}</span></div>`;
             if (d.precio_promo) {
-                h += `<div class="modal-row"><span class="modal-label">${t('promo_price')}</span><span class="modal-value promo">$${d.precio_promo}</span></div><div class="modal-row"><span class="modal-label">${t('savings')}</span><span class="modal-value promo">-$${d.precio-d.precio_promo} (${Math.round((1-d.precio_promo/d.precio)*100)}%)</span></div>`;
+                h += `<div class="modal-row"><span class="modal-label">${t('promo_price')}</span><span class="modal-value promo">$${d.precio_promo} ${convertARSinline(d.precio_promo)}</span></div><div class="modal-row"><span class="modal-label">${t('savings')}</span><span class="modal-value promo">-$${d.precio-d.precio_promo} (${Math.round((1-d.precio_promo/d.precio)*100)}%)</span></div>`;
                 if (d.promo_vence) { const dias = Math.ceil((new Date(d.promo_vence+'T00:00:00')-new Date())/(1000*60*60*24)); h += `<div class="modal-row"><span class="modal-label">${t('promo_expires')}</span><span class="modal-value promo">${formatDate(d.promo_vence)} (${dias>0?dias+' '+t('days'):t('expired')})</span></div>`; }
             }
             if (d.esMejor) h += `<div class="modal-row"><span class="modal-label">${t('verdict')}</span><span class="modal-value mejor">✅ ${t('best_price')}</span></div>`;
