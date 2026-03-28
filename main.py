@@ -420,6 +420,37 @@ EMOJIS['Tomate'] = '\ud83c\udf45';
 EMOJIS['Papa'] = '\ud83e\udd54';
 EMOJIS['Cebolla'] = '\ud83e\uddc5';
 
+var PROD_EN = {};
+PROD_EN['Leche Entera'] = 'Whole Milk';
+PROD_EN['Yogur Natural'] = 'Plain Yogurt';
+PROD_EN['Naranjas'] = 'Oranges';
+PROD_EN['Huevos'] = 'Eggs';
+PROD_EN['Queso Cremoso'] = 'Cream Cheese';
+PROD_EN['Manteca'] = 'Butter';
+PROD_EN['Pan Lactal'] = 'Sliced Bread';
+PROD_EN['Arroz'] = 'Rice';
+PROD_EN['Fideos Secos'] = 'Dry Pasta';
+PROD_EN['Aceite de Girasol'] = 'Sunflower Oil';
+PROD_EN['Az\u00facar'] = 'Sugar';
+PROD_EN['Harina'] = 'Flour';
+PROD_EN['Galletitas Dulces'] = 'Sweet Cookies';
+PROD_EN['Gaseosa Cola'] = 'Cola Soda';
+PROD_EN['Agua Mineral'] = 'Mineral Water';
+PROD_EN['Papel Higi\u00e9nico'] = 'Toilet Paper';
+PROD_EN['Detergente'] = 'Detergent';
+PROD_EN['Jab\u00f3n en Polvo'] = 'Powder Soap';
+PROD_EN['Pollo Entero'] = 'Whole Chicken';
+PROD_EN['Carne Picada'] = 'Ground Beef';
+PROD_EN['Banana'] = 'Banana';
+PROD_EN['Tomate'] = 'Tomato';
+PROD_EN['Papa'] = 'Potato';
+PROD_EN['Cebolla'] = 'Onion';
+
+function prodName(nombre) {
+  if (lang === 'en' && PROD_EN[nombre]) return PROD_EN[nombre];
+  return nombre;
+}
+
 var CATS = {};
 CATS['lacteos'] = ['Leche Entera','Yogur Natural','Queso Cremoso','Manteca'];
 CATS['frutas'] = ['Naranjas','Banana','Tomate','Papa','Cebolla'];
@@ -533,7 +564,7 @@ function showPop(ps) {
     }
     html += '<div class="item" style="animation-delay:' + (i * 40) + 'ms;animation:fadeUp .4s ease-out ' + (i * 40) + 'ms both" onclick="pickProd(\'' + escName(p.nombre) + '\')">';
     html += '<span class="emo">' + getEmoji(p.nombre) + '</span>';
-    html += '<span class="nm">' + p.nombre + '</span>';
+    html += '<span class="nm">' + prodName(p.nombre) + '</span>';
     html += '<span class="qt">' + p.cantidad + '</span>';
     html += '<span class="pr">' + t('desde') + ' $' + p.precio_min + '</span>';
     html += storeTag;
@@ -575,7 +606,7 @@ si.addEventListener('input', function() {
   }
   var html = '';
   for (var i = 0; i < m.length; i++) {
-    html += '<div class="autocomplete-item" onclick="pickProd(\'' + escName(m[i].nombre) + '\')">' + m[i].nombre + ' <span class="qty">' + m[i].cantidad + '</span></div>';
+    html += '<div class="autocomplete-item" onclick="pickProd(\'' + escName(m[i].nombre) + '\')">' + prodName(m[i].nombre) + ' <span class="qty">' + m[i].cantidad + '</span></div>';
   }
   al.innerHTML = html;
   al.style.display = 'block';
@@ -608,7 +639,7 @@ async function buscar() {
       for (var i = 0; i < ps.length; i++) {
         if (ps[i].precio_final < best) best = ps[i].precio_final;
       }
-      h += '<div class="product"><h3>' + prod + '</h3><div class="qlabel">' + info.cantidad + '</div>';
+      h += '<div class="product"><h3>' + prodName(prod) + '</h3><div class="qlabel">' + info.cantidad + '</div>';
       for (var j = 0; j < ps.length; j++) {
         var p = ps[j];
         var ib = p.precio_final === best;
@@ -631,7 +662,7 @@ async function buscar() {
       // Build WhatsApp message for this product
       var bestStore = '';
       for (var w = 0; w < ps.length; w++) { if (ps[w].precio_final === best) bestStore = ps[w].supermarket; }
-      var waMsg = '*' + prod + '* (' + info.cantidad + ')\n\n';
+      var waMsg = '*' + prodName(prod) + '* (' + info.cantidad + ')\n\n';
       for (var w = 0; w < ps.length; w++) {
         var wp = ps[w];
         var wprice = wp.precio_promo ? '$' + wp.precio_promo + ' _(promo)_' : '$' + wp.precio;
@@ -664,7 +695,7 @@ function openModal(ed) {
   var d = JSON.parse(decodeURIComponent(ed));
   var pF = d.precio_promo || d.precio;
   var h = '<h3>\ud83c\udfea ' + d.supermarket + '</h3>';
-  h += '<div class="msub">' + d.producto + ' \u2014 ' + d.cantidad + '</div>';
+  h += '<div class="msub">' + prodName(d.producto) + ' \u2014 ' + d.cantidad + '</div>';
   h += '<div class="mrow"><span class="mlbl">' + t('rp') + '</span><span class="mval">$' + d.precio + '</span></div>';
   if (d.precio_promo) {
     h += '<div class="mrow"><span class="mlbl">' + t('pp') + '</span><span class="mval promo">$' + d.precio_promo + '</span></div>';
