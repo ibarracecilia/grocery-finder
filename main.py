@@ -242,6 +242,32 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .msrc{margin-top:18px;padding:16px;background:var(--card2);border-radius:12px;font-size:12px;color:var(--text2);line-height:1.7;border:1px solid var(--border)}
 .msrc strong{color:var(--text);display:block;margin-bottom:4px;font-size:13px}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:12px;font-size:13px;font-weight:600;z-index:200;display:none;animation:fadeUp .3s ease-out}
+/* Add to list button */
+.add-btn{padding:5px 12px;border:1.5px solid var(--accent);border-radius:10px;background:var(--accent-bg);color:var(--accent);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px;display:inline-block}
+.add-btn:hover{background:var(--accent);color:#fff}
+.add-btn.added{background:var(--green);color:#fff;border-color:var(--green)}
+/* Cart bar */
+.cart-bar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1.5px solid var(--border);padding:14px 20px;box-shadow:0 -4px 20px rgba(0,0,0,.1);z-index:50;transform:translateY(100%);transition:transform .35s ease-out;display:flex;flex-direction:column;align-items:center;gap:10px}
+.cart-bar.show{transform:translateY(0)}
+.cart-header{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:800px}
+.cart-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--text)}
+.cart-count{font-size:13px;color:var(--text3)}
+.cart-actions{display:flex;gap:6px}
+.cart-clear{padding:5px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card2);color:var(--red);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.cart-clear:hover{background:var(--red-bg);border-color:var(--red)}
+.cart-wa{padding:5px 12px;border:1px solid #25D366;border-radius:8px;background:#25D366;color:#fff;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
+.cart-wa:hover{background:#1ebe5a}
+.cart-items{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%;max-width:800px}
+.cart-pill{padding:4px 10px;border-radius:8px;background:var(--card2);border:1px solid var(--border);font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px}
+.cart-pill .cart-x{cursor:pointer;color:var(--text3);font-weight:700;transition:color .15s}
+.cart-pill .cart-x:hover{color:var(--red)}
+.cart-summary{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;width:100%;max-width:800px}
+.cart-store{flex:1;min-width:140px;padding:10px 14px;border-radius:14px;border:1.5px solid var(--border);background:var(--card2);text-align:center;transition:all .2s}
+.cart-store.best-store{border-color:var(--green);background:var(--green-bg)}
+.cart-store-name{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px}
+.cart-store-total{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--text)}
+.cart-store.best-store .cart-store-total{color:var(--green)}
+.cart-saving{font-size:11px;font-weight:700;color:var(--green);margin-top:2px}
 /* About section - compact */
 .about-section{max-width:800px;margin:0 auto;padding:24px 20px 8px}
 .about-box{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
@@ -261,6 +287,7 @@ nav .controls{display:flex;align-items:center;gap:8px}
 nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
 .grid{grid-template-columns:repeat(3,1fr);gap:10px}.item{padding:14px 8px}.item .emo{font-size:32px}
 .coupon{min-width:200px;padding:16px}
+.cart-store{min-width:100px;padding:8px}.cart-store-total{font-size:16px}
 }
 </style>
 </head>
@@ -387,12 +414,24 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
   <div class="footer-sub i18n" data-es="Comparador de precios de supermercados en Buenos Aires" data-en="Supermarket price comparison in Buenos Aires"></div>
   <div class="footer-copy">&copy; 2026 Cecilia Ibarra. Buenos Aires, Argentina.</div>
 </footer>
+<!-- CART BAR -->
+<div class="cart-bar" id="cart-bar">
+  <div class="cart-header">
+    <div><span class="cart-title" id="cart-title"></span> <span class="cart-count" id="cart-count"></span></div>
+    <div class="cart-actions">
+      <button class="cart-wa" id="cart-wa-btn" onclick="shareCartWA()">WhatsApp</button>
+      <button class="cart-clear" id="cart-clear-btn" onclick="clearCart()"></button>
+    </div>
+  </div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-summary" id="cart-summary"></div>
+</div>
 <div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
   <div class="modal"><button class="mx" onclick="closeModal()">&times;</button><div id="modal-c"></div></div>
 </div>
 <div class="toast" id="toast"></div>
 <script>
-var AP=[], lang='es', dark=false;
+var AP=[], lang='es', dark=false, cart=[];
 
 var EMOJIS = {};
 EMOJIS['Leche Entera'] = '\ud83e\udd5b';
@@ -562,12 +601,14 @@ function showPop(ps) {
     if (p.best_store) {
       storeTag = '<span class="best-store-tag">\ud83c\udfc6 ' + p.best_store + '</span>';
     }
-    html += '<div class="item" style="animation-delay:' + (i * 40) + 'ms;animation:fadeUp .4s ease-out ' + (i * 40) + 'ms both" onclick="pickProd(\'' + escName(p.nombre) + '\')">';
-    html += '<span class="emo">' + getEmoji(p.nombre) + '</span>';
-    html += '<span class="nm">' + prodName(p.nombre) + '</span>';
+    var inCart = cart.indexOf(p.nombre) !== -1;
+    html += '<div class="item" style="animation-delay:' + (i * 40) + 'ms;animation:fadeUp .4s ease-out ' + (i * 40) + 'ms both">';
+    html += '<span class="emo" onclick="pickProd(\'' + escName(p.nombre) + '\')">' + getEmoji(p.nombre) + '</span>';
+    html += '<span class="nm" onclick="pickProd(\'' + escName(p.nombre) + '\')">' + prodName(p.nombre) + '</span>';
     html += '<span class="qt">' + p.cantidad + '</span>';
     html += '<span class="pr">' + t('desde') + ' $' + p.precio_min + '</span>';
     html += storeTag;
+    html += '<button class="add-btn' + (inCart ? ' added' : '') + '" onclick="event.stopPropagation();toggleCart(\'' + escName(p.nombre) + '\')">' + (inCart ? '\u2713' : '+') + '</button>';
     html += '</div>';
   }
   document.getElementById('grid').innerHTML = html;
@@ -639,7 +680,10 @@ async function buscar() {
       for (var i = 0; i < ps.length; i++) {
         if (ps[i].precio_final < best) best = ps[i].precio_final;
       }
-      h += '<div class="product"><h3>' + prodName(prod) + '</h3><div class="qlabel">' + info.cantidad + '</div>';
+      var cartInList = cart.indexOf(prod) !== -1;
+      var addBtnText = cartInList ? '\u2713' : '+';
+      var addBtnCls = cartInList ? 'add-btn added' : 'add-btn';
+      h += '<div class="product"><h3>' + prodName(prod) + ' <button class="' + addBtnCls + '" onclick="event.stopPropagation();toggleCart(\'' + escName(prod) + '\')" style="font-size:14px;vertical-align:middle">' + addBtnText + '</button></h3><div class="qlabel">' + info.cantidad + '</div>';
       for (var j = 0; j < ps.length; j++) {
         var p = ps[j];
         var ib = p.precio_final === best;
@@ -687,6 +731,145 @@ function fmtD(d) {
 
 function shareWA(msg) {
   window.open('https://wa.me/?text=' + msg, '_blank');
+}
+
+// ========== SHOPPING LIST ==========
+function toggleCart(nombre) {
+  var idx = cart.indexOf(nombre);
+  if (idx === -1) {
+    cart.push(nombre);
+  } else {
+    cart.splice(idx, 1);
+  }
+  updateCartBar();
+  showPop(getCurrentProducts());
+}
+
+function getCurrentProducts() {
+  var activeCat = document.querySelector('.cat.active');
+  if (!activeCat) return AP;
+  var catText = activeCat.textContent || activeCat.innerText;
+  if (catText.indexOf('Todos') !== -1 || catText.indexOf('All') !== -1) return AP;
+  return AP;
+}
+
+function clearCart() {
+  cart = [];
+  updateCartBar();
+  showPop(getCurrentProducts());
+}
+
+function updateCartBar() {
+  var bar = document.getElementById('cart-bar');
+  if (!cart.length) {
+    bar.classList.remove('show');
+    return;
+  }
+  bar.classList.add('show');
+  document.getElementById('cart-title').textContent = lang === 'es' ? 'Tu lista' : 'Your list';
+  document.getElementById('cart-count').textContent = '(' + cart.length + (lang === 'es' ? ' productos)' : ' items)');
+  document.getElementById('cart-clear-btn').textContent = lang === 'es' ? 'Vaciar' : 'Clear';
+
+  // Render pills
+  var pillsHtml = '';
+  for (var i = 0; i < cart.length; i++) {
+    pillsHtml += '<div class="cart-pill">' + prodName(cart[i]) + ' <span class="cart-x" onclick="toggleCart(\'' + escName(cart[i]) + '\')">\u2715</span></div>';
+  }
+  document.getElementById('cart-items').innerHTML = pillsHtml;
+
+  // Calculate totals per store
+  calcCartTotals();
+}
+
+function calcCartTotals() {
+  var promises = [];
+  var allData = {};
+  var pending = cart.length;
+  if (!pending) return;
+
+  for (var i = 0; i < cart.length; i++) {
+    (function(nombre) {
+      fetch('/api/search?q=' + encodeURIComponent(nombre))
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          for (var prod in data) {
+            if (prod === nombre) {
+              allData[prod] = data[prod];
+            }
+          }
+          pending--;
+          if (pending === 0) renderCartTotals(allData);
+        })
+        .catch(function() {
+          pending--;
+          if (pending === 0) renderCartTotals(allData);
+        });
+    })(cart[i]);
+  }
+}
+
+function renderCartTotals(allData) {
+  var stores = {Coto: 0, Jumbo: 0, Disco: 0};
+
+  for (var prod in allData) {
+    var precios = allData[prod].precios;
+    for (var i = 0; i < precios.length; i++) {
+      var p = precios[i];
+      var pf = p.precio_promo || p.precio;
+      if (stores[p.supermarket] !== undefined) {
+        stores[p.supermarket] += pf;
+      }
+    }
+  }
+
+  var vals = [];
+  for (var s in stores) { if (stores[s] > 0) vals.push(stores[s]); }
+  var bestVal = Math.min.apply(null, vals);
+  var worstVal = Math.max.apply(null, vals);
+  var saving = worstVal - bestVal;
+
+  var html = '';
+  for (var name in stores) {
+    var total = stores[name];
+    var isBest = total === bestVal && total > 0;
+    html += '<div class="cart-store' + (isBest ? ' best-store' : '') + '">';
+    html += '<div class="cart-store-name">' + name + '</div>';
+    html += '<div class="cart-store-total">$' + total.toLocaleString('es-AR') + '</div>';
+    if (isBest && saving > 0) {
+      html += '<div class="cart-saving">' + (lang === 'es' ? 'Ahorr\u00e1s $' + saving.toLocaleString('es-AR') : 'You save $' + saving.toLocaleString('es-AR')) + '</div>';
+    }
+    html += '</div>';
+  }
+  document.getElementById('cart-summary').innerHTML = html;
+
+  // Store data for WhatsApp sharing
+  window._cartStores = stores;
+  window._cartBest = bestVal;
+  window._cartSaving = saving;
+}
+
+function shareCartWA() {
+  if (!cart.length) return;
+  var stores = window._cartStores || {};
+  var saving = window._cartSaving || 0;
+  var bestStore = '';
+  var bestVal = window._cartBest || 0;
+  for (var s in stores) { if (stores[s] === bestVal && stores[s] > 0) bestStore = s; }
+
+  var msg = '*' + (lang === 'es' ? 'Mi lista de compras' : 'My shopping list') + '* (' + cart.length + (lang === 'es' ? ' productos)\n\n' : ' items)\n\n');
+  for (var i = 0; i < cart.length; i++) {
+    msg += '- ' + prodName(cart[i]) + '\n';
+  }
+  msg += '\n';
+  for (var name in stores) {
+    var isBest = name === bestStore;
+    msg += name + ': $' + stores[name].toLocaleString('es-AR') + (isBest ? ' << ' + (lang === 'es' ? 'MEJOR' : 'BEST') : '') + '\n';
+  }
+  if (saving > 0) {
+    msg += '\n' + (lang === 'es' ? 'Ahorras $' + saving.toLocaleString('es-AR') + ' yendo a *' + bestStore + '*' : 'You save $' + saving.toLocaleString('es-AR') + ' shopping at *' + bestStore + '*');
+  }
+  msg += '\n\n' + (lang === 'es' ? 'Compara precios en GroceryFinder' : 'Compare prices at GroceryFinder') + '\nhttps://grocery-finder.onrender.com';
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
 }
 
 si.addEventListener('keypress', function(e) { if (e.key === 'Enter') buscar(); });
