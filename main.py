@@ -104,7 +104,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .logo-svg:hover .logo-node{animation-duration:1s}
 .logo-svg:hover .logo-core{opacity:1;animation-duration:1s}
 nav{max-width:800px;margin:0 auto;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
-nav .logo svg{height:52px;width:auto}
+nav .logo svg{height:72px;width:auto}
 nav .controls{display:flex;align-items:center;gap:8px}
 .pill-toggle{display:flex;background:var(--card2);border-radius:10px;padding:3px;border:1px solid var(--border)}
 .pill-btn{padding:5px 12px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:var(--text3);font-family:'DM Sans',sans-serif;transition:all .2s}
@@ -125,11 +125,23 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .autocomplete-item{padding:12px 20px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--border);color:var(--text);transition:background .15s}
 .autocomplete-item:hover{background:var(--accent-bg)}
 .autocomplete-item .qty{color:var(--text3);font-size:12px;margin-left:6px}
-.currency-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;padding:10px 16px;background:var(--card2);border-radius:12px;border:1px solid var(--border);flex-wrap:wrap;animation:fadeUp .6s ease-out .15s both}
-.currency-bar label{font-size:13px;color:var(--text2);font-weight:500}
-.currency-bar select{padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;cursor:pointer}
-.cur-toggle{padding:5px 14px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text3);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
-.cur-toggle.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.currency-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px;animation:fadeUp .6s ease-out .15s both;flex-wrap:wrap}
+.cur-chip{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:28px;cursor:pointer;transition:all .25s;box-shadow:var(--shadow-sm)}
+.cur-chip:hover{border-color:var(--accent);box-shadow:var(--shadow-md)}
+.cur-chip.active{background:var(--accent-bg);border-color:var(--accent)}
+.cur-chip .globe{width:18px;height:18px;border-radius:50%;border:2px solid var(--text3);position:relative;transition:all .25s}
+.cur-chip.active .globe{border-color:var(--accent)}
+.cur-chip .globe::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:8px;height:16px;border:1.5px solid var(--text3);border-radius:50%;transition:all .25s}
+.cur-chip.active .globe::after{border-color:var(--accent)}
+.cur-chip .globe::before{content:'';position:absolute;top:50%;left:-1px;right:-1px;height:1.5px;background:var(--text3);transition:all .25s}
+.cur-chip.active .globe::before{background:var(--accent)}
+.cur-chip-text{font-size:13px;font-weight:600;color:var(--text2);transition:color .25s}
+.cur-chip.active .cur-chip-text{color:var(--accent)}
+.cur-select-wrap{display:none;align-items:center;gap:8px}
+.cur-select-wrap.show{display:flex}
+.cur-sel{padding:8px 14px;border:1.5px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;outline:none;cursor:pointer;box-shadow:var(--shadow-sm);transition:all .2s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239e9a90' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px}
+.cur-sel:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.cur-rate{font-size:12px;color:var(--text3);font-weight:500;padding:6px 12px;background:var(--card2);border-radius:8px}
 .cur-eq{font-size:11px;color:var(--text3);font-weight:500;display:block;margin-top:2px}
 .cur-eq-i{font-size:11px;color:var(--text3);font-weight:500;margin-left:5px}
 .coupons{margin-bottom:28px;animation:fadeUp .6s ease-out .2s both}
@@ -262,14 +274,18 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
     <div class="autocomplete-list" id="autocomplete"></div>
   </div>
   <div class="currency-bar" id="currency-bar">
-    <label class="i18n" data-es="Equivalencia:" data-en="Currency:"></label>
-    <button class="cur-toggle" id="cur-toggle" onclick="toggleCurrency()">OFF</button>
-    <select id="cur-select" onchange="updateCurrency()" style="display:none">
-      <option value="USD">USD $</option><option value="EUR">EUR €</option><option value="BRL">BRL R$</option>
-      <option value="GBP">GBP £</option><option value="CLP">CLP</option><option value="UYU">UYU</option>
-      <option value="MXN">MXN</option><option value="JPY">JPY ¥</option><option value="CNY">CNY ¥</option>
-    </select>
-    <span id="cur-rate" style="display:none;font-size:11px;color:var(--text3)"></span>
+    <div class="cur-chip" id="cur-chip" onclick="toggleCurrency()">
+      <div class="globe"></div>
+      <span class="cur-chip-text" id="cur-chip-text" data-es="Convertir moneda" data-en="Convert currency"></span>
+    </div>
+    <div class="cur-select-wrap" id="cur-wrap">
+      <select class="cur-sel" id="cur-select" onchange="updateCurrency()">
+        <option value="USD">USD $</option><option value="EUR">EUR €</option><option value="BRL">BRL R$</option>
+        <option value="GBP">GBP £</option><option value="CLP">CLP</option><option value="UYU">UYU</option>
+        <option value="MXN">MXN</option><option value="JPY">JPY ¥</option><option value="CNY">CNY ¥</option>
+      </select>
+      <span class="cur-rate" id="cur-rate"></span>
+    </div>
   </div>
   <div class="coupons">
     <div class="coupons-title i18n" data-es="Cupones disponibles" data-en="Available coupons" id="coup-title"></div>
@@ -300,7 +316,7 @@ let AP=[],lang='es',dark=false,showCur=false,selCur='USD';
 const XR={USD:{r:1200,s:'US$'},EUR:{r:1300,s:'€'},BRL:{r:230,s:'R$'},GBP:{r:1520,s:'£'},CLP:{r:1.28,s:'CL$'},UYU:{r:28,s:'UY$'},MXN:{r:70,s:'MX$'},JPY:{r:7.8,s:'¥'},CNY:{r:165,s:'¥'}};
 function cv(a){if(!showCur)return '';const c=XR[selCur];return `<span class="cur-eq">${c.s}${(a/c.r).toFixed(2)}</span>`}
 function cvi(a){if(!showCur)return '';const c=XR[selCur];return `<span class="cur-eq-i">(${c.s}${(a/c.r).toFixed(2)})</span>`}
-function toggleCurrency(){showCur=!showCur;const b=document.getElementById('cur-toggle'),s=document.getElementById('cur-select'),r=document.getElementById('cur-rate');b.classList.toggle('active',showCur);b.textContent=showCur?'ON':'OFF';s.style.display=showCur?'inline-block':'none';r.style.display=showCur?'inline':'none';if(showCur)updCurRate();if(AP.length)showPop(AP);const q=document.getElementById('search').value.trim();if(q)buscar()}
+function toggleCurrency(){showCur=!showCur;document.getElementById('cur-chip').classList.toggle('active',showCur);document.getElementById('cur-wrap').classList.toggle('show',showCur);if(showCur)updCurRate();if(AP.length)showPop(AP);const q=document.getElementById('search').value.trim();if(q)buscar()}
 function updateCurrency(){selCur=document.getElementById('cur-select').value;updCurRate();if(AP.length)showPop(AP);const q=document.getElementById('search').value.trim();if(q)buscar()}
 function updCurRate(){document.getElementById('cur-rate').textContent=`1 ${selCur} ≈ $${XR[selCur].r} ARS`}
 const T={
@@ -318,7 +334,7 @@ const coups=[
 ];
 function renderCoups(){const s=document.getElementById('coup-scroll'),now=new Date();s.innerHTML=coups.map(c=>{const e=new Date(now.getTime()+c.exp*864e5).toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'short'});return `<div class="coupon ${c.cls}" onclick="copyCoup('${c.code}')"><div class="blob blob1"></div><div class="blob blob2"></div><div class="store">${c.store}</div><div class="disc">${c.disc} ${t('off')}</div><div class="cdesc">${lang==='es'?c.des:c.den}</div><div class="ccode">${c.code}</div><div class="cexp">${t('vu')} ${e} · ${t('cm')} ${c.min}</div></div>`}).join('')}
 function copyCoup(c){navigator.clipboard.writeText(c).then(()=>{const e=document.getElementById('toast');e.textContent='✅ '+t('cc')+': '+c;e.style.display='block';setTimeout(()=>e.style.display='none',2e3)})}
-function setLang(l){lang=l;document.getElementById('btn-es').classList.toggle('active',l==='es');document.getElementById('btn-en').classList.toggle('active',l==='en');document.querySelectorAll('.i18n').forEach(e=>{if(e.dataset[l])e.textContent=e.dataset[l]});document.querySelectorAll('.i18n-html').forEach(e=>{if(e.dataset[l])e.innerHTML=e.dataset[l]});document.getElementById('search').placeholder=t('ph');document.getElementById('coup-title').textContent=t('ct');document.getElementById('prod-title').textContent=t('pt');renderCoups();if(AP.length)showPop(AP)}
+function setLang(l){lang=l;document.getElementById('btn-es').classList.toggle('active',l==='es');document.getElementById('btn-en').classList.toggle('active',l==='en');document.querySelectorAll('.i18n').forEach(e=>{if(e.dataset[l])e.textContent=e.dataset[l]});document.querySelectorAll('.i18n-html').forEach(e=>{if(e.dataset[l])e.innerHTML=e.dataset[l]});document.getElementById('search').placeholder=t('ph');document.getElementById('coup-title').textContent=t('ct');document.getElementById('prod-title').textContent=t('pt');const cct=document.getElementById('cur-chip-text');if(cct)cct.textContent=cct.dataset[l];renderCoups();if(AP.length)showPop(AP)}
 async function loadProds(){try{const r=await fetch('/api/products');AP=await r.json();showPop(AP)}catch(e){console.error(e)}}
 const EM={'Leche Entera':'🥛','Yogur Natural':'🥛','Naranjas':'🍊','Huevos':'🥚','Queso Cremoso':'🧀','Manteca':'🧈','Pan Lactal':'🍞','Arroz':'🍚','Fideos Secos':'🍝','Aceite de Girasol':'🫒','Azúcar':'🍬','Harina':'🌾','Galletitas Dulces':'🍪','Gaseosa Cola':'🥤','Agua Mineral':'💧','Papel Higiénico':'🧻','Detergente':'🧴','Jabón en Polvo':'🧼','Pollo Entero':'🍗','Carne Picada':'🥩','Banana':'🍌','Tomate':'🍅','Papa':'🥔','Cebolla':'🧅'};
 function showPop(ps){document.getElementById('grid').innerHTML=ps.map((p,i)=>`<div class="item" onclick="pickProd('${p.nombre}')" style="animation-delay:${i*40}ms;animation:fadeUp .4s ease-out ${i*40}ms both"><span class="emo">${EM[p.nombre]||'🛒'}</span><span class="nm">${p.nombre}</span><span class="qt">${p.cantidad}</span><span class="pr">${t('desde')} $${p.precio_min} ${cvi(p.precio_min)}</span></div>`).join('')}
