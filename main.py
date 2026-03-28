@@ -94,6 +94,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 @keyframes pulseNode{0%,100%{opacity:.2;r:2.5}50%{opacity:.8;r:3.5}}
 @keyframes glowCore{0%,100%{opacity:.5}50%{opacity:1}}
 @keyframes pulsePin{0%,100%{opacity:.4}50%{opacity:.8}}
+@keyframes splashFade{from{opacity:1}to{opacity:0;pointer-events:none}}
+@keyframes splashPulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.08);opacity:1}}
+@keyframes splashBar{from{width:0}to{width:100%}}
 .logo-node{animation:pulseNode 2.5s ease-in-out infinite}
 .logo-node:nth-child(2){animation-delay:.4s}.logo-node:nth-child(3){animation-delay:.8s}
 .logo-node:nth-child(4){animation-delay:1.2s}.logo-node:nth-child(5){animation-delay:1.6s}
@@ -102,6 +105,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .logo-pin:nth-child(odd){animation-delay:.3s}
 .logo-svg:hover .logo-node{animation-duration:1s}
 .logo-svg:hover .logo-core{opacity:1;animation-duration:1s}
+/* Splash */
+.splash{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s}
+.splash.hide{animation:splashFade .5s ease-out forwards}
+.splash svg{height:100px;width:auto;animation:splashPulse 1.5s ease-in-out infinite}
+.splash-text{font-family:'Space Grotesk',sans-serif;font-size:14px;color:var(--text3);margin-top:16px;letter-spacing:1px}
+.splash-bar-wrap{width:180px;height:3px;background:var(--border);border-radius:3px;margin-top:14px;overflow:hidden}
+.splash-bar{height:100%;background:var(--accent);border-radius:3px;animation:splashBar 2s ease-out forwards}
 nav{max-width:800px;margin:0 auto;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
 nav .logo svg{height:72px;width:auto}
 nav .controls{display:flex;align-items:center;gap:8px}
@@ -228,14 +238,51 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .msrc{margin-top:18px;padding:16px;background:var(--card2);border-radius:12px;font-size:12px;color:var(--text2);line-height:1.7;border:1px solid var(--border)}
 .msrc strong{color:var(--text);display:block;margin-bottom:4px;font-size:13px}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:12px;font-size:13px;font-weight:600;z-index:200;display:none;animation:fadeUp .3s ease-out}
+/* About section */
+.about-section{max-width:800px;margin:0 auto;padding:40px 20px 20px}
+.about-box{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:32px;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:24px}
+.about-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700}
+.about-info{flex:1}
+.about-name{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.about-role{font-size:13px;color:var(--accent);font-weight:600;margin-top:2px}
+.about-desc{font-size:14px;color:var(--text2);margin-top:8px;line-height:1.6}
+.about-links{display:flex;gap:10px;margin-top:12px}
+.about-link{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:12px;font-weight:600;color:var(--text2);text-decoration:none;transition:all .2s;font-family:'DM Sans',sans-serif}
+.about-link:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-bg)}
+.about-link svg{width:14px;height:14px}
+/* Footer */
+.site-footer{max-width:800px;margin:0 auto;padding:20px 20px 32px;text-align:center;border-top:1px solid var(--border)}
+.footer-brand{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.footer-brand span{color:var(--accent)}
+.footer-sub{font-size:12px;color:var(--text3);margin-top:4px}
+.footer-copy{font-size:11px;color:var(--text3);margin-top:10px;opacity:.6}
 @media(max-width:600px){
 nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
 .grid{grid-template-columns:repeat(3,1fr);gap:10px}.item{padding:14px 8px}.item .emo{font-size:32px}
 .coupon{min-width:200px;padding:16px}
+.about-box{flex-direction:column;text-align:center}
+.about-links{justify-content:center}
 }
 </style>
 </head>
 <body>
+<!-- SPLASH SCREEN -->
+<div class="splash" id="splash">
+  <svg class="logo-svg" viewBox="0 0 420 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M62 8A52 52 0 1 0 62 114" fill="none" stroke="var(--accent)" stroke-width="9" stroke-linecap="round"/>
+    <line x1="62" y1="61" x2="40" y2="61" stroke="var(--accent)" stroke-width="9" stroke-linecap="round"/>
+    <path d="M60 59L100 59 94 96 48 96Z" fill="none" stroke="var(--accent)" stroke-width="3.5" stroke-linejoin="round"/>
+    <circle cx="59" cy="108" r="6" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+    <circle cx="86" cy="108" r="6" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+    <rect x="64" y="69" width="17" height="17" rx="2.5" fill="none" stroke="var(--accent)" stroke-width="1.5" opacity=".8"/>
+    <circle class="logo-core" cx="73" cy="78" r="3" fill="var(--accent)" opacity=".7"/>
+    <text x="125" y="55" style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;letter-spacing:-1px" fill="var(--text)">Grocery</text>
+    <text x="262" y="55" style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;letter-spacing:-1px" fill="var(--accent)">Finder</text>
+    <text x="125" y="76" style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px" fill="var(--accent)" opacity=".6">AI-POWERED PRICE COMPARISON</text>
+  </svg>
+  <div class="splash-text" id="splash-text">Cargando precios...</div>
+  <div class="splash-bar-wrap"><div class="splash-bar"></div></div>
+</div>
 <nav>
   <div class="logo">
     <svg class="logo-svg" viewBox="0 0 420 140" xmlns="http://www.w3.org/2000/svg">
@@ -325,6 +372,26 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
   <div id="results" class="results"></div>
   <div class="scrape-info" id="scrape-info"></div>
 </div>
+<!-- ABOUT SECTION -->
+<div class="about-section">
+  <div class="about-box">
+    <div class="about-avatar">CI</div>
+    <div class="about-info">
+      <div class="about-name">Cecilia Ibarra</div>
+      <div class="about-role">Tech Enthusiast &amp; Builder</div>
+      <div class="about-desc i18n" data-es="Construyendo herramientas &uacute;tiles con c&oacute;digo y curiosidad. GroceryFinder naci&oacute; para ayudar a comparar precios de supermercados en Buenos Aires." data-en="Building useful tools with code and curiosity. GroceryFinder was born to help compare supermarket prices in Buenos Aires."></div>
+      <div class="about-links">
+        <a class="about-link" href="https://github.com/ibarracecilia" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>GitHub</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-brand">Grocery<span>Finder</span></div>
+  <div class="footer-sub i18n" data-es="Comparador de precios de supermercados en Buenos Aires" data-en="Supermarket price comparison in Buenos Aires"></div>
+  <div class="footer-copy">&copy; 2026 Cecilia Ibarra. Buenos Aires, Argentina.</div>
+</footer>
 <div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
   <div class="modal"><button class="mx" onclick="closeModal()">&times;</button><div id="modal-c"></div></div>
 </div>
@@ -430,6 +497,7 @@ function setLang(l) {
   document.getElementById('coup-title').textContent = t('ct');
   document.getElementById('prod-title').textContent = t('pt');
   document.getElementById('loc-input').placeholder = lang === 'es' ? 'Escrib\u00ed tu barrio...' : 'Type your neighborhood...';
+  document.getElementById('splash-text').textContent = lang === 'es' ? 'Cargando precios...' : 'Loading prices...';
   renderCoups();
   if (AP.length) showPop(AP);
 }
@@ -439,8 +507,16 @@ async function loadProds() {
     var r = await fetch('/api/products');
     AP = await r.json();
     showPop(AP);
+    // Hide splash after products load
+    setTimeout(function() {
+      var sp = document.getElementById('splash');
+      if (sp) { sp.classList.add('hide'); setTimeout(function() { sp.style.display = 'none'; }, 600); }
+    }, 400);
   } catch(e) {
     console.error(e);
+    // Hide splash even on error
+    var sp = document.getElementById('splash');
+    if (sp) { sp.classList.add('hide'); setTimeout(function() { sp.style.display = 'none'; }, 600); }
   }
 }
 
