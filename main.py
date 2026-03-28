@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 import sqlite3
 import os
 from datetime import datetime, timedelta
@@ -21,9 +21,9 @@ def init_db():
         (1,'Leche Entera','1L'),(2,'Yogur Natural','200g'),(3,'Naranjas','1kg'),
         (4,'Huevos','12 unidades'),(5,'Queso Cremoso','1kg'),(6,'Manteca','200g'),
         (7,'Pan Lactal','500g'),(8,'Arroz','1kg'),(9,'Fideos Secos','500g'),
-        (10,'Aceite de Girasol','1.5L'),(11,'Azúcar','1kg'),(12,'Harina','1kg'),
+        (10,'Aceite de Girasol','1.5L'),(11,'Azucar','1kg'),(12,'Harina','1kg'),
         (13,'Galletitas Dulces','300g'),(14,'Gaseosa Cola','2.25L'),(15,'Agua Mineral','2L'),
-        (16,'Papel Higiénico','4 rollos'),(17,'Detergente','750ml'),(18,'Jabón en Polvo','800g'),
+        (16,'Papel Higienico','4 rollos'),(17,'Detergente','750ml'),(18,'Jabon en Polvo','800g'),
         (19,'Pollo Entero','1kg'),(20,'Carne Picada','1kg'),(21,'Banana','1kg'),
         (22,'Tomate','1kg'),(23,'Papa','1kg'),(24,'Cebolla','1kg'),
     ]
@@ -65,12 +65,14 @@ def init_db():
 
 @app.route('/')
 def index():
-    return '''<!DOCTYPE html>
+    resp = make_response('''<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GroceryFinder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -111,10 +113,6 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .pill-btn.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(13,148,136,.3)}
 .theme-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--card2);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .theme-btn:hover{border-color:var(--accent);background:var(--accent-bg)}
-.nav-cur{padding:5px 8px;border:1px solid var(--border);border-radius:10px;background:var(--card2);color:var(--accent);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;outline:none;cursor:pointer;transition:all .2s}
-.nav-cur:focus{border-color:var(--accent)}
-.cur-eq{font-size:11px;color:var(--accent);font-weight:600;opacity:.7;display:block;margin-top:1px}
-.cur-eq-i{font-size:11px;color:var(--accent);font-weight:600;opacity:.7;margin-left:4px}
 .hero{max-width:800px;margin:0 auto;padding:0 20px 24px;animation:fadeUp .6s ease-out}
 .hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(28px,5vw,38px);font-weight:700;letter-spacing:-1.5px;line-height:1.1;margin-bottom:8px}
 .hero h1 em{font-style:normal;color:var(--accent);position:relative}
@@ -129,13 +127,6 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .autocomplete-item{padding:12px 20px;cursor:pointer;font-size:14px;border-bottom:1px solid var(--border);color:var(--text);transition:background .15s}
 .autocomplete-item:hover{background:var(--accent-bg)}
 .autocomplete-item .qty{color:var(--text3);font-size:12px;margin-left:6px}
-.cur-eq{font-size:11px;color:var(--text3);font-weight:500;display:block;margin-top:2px}
-.cur-eq-i{font-size:11px;color:var(--text3);font-weight:500;margin-left:5px}
-.modal-cur{margin-top:14px;padding:14px;background:var(--card2);border-radius:12px;border:1px solid var(--border)}
-.modal-cur-title{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
-.modal-cur-row{display:flex;align-items:center;gap:8px}
-.modal-cur-sel{padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;outline:none;cursor:pointer}
-.modal-cur-val{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--accent)}
 .coupons{margin-bottom:28px;animation:fadeUp .6s ease-out .2s both}
 .coupons-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:12px}
 .coupons-scroll{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
@@ -170,6 +161,7 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .item .nm{font-size:14px;font-weight:700;color:var(--text);display:block;letter-spacing:-.2px}
 .item .qt{font-size:12px;color:var(--text3);display:block;margin-top:3px}
 .item .pr{font-family:'Space Grotesk',sans-serif;font-size:16px;color:var(--accent);font-weight:700;margin-top:8px;display:block}
+.item .best-store-tag{display:inline-block;margin-top:6px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:var(--green-bg);color:var(--green);border:1px solid var(--green);letter-spacing:.2px}
 .results{animation:fadeUp .4s ease-out}
 .product{margin-bottom:18px;padding:22px;background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);box-shadow:var(--shadow-sm);animation:scaleIn .3s ease-out;transition:box-shadow .3s}
 .product:hover{box-shadow:var(--shadow-md)}
@@ -239,31 +231,10 @@ nav .controls{display:flex;align-items:center;gap:8px}
 .msrc{margin-top:18px;padding:16px;background:var(--card2);border-radius:12px;font-size:12px;color:var(--text2);line-height:1.7;border:1px solid var(--border)}
 .msrc strong{color:var(--text);display:block;margin-bottom:4px;font-size:13px}
 .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:12px 24px;border-radius:12px;font-size:13px;font-weight:600;z-index:200;display:none;animation:fadeUp .3s ease-out}
-.add-btn{padding:6px 14px;border:1.5px solid var(--accent);border-radius:10px;background:var(--accent-bg);color:var(--accent);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px}
-.add-btn:hover{background:var(--accent);color:#fff}
-.add-btn.added{background:var(--green);color:#fff;border-color:var(--green)}
-.cart-bar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1.5px solid var(--border);padding:14px 20px;box-shadow:0 -4px 20px rgba(0,0,0,.1);z-index:50;transform:translateY(100%);transition:transform .35s ease-out;display:flex;flex-direction:column;align-items:center;gap:10px}
-.cart-bar.show{transform:translateY(0)}
-.cart-summary{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;width:100%;max-width:800px}
-.cart-store{flex:1;min-width:140px;padding:12px 16px;border-radius:14px;border:1.5px solid var(--border);background:var(--card2);text-align:center;transition:all .2s}
-.cart-store.best-store{border-color:var(--green);background:var(--green-bg)}
-.cart-store-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
-.cart-store-total{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--text)}
-.cart-store.best-store .cart-store-total{color:var(--green)}
-.cart-store-tag{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--green);margin-top:4px;letter-spacing:.5px}
-.cart-header{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:800px}
-.cart-title{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--text)}
-.cart-count{font-size:13px;color:var(--text3)}
-.cart-clear{padding:5px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card2);color:var(--red);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s}
-.cart-clear:hover{background:var(--red-bg);border-color:var(--red)}
-.cart-items{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;width:100%;max-width:800px}
-.cart-item-pill{padding:4px 10px;border-radius:8px;background:var(--card2);border:1px solid var(--border);font-size:12px;color:var(--text2);display:flex;align-items:center;gap:4px}
-.cart-item-pill .cart-x{cursor:pointer;color:var(--text3);font-weight:700;transition:color .15s}
-.cart-item-pill .cart-x:hover{color:var(--red)}
 @media(max-width:600px){
 nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
 .grid{grid-template-columns:repeat(3,1fr);gap:10px}.item{padding:14px 8px}.item .emo{font-size:32px}
-.coupon{min-width:200px;padding:16px}.cart-store{min-width:100px;padding:10px}.cart-store-total{font-size:18px}
+.coupon{min-width:200px;padding:16px}
 }
 </style>
 </head>
@@ -303,22 +274,16 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
     </svg>
   </div>
   <div class="controls">
-    <select class="nav-cur" id="nav-cur" onchange="changeCur(this.value)">
-      <option value="">ARS $</option>
-      <option value="USD">+ USD</option><option value="EUR">+ EUR</option><option value="BRL">+ BRL</option>
-      <option value="GBP">+ GBP</option><option value="CLP">+ CLP</option><option value="UYU">+ UYU</option>
-      <option value="MXN">+ MXN</option><option value="JPY">+ JPY</option><option value="CNY">+ CNY</option>
-    </select>
     <div class="pill-toggle">
       <button class="pill-btn active" id="btn-es" onclick="setLang('es')">ES</button>
       <button class="pill-btn" id="btn-en" onclick="setLang('en')">EN</button>
     </div>
-    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">☀️</button>
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">&#9728;&#65039;</button>
   </div>
 </nav>
 <div class="hero">
-  <h1 data-es="Encontrá el <em>mejor precio</em> para tu compra" data-en="Find the <em>best price</em> for your groceries" class="i18n-html" id="hero-title"></h1>
-  <p data-es="Compará Coto, Jumbo y Disco al instante" data-en="Compare Coto, Jumbo and Disco instantly" class="i18n"></p>
+  <h1 data-es="Encontra el <em>mejor precio</em> para tu compra" data-en="Find the <em>best price</em> for your groceries" class="i18n-html" id="hero-title"></h1>
+  <p data-es="Compara Coto, Jumbo y Disco al instante" data-en="Compare Coto, Jumbo and Disco instantly" class="i18n"></p>
 </div>
 <div class="loc-hero">
   <div class="loc-box">
@@ -326,7 +291,7 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
       <div class="loc-pin-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
       <div>
         <div class="loc-title i18n" data-es="Supermercados cerca tuyo" data-en="Supermarkets near you" id="loc-title-text"></div>
-        <div class="loc-subtitle i18n" data-es="Escribí tu barrio y encontrá la sucursal más cercana" data-en="Type your neighborhood to find the nearest store"></div>
+        <div class="loc-subtitle i18n" data-es="Escribi tu barrio y encontra la sucursal mas cercana" data-en="Type your neighborhood to find the nearest store"></div>
       </div>
     </div>
     <div class="loc-input-wrap">
@@ -349,12 +314,12 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
   </div>
   <div class="cats" id="cats">
     <button class="cat active" onclick="filtrarCat('todos')" data-es="Todos" data-en="All" class="i18n"></button>
-    <button class="cat" onclick="filtrarCat('lácteos')"><span data-es="🥛 Lácteos" data-en="🥛 Dairy" class="i18n"></span></button>
-    <button class="cat" onclick="filtrarCat('frutas')"><span data-es="🍎 Frutas" data-en="🍎 Fruits" class="i18n"></span></button>
-    <button class="cat" onclick="filtrarCat('carnes')"><span data-es="🥩 Carnes" data-en="🥩 Meats" class="i18n"></span></button>
-    <button class="cat" onclick="filtrarCat('almacén')"><span data-es="🏪 Almacén" data-en="🏪 Pantry" class="i18n"></span></button>
-    <button class="cat" onclick="filtrarCat('bebidas')"><span data-es="🥤 Bebidas" data-en="🥤 Drinks" class="i18n"></span></button>
-    <button class="cat" onclick="filtrarCat('limpieza')"><span data-es="🧹 Limpieza" data-en="🧹 Cleaning" class="i18n"></span></button>
+    <button class="cat" onclick="filtrarCat('lacteos')"><span data-es="&#129371; Lacteos" data-en="&#129371; Dairy" class="i18n"></span></button>
+    <button class="cat" onclick="filtrarCat('frutas')"><span data-es="&#127822; Frutas" data-en="&#127822; Fruits" class="i18n"></span></button>
+    <button class="cat" onclick="filtrarCat('carnes')"><span data-es="&#129385; Carnes" data-en="&#129385; Meats" class="i18n"></span></button>
+    <button class="cat" onclick="filtrarCat('almacen')"><span data-es="&#127978; Almacen" data-en="&#127978; Pantry" class="i18n"></span></button>
+    <button class="cat" onclick="filtrarCat('bebidas')"><span data-es="&#129380; Bebidas" data-en="&#129380; Drinks" class="i18n"></span></button>
+    <button class="cat" onclick="filtrarCat('limpieza')"><span data-es="&#129529; Limpieza" data-en="&#129529; Cleaning" class="i18n"></span></button>
   </div>
   <div id="home">
     <div class="sec-title i18n" data-es="Productos disponibles" data-en="Available products" id="prod-title"></div>
@@ -366,95 +331,76 @@ nav{padding:12px 16px}.hero h1{font-size:28px}.main{padding:0 16px 30px}
 <div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
   <div class="modal"><button class="mx" onclick="closeModal()">&times;</button><div id="modal-c"></div></div>
 </div>
-<div class="cart-bar" id="cart-bar">
-  <div class="cart-header">
-    <div><span class="cart-title" id="cart-title"></span> <span class="cart-count" id="cart-count"></span></div>
-    <button class="cart-clear" onclick="clearCart()" id="cart-clear-btn"></button>
-  </div>
-  <div class="cart-items" id="cart-items"></div>
-  <div class="cart-summary" id="cart-summary"></div>
-</div>
 <div class="toast" id="toast"></div>
 <script>
-let AP=[],lang='es',dark=false,selCur='',cart=[];
-const XR={USD:{r:1200,s:'US$'},EUR:{r:1300,s:'€'},BRL:{r:230,s:'R$'},GBP:{r:1520,s:'£'},CLP:{r:1.28,s:'CL$'},UYU:{r:28,s:'UY$'},MXN:{r:70,s:'MX$'},JPY:{r:7.8,s:'¥'},CNY:{r:165,s:'¥'}};
-function cv(a){if(!selCur)return '';const c=XR[selCur];return `<span class="cur-eq">${c.s}${(a/c.r).toFixed(2)}</span>`}
-function cvi(a){if(!selCur)return '';const c=XR[selCur];return `<span class="cur-eq-i">(${c.s}${(a/c.r).toFixed(2)})</span>`}
-function cvModal(a){if(!selCur)return 'ARS $'+a;const c=XR[selCur];return `${c.s}${(a/c.r).toFixed(2)} ${selCur}`}
-function changeCur(v){selCur=v;if(AP.length)showPop(AP);const q=document.getElementById('search').value.trim();if(q)buscar()}
+let AP=[],lang='es',dark=false;
 const T={
-es:{desde:'Desde',ph:'¿Qué producto buscás?',nr1:'No encontramos',nr2:'Probá con otro término',na:'No hay resultados para',upd:'Precios actualizados',rp:'Precio regular',pp:'Precio promocional',sav:'Ahorro',pe:'Promo vence',days:'días',exp:'Vencida',verd:'Veredicto',bp:'Mejor precio disponible',st:'Datos del scraping',src:'Fuente',ed:'Fecha de extracción',meth:'Método',as:'Scraping automático',prod:'Producto',nd:'No disponible',cheap:'MÁS BARATO',offer:'OFERTA',expires:'Vence',cc:'Cupón copiado',ct:'Cupones disponibles',pt:'Productos disponibles',off:'OFF',vu:'Válido hasta',cm:'Compra mín.',onl:'Online'},
-en:{desde:'From',ph:'What are you looking for?',nr1:'We couldn\\'t find',nr2:'Try another term',na:'No results for',upd:'Prices updated',rp:'Regular price',pp:'Promo price',sav:'Savings',pe:'Promo expires',days:'days',exp:'Expired',verd:'Verdict',bp:'Best price available',st:'Scraping data',src:'Source',ed:'Extraction date',meth:'Method',as:'Auto website scraping',prod:'Product',nd:'Not available',cheap:'CHEAPEST',offer:'SALE',expires:'Expires',cc:'Coupon copied',ct:'Available coupons',pt:'Available products',off:'OFF',vu:'Valid until',cm:'Min. purchase',onl:'Online'}
+es:{desde:'Desde',ph:'Que producto buscas?',nr1:'No encontramos',nr2:'Proba con otro termino',na:'No hay resultados para',upd:'Precios actualizados',rp:'Precio regular',pp:'Precio promocional',sav:'Ahorro',pe:'Promo vence',days:'dias',exp:'Vencida',verd:'Veredicto',bp:'Mejor precio disponible',st:'Datos del scraping',src:'Fuente',ed:'Fecha de extraccion',meth:'Metodo',as:'Scraping automatico',prod:'Producto',nd:'No disponible',cheap:'MAS BARATO',offer:'OFERTA',expires:'Vence',cc:'Cupon copiado',ct:'Cupones disponibles',pt:'Productos disponibles',off:'OFF',vu:'Valido hasta',cm:'Compra min.',onl:'Online',en:'en'},
+en:{desde:'From',ph:'What are you looking for?',nr1:"We couldn't find",nr2:'Try another term',na:'No results for',upd:'Prices updated',rp:'Regular price',pp:'Promo price',sav:'Savings',pe:'Promo expires',days:'days',exp:'Expired',verd:'Verdict',bp:'Best price available',st:'Scraping data',src:'Source',ed:'Extraction date',meth:'Method',as:'Auto website scraping',prod:'Product',nd:'Not available',cheap:'CHEAPEST',offer:'SALE',expires:'Expires',cc:'Coupon copied',ct:'Available coupons',pt:'Available products',off:'OFF',vu:'Valid until',cm:'Min. purchase',onl:'Online',en:'at'}
 };
 function t(k){return T[lang][k]||k}
-function toggleTheme(){dark=!dark;document.documentElement.setAttribute('data-theme',dark?'dark':'');document.getElementById('theme-btn').textContent=dark?'🌙':'☀️'}
+function toggleTheme(){dark=!dark;document.documentElement.setAttribute('data-theme',dark?'dark':'');document.getElementById('theme-btn').innerHTML=dark?'&#127769;':'&#9728;&#65039;'}
 const coups=[
-{store:'Coto',cls:'coupon-coto',disc:'15%',des:'en Lácteos',den:'on Dairy',code:'COTO15LAC',min:'$5.000',exp:7},
+{store:'Coto',cls:'coupon-coto',disc:'15%',des:'en Lacteos',den:'on Dairy',code:'COTO15LAC',min:'$5.000',exp:7},
 {store:'Jumbo',cls:'coupon-jumbo',disc:'20%',des:'en Frutas',den:'on Fruits',code:'JUMBO20FRU',min:'$3.000',exp:5},
 {store:'Disco',cls:'coupon-disco',disc:'10%',des:'en todo',den:'on everything',code:'DISCO10ALL',min:'$8.000',exp:10},
 {store:'Coto',cls:'coupon-coto',disc:'25%',des:'en Bebidas',den:'on Drinks',code:'COTO25BEB',min:'$2.000',exp:3},
 {store:'Jumbo',cls:'coupon-jumbo',disc:'2x1',des:'en Limpieza',den:'on Cleaning',code:'JUMBO2X1CL',min:'$4.000',exp:12}
 ];
-function renderCoups(){const s=document.getElementById('coup-scroll'),now=new Date();s.innerHTML=coups.map(c=>{const e=new Date(now.getTime()+c.exp*864e5).toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'short'});return `<div class="coupon ${c.cls}" onclick="copyCoup('${c.code}')"><div class="blob blob1"></div><div class="blob blob2"></div><div class="store">${c.store}</div><div class="disc">${c.disc} ${t('off')}</div><div class="cdesc">${lang==='es'?c.des:c.den}</div><div class="ccode">${c.code}</div><div class="cexp">${t('vu')} ${e} · ${t('cm')} ${c.min}</div></div>`}).join('')}
-function copyCoup(c){navigator.clipboard.writeText(c).then(()=>{const e=document.getElementById('toast');e.textContent='✅ '+t('cc')+': '+c;e.style.display='block';setTimeout(()=>e.style.display='none',2e3)})}
-function setLang(l){lang=l;document.getElementById('btn-es').classList.toggle('active',l==='es');document.getElementById('btn-en').classList.toggle('active',l==='en');document.querySelectorAll('.i18n').forEach(e=>{if(e.dataset[l])e.textContent=e.dataset[l]});document.querySelectorAll('.i18n-html').forEach(e=>{if(e.dataset[l])e.innerHTML=e.dataset[l]});document.getElementById('search').placeholder=t('ph');document.getElementById('coup-title').textContent=t('ct');document.getElementById('prod-title').textContent=t('pt');const cct=document.getElementById('cur-chip-text');if(cct)cct.textContent=cct.dataset[l];renderCoups();if(AP.length)showPop(AP)}
-async function loadProds(){try{const r=await fetch('/api/products');AP=await r.json();showPop(AP)}catch(e){console.error(e)}}
-const EM={'Leche Entera':'🥛','Yogur Natural':'🥛','Naranjas':'🍊','Huevos':'🥚','Queso Cremoso':'🧀','Manteca':'🧈','Pan Lactal':'🍞','Arroz':'🍚','Fideos Secos':'🍝','Aceite de Girasol':'🫒','Azúcar':'🍬','Harina':'🌾','Galletitas Dulces':'🍪','Gaseosa Cola':'🥤','Agua Mineral':'💧','Papel Higiénico':'🧻','Detergente':'🧴','Jabón en Polvo':'🧼','Pollo Entero':'🍗','Carne Picada':'🥩','Banana':'🍌','Tomate':'🍅','Papa':'🥔','Cebolla':'🧅'};
-function showPop(ps){document.getElementById('grid').innerHTML=ps.map((p,i)=>{const inCart=cart.includes(p.nombre);return `<div class="item" style="animation-delay:${i*40}ms;animation:fadeUp .4s ease-out ${i*40}ms both"><span class="emo" onclick="pickProd('${p.nombre}')">${EM[p.nombre]||'🛒'}</span><span class="nm" onclick="pickProd('${p.nombre}')">${p.nombre}</span><span class="qt">${p.cantidad}</span><span class="pr">${t('desde')} $${p.precio_min}${cvi(p.precio_min)}</span><button class="add-btn ${inCart?'added':''}" id="add-${p.nombre.replace(/\\s/g,'_')}" onclick="event.stopPropagation();addToCart('${p.nombre}')">${inCart?'✓':'+'}</button></div>`}).join('')}
+function renderCoups(){const s=document.getElementById('coup-scroll'),now=new Date();s.innerHTML=coups.map(function(c){var e=new Date(now.getTime()+c.exp*864e5).toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'short'});return '<div class="coupon '+c.cls+'" onclick="copyCoup(\''+c.code+'\')"><div class="blob blob1"></div><div class="blob blob2"></div><div class="store">'+c.store+'</div><div class="disc">'+c.disc+' '+t('off')+'</div><div class="cdesc">'+(lang==='es'?c.des:c.den)+'</div><div class="ccode">'+c.code+'</div><div class="cexp">'+t('vu')+' '+e+' &middot; '+t('cm')+' '+c.min+'</div></div>'}).join('')}
+function copyCoup(c){navigator.clipboard.writeText(c).then(function(){var e=document.getElementById('toast');e.textContent='\\u2705 '+t('cc')+': '+c;e.style.display='block';setTimeout(function(){e.style.display='none'},2e3)})}
+function setLang(l){lang=l;document.getElementById('btn-es').classList.toggle('active',l==='es');document.getElementById('btn-en').classList.toggle('active',l==='en');document.querySelectorAll('.i18n').forEach(function(e){if(e.dataset[l])e.textContent=e.dataset[l]});document.querySelectorAll('.i18n-html').forEach(function(e){if(e.dataset[l])e.innerHTML=e.dataset[l]});document.getElementById('search').placeholder=t('ph');document.getElementById('coup-title').textContent=t('ct');document.getElementById('prod-title').textContent=t('pt');document.getElementById('loc-input').placeholder=lang==='es'?'Escribi tu barrio...':'Type your neighborhood...';renderCoups();if(AP.length)showPop(AP)}
+async function loadProds(){try{var r=await fetch('/api/products');AP=await r.json();showPop(AP)}catch(e){console.error(e)}}
+var EM={'Leche Entera':'\\ud83e\\udd5b','Yogur Natural':'\\ud83e\\udd5b','Naranjas':'\\ud83c\\udf4a','Huevos':'\\ud83e\\udd5a','Queso Cremoso':'\\ud83e\\uddc0','Manteca':'\\ud83e\\uddc8','Pan Lactal':'\\ud83c\\udf5e','Arroz':'\\ud83c\\udf5a','Fideos Secos':'\\ud83c\\udf5d','Aceite de Girasol':'\\ud83e\\uded2','Azucar':'\\ud83c\\udf6c','Harina':'\\ud83c\\udf3e','Galletitas Dulces':'\\ud83c\\udf6a','Gaseosa Cola':'\\ud83e\\udd64','Agua Mineral':'\\ud83d\\udca7','Papel Higienico':'\\ud83e\\uddfb','Detergente':'\\ud83e\\uddf4','Jabon en Polvo':'\\ud83e\\uddfc','Pollo Entero':'\\ud83c\\udf57','Carne Picada':'\\ud83e\\udd69','Banana':'\\ud83c\\udf4c','Tomate':'\\ud83c\\udf45','Papa':'\\ud83e\\udd54','Cebolla':'\\ud83e\\uddc5'};
+function showPop(ps){document.getElementById('grid').innerHTML=ps.map(function(p,i){var storeTag='';if(p.best_store){storeTag='<span class="best-store-tag">\\ud83c\\udfc6 '+p.best_store+'</span>'}return '<div class="item" style="animation-delay:'+i*40+'ms;animation:fadeUp .4s ease-out '+i*40+'ms both" onclick="pickProd(\''+p.nombre+'\')"><span class="emo">'+(EM[p.nombre]||'\\ud83d\\uded2')+'</span><span class="nm">'+p.nombre+'</span><span class="qt">'+p.cantidad+'</span><span class="pr">'+t('desde')+' $'+p.precio_min+'</span>'+storeTag+'</div>'}).join('')}
 function pickProd(n){document.getElementById('search').value=n;buscar()}
-function filtrarCat(c){document.querySelectorAll('.cat').forEach(b=>b.classList.remove('active'));event.target.closest('.cat').classList.add('active');const cs={'lácteos':['Leche Entera','Yogur Natural','Queso Cremoso','Manteca'],'frutas':['Naranjas','Banana','Tomate','Papa','Cebolla'],'carnes':['Pollo Entero','Carne Picada','Huevos'],'almacén':['Pan Lactal','Arroz','Fideos Secos','Aceite de Girasol','Azúcar','Harina','Galletitas Dulces'],'bebidas':['Gaseosa Cola','Agua Mineral'],'limpieza':['Papel Higiénico','Detergente','Jabón en Polvo']};showPop(c==='todos'?AP:AP.filter(p=>cs[c]?.includes(p.nombre)));document.getElementById('home').style.display='block';document.getElementById('results').innerHTML=''}
-const si=document.getElementById('search'),al=document.getElementById('autocomplete');
-si.addEventListener('input',function(){const q=this.value.toLowerCase().trim();if(q.length<1){al.style.display='none';return}const m=AP.filter(p=>p.nombre.toLowerCase().includes(q));if(!m.length){al.innerHTML=`<div class="autocomplete-item" style="color:var(--text3)">${t('na')} "${q}"</div>`;al.style.display='block';return}al.innerHTML=m.map(p=>`<div class="autocomplete-item" onclick="pickProd('${p.nombre}')">${p.nombre} <span class="qty">${p.cantidad}</span></div>`).join('');al.style.display='block'});
-document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))al.style.display='none'});
-async function buscar(){al.style.display='none';const q=si.value.trim();if(!q)return;document.getElementById('home').style.display='none';try{const r=await fetch(`/api/search?q=${encodeURIComponent(q)}`);const data=await r.json();let h='',fs='';if(!Object.keys(data).length){h=`<div class="no-results"><span class="big">🔍</span><p><strong>${t('nr1')}</strong> "${q}"</p><p style="margin-top:8px;font-size:14px;color:var(--text3)">${t('nr2')}</p></div>`;document.getElementById('home').style.display='block'}for(const[prod,info]of Object.entries(data)){const ps=info.precios,best=Math.min(...ps.map(p=>p.precio_final));h+=`<div class="product"><h3>${prod}</h3><div class="qlabel">${info.cantidad}</div>`;for(const p of ps){const ib=p.precio_final===best,cls=ib?'best':'';const md=encodeURIComponent(JSON.stringify({producto:prod,cantidad:info.cantidad,supermarket:p.supermarket,precio:p.precio,precio_promo:p.precio_promo,precio_final:p.precio_final,promo_vence:p.promo_vence,fecha_scraping:p.fecha_scraping,esMejor:ib}));let ph='';if(p.precio_promo){ph=`<span class="pr-promo"><span class="pr-old">$${p.precio}</span><span class="pr-sale">$${p.precio_promo}</span><span class="tag tag-sale">${t('offer')}</span></span>${cv(p.precio_promo)}`;if(p.promo_vence)ph+=`<span class="promo-exp">${t('expires')}: ${fmtD(p.promo_vence)}</span>`}else{ph=`<span class="pr-val">$${p.precio}</span>${cv(p.precio)}`}h+=`<div class="price-row ${cls}" onclick="openModal('${md}')"><span class="sm-name">🏪 ${p.supermarket}</span><div class="pr-info">${ph}${ib?`<span class="tag tag-best">${t('cheap')}</span>`:''}</div></div>`;if(p.fecha_scraping)fs=p.fecha_scraping}h+=`</div>`}document.getElementById('results').innerHTML=h;if(fs)document.getElementById('scrape-info').innerHTML=`${t('upd')}: ${fmtD(fs)}`}catch(e){document.getElementById('results').innerHTML='<p>Error</p>'}}
+function filtrarCat(c){document.querySelectorAll('.cat').forEach(function(b){b.classList.remove('active')});event.target.closest('.cat').classList.add('active');var cs={'lacteos':['Leche Entera','Yogur Natural','Queso Cremoso','Manteca'],'frutas':['Naranjas','Banana','Tomate','Papa','Cebolla'],'carnes':['Pollo Entero','Carne Picada','Huevos'],'almacen':['Pan Lactal','Arroz','Fideos Secos','Aceite de Girasol','Azucar','Harina','Galletitas Dulces'],'bebidas':['Gaseosa Cola','Agua Mineral'],'limpieza':['Papel Higienico','Detergente','Jabon en Polvo']};showPop(c==='todos'?AP:AP.filter(function(p){return cs[c]&&cs[c].indexOf(p.nombre)!==-1}));document.getElementById('home').style.display='block';document.getElementById('results').innerHTML=''}
+var si=document.getElementById('search'),al=document.getElementById('autocomplete');
+si.addEventListener('input',function(){var q=this.value.toLowerCase().trim();if(q.length<1){al.style.display='none';return}var m=AP.filter(function(p){return p.nombre.toLowerCase().indexOf(q)!==-1});if(!m.length){al.innerHTML='<div class="autocomplete-item" style="color:var(--text3)">'+t('na')+' "'+q+'"</div>';al.style.display='block';return}al.innerHTML=m.map(function(p){return '<div class="autocomplete-item" onclick="pickProd(\''+p.nombre+'\')">'+p.nombre+' <span class="qty">'+p.cantidad+'</span></div>'}).join('');al.style.display='block'});
+document.addEventListener('click',function(e){if(!e.target.closest('.search-wrap'))al.style.display='none'});
+async function buscar(){al.style.display='none';var q=si.value.trim();if(!q)return;document.getElementById('home').style.display='none';try{var r=await fetch('/api/search?q='+encodeURIComponent(q));var data=await r.json();var h='',fs='';if(!Object.keys(data).length){h='<div class="no-results"><span class="big">\\ud83d\\udd0d</span><p><strong>'+t('nr1')+'</strong> "'+q+'"</p><p style="margin-top:8px;font-size:14px;color:var(--text3)">'+t('nr2')+'</p></div>';document.getElementById('home').style.display='block'}for(var prod in data){if(!data.hasOwnProperty(prod))continue;var info=data[prod];var ps=info.precios;var best=Infinity;for(var i=0;i<ps.length;i++){if(ps[i].precio_final<best)best=ps[i].precio_final}h+='<div class="product"><h3>'+prod+'</h3><div class="qlabel">'+info.cantidad+'</div>';for(var j=0;j<ps.length;j++){var p=ps[j];var ib=p.precio_final===best;var cls=ib?'best':'';var md=encodeURIComponent(JSON.stringify({producto:prod,cantidad:info.cantidad,supermarket:p.supermarket,precio:p.precio,precio_promo:p.precio_promo,precio_final:p.precio_final,promo_vence:p.promo_vence,fecha_scraping:p.fecha_scraping,esMejor:ib}));var ph='';if(p.precio_promo){ph='<span class="pr-promo"><span class="pr-old">$'+p.precio+'</span><span class="pr-sale">$'+p.precio_promo+'</span><span class="tag tag-sale">'+t('offer')+'</span></span>';if(p.promo_vence)ph+='<span class="promo-exp">'+t('expires')+': '+fmtD(p.promo_vence)+'</span>'}else{ph='<span class="pr-val">$'+p.precio+'</span>'}h+='<div class="price-row '+cls+'" onclick="openModal(\''+md+'\')"><span class="sm-name">\\ud83c\\udfea '+p.supermarket+'</span><div class="pr-info">'+ph+(ib?'<span class="tag tag-best">'+t('cheap')+'</span>':'')+'</div></div>';if(p.fecha_scraping)fs=p.fecha_scraping}h+='</div>'}document.getElementById('results').innerHTML=h;if(fs)document.getElementById('scrape-info').innerHTML=t('upd')+': '+fmtD(fs)}catch(e){document.getElementById('results').innerHTML='<p>Error</p>'}}
 function fmtD(d){return new Date(d+'T00:00:00').toLocaleDateString(lang==='es'?'es-AR':'en-US',{day:'numeric',month:'long',year:'numeric'})}
-si.addEventListener('keypress',e=>{if(e.key==='Enter')buscar()});
-function openModal(ed){const d=JSON.parse(decodeURIComponent(ed));const pF=d.precio_promo||d.precio;let h=`<h3>🏪 ${d.supermarket}</h3><div class="msub">${d.producto} — ${d.cantidad}</div><div class="mrow"><span class="mlbl">${t('rp')}</span><span class="mval">$${d.precio}</span></div>`;if(d.precio_promo){h+=`<div class="mrow"><span class="mlbl">${t('pp')}</span><span class="mval promo">$${d.precio_promo}</span></div><div class="mrow"><span class="mlbl">${t('sav')}</span><span class="mval promo">-$${d.precio-d.precio_promo} (${Math.round((1-d.precio_promo/d.precio)*100)}%)</span></div>`;if(d.promo_vence){const dias=Math.ceil((new Date(d.promo_vence+'T00:00:00')-new Date())/864e5);h+=`<div class="mrow"><span class="mlbl">${t('pe')}</span><span class="mval promo">${fmtD(d.promo_vence)} (${dias>0?dias+' '+t('days'):t('exp')})</span></div>`}}if(d.esMejor)h+=`<div class="mrow"><span class="mlbl">${t('verd')}</span><span class="mval best">✅ ${t('bp')}</span></div>`;h+=`<div class="modal-cur"><div class="modal-cur-title">${lang==='es'?'Equivalencia en otra moneda':'Currency equivalent'}</div><div class="modal-cur-row"><select class="modal-cur-sel" onchange="selCur=this.value;document.getElementById('mcv').textContent=cvModal(${pF})"><option value="USD">USD $</option><option value="EUR">EUR €</option><option value="BRL">BRL R$</option><option value="GBP">GBP £</option><option value="CLP">CLP</option><option value="UYU">UYU</option><option value="MXN">MXN</option><option value="JPY">JPY ¥</option><option value="CNY">CNY ¥</option></select><span class="modal-cur-val" id="mcv">${cvModal(pF)}</span></div></div>`;h+=`<div class="msrc"><strong>📊 ${t('st')}</strong>${t('src')}: ${d.supermarket} ${t('onl')}<br>${t('ed')}: ${d.fecha_scraping?fmtD(d.fecha_scraping):t('nd')}<br>${t('meth')}: ${t('as')}<br>${t('prod')}: ${d.producto} (${d.cantidad})</div>`;document.getElementById('modal-c').innerHTML=h;document.getElementById('modal-bg').classList.add('on')}
+si.addEventListener('keypress',function(e){if(e.key==='Enter')buscar()});
+function openModal(ed){var d=JSON.parse(decodeURIComponent(ed));var pF=d.precio_promo||d.precio;var h='<h3>\\ud83c\\udfea '+d.supermarket+'</h3><div class="msub">'+d.producto+' \\u2014 '+d.cantidad+'</div><div class="mrow"><span class="mlbl">'+t('rp')+'</span><span class="mval">$'+d.precio+'</span></div>';if(d.precio_promo){h+='<div class="mrow"><span class="mlbl">'+t('pp')+'</span><span class="mval promo">$'+d.precio_promo+'</span></div><div class="mrow"><span class="mlbl">'+t('sav')+'</span><span class="mval promo">-$'+(d.precio-d.precio_promo)+' ('+Math.round((1-d.precio_promo/d.precio)*100)+'%)</span></div>';if(d.promo_vence){var dias=Math.ceil((new Date(d.promo_vence+'T00:00:00')-new Date())/864e5);h+='<div class="mrow"><span class="mlbl">'+t('pe')+'</span><span class="mval promo">'+fmtD(d.promo_vence)+' ('+(dias>0?dias+' '+t('days'):t('exp'))+')</span></div>'}}if(d.esMejor)h+='<div class="mrow"><span class="mlbl">'+t('verd')+'</span><span class="mval best">\\u2705 '+t('bp')+'</span></div>';h+='<div class="msrc"><strong>\\ud83d\\udcca '+t('st')+'</strong>'+t('src')+': '+d.supermarket+' '+t('onl')+'<br>'+t('ed')+': '+(d.fecha_scraping?fmtD(d.fecha_scraping):t('nd'))+'<br>'+t('meth')+': '+t('as')+'<br>'+t('prod')+': '+d.producto+' ('+d.cantidad+')</div>';document.getElementById('modal-c').innerHTML=h;document.getElementById('modal-bg').classList.add('on')}
 function closeModal(e){if(!e||e.target===document.getElementById('modal-bg')||e.target.classList.contains('mx'))document.getElementById('modal-bg').classList.remove('on')}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
-function addToCart(nombre){if(cart.includes(nombre))return;cart.push(nombre);updateCart();const btn=document.getElementById('add-'+nombre.replace(/\s/g,'_'));if(btn){btn.textContent='✓';btn.classList.add('added')}}
-function removeFromCart(nombre){cart=cart.filter(n=>n!==nombre);updateCart();const btn=document.getElementById('add-'+nombre.replace(/\s/g,'_'));if(btn){btn.textContent='+';btn.classList.remove('added')}}
-function clearCart(){cart=[];updateCart();document.querySelectorAll('.add-btn.added').forEach(b=>{b.textContent='+';b.classList.remove('added')})}
-function updateCart(){const bar=document.getElementById('cart-bar');if(!cart.length){bar.classList.remove('show');return}bar.classList.add('show');document.getElementById('cart-title').textContent=lang==='es'?'Tu lista':'Your list';document.getElementById('cart-count').textContent=`(${cart.length} ${lang==='es'?'productos':'items'})`;document.getElementById('cart-clear-btn').textContent=lang==='es'?'Vaciar':'Clear';document.getElementById('cart-items').innerHTML=cart.map(n=>`<div class="cart-item-pill">${n} <span class="cart-x" onclick="removeFromCart('${n}')">✕</span></div>`).join('');calcCartTotals()}
-function calcCartTotals(){const stores={Coto:0,Jumbo:0,Disco:0};cart.forEach(nombre=>{const p=AP.find(x=>x.nombre===nombre);if(!p)return;fetch(`/api/search?q=${encodeURIComponent(nombre)}`).then(r=>r.json()).then(data=>{for(const[prod,info]of Object.entries(data)){for(const pr of info.precios){const pf=pr.precio_promo||pr.precio;if(stores[pr.supermarket]!==undefined)stores[pr.supermarket]+=pf}}renderCartTotals(stores)})});if(!cart.length)renderCartTotals(stores)}
-function renderCartTotals(stores){const best=Math.min(...Object.values(stores).filter(v=>v>0));const sum=document.getElementById('cart-summary');sum.innerHTML=Object.entries(stores).map(([name,total])=>{const isBest=total===best&&total>0;return `<div class="cart-store ${isBest?'best-store':''}"><div class="cart-store-name">🏪 ${name}</div><div class="cart-store-total">$${total.toLocaleString('es-AR')}</div>${isBest?`<div class="cart-store-tag">${lang==='es'?'Mejor opción':'Best option'}</div>`:''}</div>`}).join('')}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()});
 setLang('es');loadProds();renderCoups();
 
-const STORES=[
+var STORES=[
 {name:'Coto',cls:'coto',letter:'C',stores:[
-{addr:'Av. Cabildo 2571, Belgrano',barrios:['Belgrano','Nuñez','Colegiales'],hours:'8:00 - 22:00',dist:'0.4 km'},
+{addr:'Av. Cabildo 2571, Belgrano',barrios:['Belgrano','Nunez','Colegiales'],hours:'8:00 - 22:00',dist:'0.4 km'},
 {addr:'Av. Rivadavia 5150, Caballito',barrios:['Caballito','Flores','Almagro'],hours:'8:00 - 22:00',dist:'0.6 km'},
 {addr:'Av. Corrientes 3247, Abasto',barrios:['Balvanera','Abasto','Once','Almagro'],hours:'8:00 - 22:00',dist:'0.5 km'},
 {addr:'Av. Directorio 2820, Parque Chacabuco',barrios:['Parque Chacabuco','Boedo','Caballito'],hours:'8:00 - 21:30',dist:'0.7 km'},
-{addr:'Av. Córdoba 5650, Palermo',barrios:['Palermo','Villa Crespo','Chacarita'],hours:'8:00 - 22:00',dist:'0.3 km'},
-{addr:'Av. Juan B. Justo 3563, Villa Crespo',barrios:['Villa Crespo','Palermo','Chacarita'],hours:'8:00 - 22:00',dist:'0.5 km'},
+{addr:'Av. Cordoba 5650, Palermo',barrios:['Palermo','Villa Crespo','Chacarita'],hours:'8:00 - 22:00',dist:'0.3 km'},
+{addr:'Av. Juan B. Justo 3563, Villa Crespo',barrios:['Villa Crespo','Palermo','Chacarita'],hours:'8:00 - 22:00',dist:'0.5 km'}
 ]},
 {name:'Jumbo',cls:'jumbo',letter:'J',stores:[
 {addr:'Av. Bullrich 345, Palermo',barrios:['Palermo','Recoleta','Belgrano'],hours:'9:00 - 21:30',dist:'0.8 km'},
 {addr:'Av. Rivadavia 7550, Flores',barrios:['Flores','Floresta','Caballito'],hours:'9:00 - 21:00',dist:'1.2 km'},
 {addr:'Av. Santa Fe 1860, Recoleta',barrios:['Recoleta','Barrio Norte','Retiro'],hours:'9:00 - 21:30',dist:'0.6 km'},
-{addr:'Av. Corrientes 5559, Villa Crespo',barrios:['Villa Crespo','Chacarita','Almagro'],hours:'9:00 - 21:00',dist:'0.9 km'},
+{addr:'Av. Corrientes 5559, Villa Crespo',barrios:['Villa Crespo','Chacarita','Almagro'],hours:'9:00 - 21:00',dist:'0.9 km'}
 ]},
 {name:'Disco',cls:'disco',letter:'D',stores:[
 {addr:'Av. Libertador 2475, Recoleta',barrios:['Recoleta','Palermo','Retiro','Barrio Norte'],hours:'8:30 - 21:00',dist:'0.5 km'},
-{addr:'Av. Cabildo 1550, Belgrano',barrios:['Belgrano','Nuñez','Colegiales'],hours:'8:30 - 21:00',dist:'0.7 km'},
+{addr:'Av. Cabildo 1550, Belgrano',barrios:['Belgrano','Nunez','Colegiales'],hours:'8:30 - 21:00',dist:'0.7 km'},
 {addr:'Av. Acoyte 440, Caballito',barrios:['Caballito','Almagro','Boedo'],hours:'8:30 - 21:00',dist:'0.4 km'},
-{addr:'Av. Scalabrini Ortiz 3178, Palermo',barrios:['Palermo','Villa Crespo'],hours:'8:30 - 21:00',dist:'0.6 km'},
+{addr:'Av. Scalabrini Ortiz 3178, Palermo',barrios:['Palermo','Villa Crespo'],hours:'8:30 - 21:00',dist:'0.6 km'}
 ]}
 ];
 
-const BARRIOS=['Belgrano','Nuñez','Colegiales','Palermo','Recoleta','Barrio Norte','Retiro','Caballito','Flores','Floresta','Almagro','Balvanera','Abasto','Once','Boedo','Parque Chacabuco','Villa Crespo','Chacarita','San Telmo','La Boca','Monserrat','San Nicolás','Puerto Madero','Devoto','Villa Urquiza','Saavedra','Liniers','Mataderos','Villa Lugano','Pompeya'];
+var BARRIOS=['Belgrano','Nunez','Colegiales','Palermo','Recoleta','Barrio Norte','Retiro','Caballito','Flores','Floresta','Almagro','Balvanera','Abasto','Once','Boedo','Parque Chacabuco','Villa Crespo','Chacarita','San Telmo','La Boca','Monserrat','San Nicolas','Puerto Madero','Devoto','Villa Urquiza','Saavedra','Liniers','Mataderos','Villa Lugano','Pompeya'];
 
-document.getElementById('loc-input').placeholder=lang==='es'?'Escribí tu barrio...':'Type your neighborhood...';
+var locInput=document.getElementById('loc-input'),locSug=document.getElementById('loc-sug');
+locInput.addEventListener('input',function(){var q=this.value.toLowerCase().trim();if(q.length<2){locSug.style.display='none';return}var m=BARRIOS.filter(function(b){return b.toLowerCase().indexOf(q)!==-1});if(!m.length){locSug.innerHTML='<div class="loc-sug-item" style="color:var(--text3)">'+(lang==='es'?'No encontramos ese barrio':'Neighborhood not found')+'</div>';locSug.style.display='block';return}locSug.innerHTML=m.map(function(b){return '<div class="loc-sug-item" onclick="selectBarrio(\''+b+'\')">'+b+'<span class="loc-zone">Buenos Aires, CABA</span></div>'}).join('');locSug.style.display='block'});
+document.addEventListener('click',function(e){if(!e.target.closest('.loc-input-wrap'))locSug.style.display='none'});
 
-const locInput=document.getElementById('loc-input'),locSug=document.getElementById('loc-sug');
-locInput.addEventListener('input',function(){const q=this.value.toLowerCase().trim();if(q.length<2){locSug.style.display='none';return}const m=BARRIOS.filter(b=>b.toLowerCase().includes(q));if(!m.length){locSug.innerHTML=`<div class="loc-sug-item" style="color:var(--text3)">${lang==='es'?'No encontramos ese barrio':'Neighborhood not found'}</div>`;locSug.style.display='block';return}locSug.innerHTML=m.map(b=>`<div class="loc-sug-item" onclick="selectBarrio('${b}')">${b}<span class="loc-zone">Buenos Aires, CABA</span></div>`).join('');locSug.style.display='block'});
-document.addEventListener('click',e=>{if(!e.target.closest('.loc-input-wrap'))locSug.style.display='none'});
-
-function selectBarrio(b){locInput.value=b;locSug.style.display='none';const results=[];STORES.forEach(s=>{s.stores.forEach(st=>{if(st.barrios.some(br=>br.toLowerCase()===b.toLowerCase())){results.push({name:s.name,cls:s.cls,letter:s.letter,addr:st.addr,hours:st.hours,dist:st.dist})}})});results.sort((a,b)=>parseFloat(a.dist)-parseFloat(b.dist));const now=new Date().getHours();const lr=document.getElementById('loc-results');if(!results.length){lr.innerHTML=`<div style="text-align:center;padding:20px;color:var(--text3)">${lang==='es'?'No hay sucursales cercanas en '+b:'No nearby stores in '+b}</div>`;return}lr.innerHTML=results.map(r=>{const open=now>=8&&now<21;return `<div class="loc-card"><div class="loc-icon ${r.cls}">${r.letter}</div><div class="loc-info"><div class="loc-name">${r.name}</div><div class="loc-addr">${r.addr}</div><div class="loc-meta"><span class="loc-tag ${open?'open':'closed'}">${open?(lang==='es'?'Abierto':'Open'):(lang==='es'?'Cerrado':'Closed')}</span><span class="loc-tag hours">${r.hours}</span><span class="loc-tag dist">${r.dist}</span></div></div></div>`}).join('')}
+function selectBarrio(b){locInput.value=b;locSug.style.display='none';var results=[];STORES.forEach(function(s){s.stores.forEach(function(st){if(st.barrios.some(function(br){return br.toLowerCase()===b.toLowerCase()})){results.push({name:s.name,cls:s.cls,letter:s.letter,addr:st.addr,hours:st.hours,dist:st.dist})}})});results.sort(function(a,b){return parseFloat(a.dist)-parseFloat(b.dist)});var now=new Date().getHours();var lr=document.getElementById('loc-results');if(!results.length){lr.innerHTML='<div style="text-align:center;padding:20px;color:var(--text3)">'+(lang==='es'?'No hay sucursales cercanas en '+b:'No nearby stores in '+b)+'</div>';return}lr.innerHTML=results.map(function(r){var open=now>=8&&now<21;return '<div class="loc-card"><div class="loc-icon '+r.cls+'">'+r.letter+'</div><div class="loc-info"><div class="loc-name">'+r.name+'</div><div class="loc-addr">'+r.addr+'</div><div class="loc-meta"><span class="loc-tag '+(open?'open':'closed')+'">'+(open?(lang==='es'?'Abierto':'Open'):(lang==='es'?'Cerrado':'Closed'))+'</span><span class="loc-tag hours">'+r.hours+'</span><span class="loc-tag dist">'+r.dist+'</span></div></div></div>'}).join('')}
 </script>
 </body>
-</html>'''
+</html>''')
+    resp.headers['Cache-Control'] = 'public, max-age=300'
+    return resp
 
 @app.route('/api/products')
 def products():
@@ -462,10 +408,21 @@ def products():
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
-    c.execute('SELECT p.nombre, p.cantidad, MIN(CASE WHEN pr.precio_promo IS NOT NULL THEN pr.precio_promo ELSE pr.precio END) as precio_min FROM productos p JOIN precios pr ON p.id = pr.producto_id GROUP BY p.id ORDER BY p.nombre')
+    c.execute('''SELECT p.nombre, p.cantidad,
+        MIN(CASE WHEN pr.precio_promo IS NOT NULL THEN pr.precio_promo ELSE pr.precio END) as precio_min,
+        s.nombre as best_store
+        FROM productos p
+        JOIN precios pr ON p.id = pr.producto_id
+        JOIN supermarkets s ON pr.supermercado_id = s.id
+        WHERE (CASE WHEN pr.precio_promo IS NOT NULL THEN pr.precio_promo ELSE pr.precio END) = (
+            SELECT MIN(CASE WHEN pr2.precio_promo IS NOT NULL THEN pr2.precio_promo ELSE pr2.precio END)
+            FROM precios pr2 WHERE pr2.producto_id = p.id
+        )
+        GROUP BY p.id
+        ORDER BY p.nombre''')
     results = c.fetchall()
     conn.close()
-    return jsonify([{'nombre': r['nombre'], 'cantidad': r['cantidad'], 'precio_min': r['precio_min']} for r in results])
+    return jsonify([{'nombre': r['nombre'], 'cantidad': r['cantidad'], 'precio_min': r['precio_min'], 'best_store': r['best_store']} for r in results])
 
 @app.route('/api/search')
 def search():
